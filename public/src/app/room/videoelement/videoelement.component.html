@@ -1,0 +1,6 @@
+<video #video [ngStyle]="this.videoSizing === 'contain' && {'object-fit': 'contain'}"></video>
+<button class="moreButton" [nbContextMenu]="this.contextMenuItems">
+	<fa-icon [icon]="faEllipsisH"></fa-icon>
+</button>
+<fa-icon *ngIf="this.user?.status?.isMuted" [icon]="faMicrophoneSlash" class="muted-icon"></fa-icon>
+<div class="nameWrapper"><div class="nameContainer">{{this.user?.name}}</div></div>

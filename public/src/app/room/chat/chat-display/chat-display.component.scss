@@ -1,0 +1,17 @@
+.chatboard {
+	display: flex;
+	flex-direction: column;
+	flex-wrap: nowrap;
+	align-items: stretch;
+	flex-flow: column;
+	height: 100%;
+	padding: 10px;
+	.messages {
+		height: 100%;
+		flex: 1;
+	}
+	.message-input {
+		height: 40px;
+		min-height: 40px;
+	}
+}

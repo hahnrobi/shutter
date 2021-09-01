@@ -1,0 +1,8 @@
+<div class="chatboard">
+	<div class="messages" *ngIf="this.messages != null" >
+		<div *ngFor="let msg of this.messages">
+			{{msg.sender.name}}: {{msg.message}}
+		</div>
+	</div>
+	<input class="message-input" type="text" [(ngModel)]="messageBoxText" (keydown.enter)="this.sendMessage();false" nbInput placeholder="Text field" />
+</div>

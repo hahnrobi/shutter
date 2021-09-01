@@ -1,0 +1,6 @@
+<div class="inner">
+Users in the room
+<div *ngFor="let user of users | keyvalue" class="user-item">
+	{{user.value?.name}}
+</div>
+</div>
