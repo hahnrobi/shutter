@@ -10,7 +10,7 @@ import { AppComponent } from './app.component';
 import { RoomComponent } from './room/room.component';
 import { VideoelementComponent } from './room/videoelement/videoelement.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { NbThemeModule, NbLayoutModule, NbButtonModule, NbIconModule, NbInputModule, NbDialogModule, NbToastrModule, NbContextMenuModule, NbMenuService, NbMenuModule } from '@nebular/theme';
+import { NbThemeModule, NbLayoutModule, NbButtonModule, NbIconModule, NbInputModule, NbDialogModule, NbToastrModule, NbContextMenuModule, NbMenuService, NbMenuModule, NbTooltipModule } from '@nebular/theme';
 import { NbEvaIconsModule } from '@nebular/eva-icons';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { ChatDisplayComponent } from './room/chat/chat-display/chat-display.component';
@@ -42,6 +42,7 @@ import { UserListComponent } from './room/user-list/user-list.component';
     NbInputModule,
     FontAwesomeModule,
     FormsModule,
+    NbTooltipModule,
     NbDialogModule.forRoot(),
     NbToastrModule.forRoot(),
     NbMenuModule.forRoot()

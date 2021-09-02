@@ -1,3 +1,4 @@
+import { ReplaySubject, Subject } from 'rxjs';
 import { MediaStreamProvider } from './../mediastreamprovider';
 import { UserStatus } from './../user-status/user-status';
 export class User {
@@ -6,8 +7,34 @@ export class User {
 	public name:string;
 	public mediaStreamProvider:MediaStreamProvider;
 	public status:UserStatus;
+	private _locallyMuted:boolean = false;
+	public localMuteStateChanged:Subject<boolean>;
+	private _locallyPinned:boolean = false;
+	public locallyPinnedStateChanged:Subject<boolean>;
 	constructor() {
 		this.status = new UserStatus();
 		this.name = "Connecting...";
+		this.localMuteStateChanged = new Subject<boolean>();
+		this.locallyPinnedStateChanged = new Subject<boolean>();
+	}
+	get locallyMuted():boolean {
+		return this._locallyMuted;
+	}
+	set locallyMuted(value :boolean) {
+		this._locallyMuted = value;
+		if(value) {
+			this.mediaStreamProvider.muteStream();
+		}else {
+			this.mediaStreamProvider.unMuteStream();
+		}
+		this.localMuteStateChanged.next(value);
+	}
+
+	get locallyPinned():boolean {
+		return this._locallyPinned;
+	}
+	set locallyPinned(value: boolean) {
+		this._locallyPinned = value;
+		this.locallyPinnedStateChanged.next(value);
 	}
 }
