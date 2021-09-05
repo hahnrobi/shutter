@@ -1,4 +1,44 @@
-<h1>Welcome to this Shutter room!</h1>
-<p>Please fill in your name in order to enter the room.</p>
-<input type="text" nbInput [(ngModel)]="inputNameText" placeholder="Your nickname" />
+<nb-layout>
+	<nb-layout-column>
+		<h1>Welcome to this Shutter room!</h1>
+		<p>Please fill in your name in order to enter the room.</p>
+		<input type="text" nbInput [(ngModel)]="inputNameText" placeholder="Your nickname" /></nb-layout-column>
+	<nb-layout-column>
+		<p>
+			<nb-icon *ngIf="this.videoAllowed" icon="checkmark-circle-2-outline" status="success" nbTooltip="Access granted to use webcam." nbTooltipStatus="basic"></nb-icon>
+			<nb-icon *ngIf="!this.videoAllowed" (click)="this._localInputProviderService.requestPermissions('video')" icon="close-circle-outline" status="danger" nbTooltip="No access to your webcam." nbTooltipStatus="danger" style="cursor: pointer"></nb-icon>
+			Video input:
+		</p>
+		<div class="input-container-video">
+			<nb-select placeholder="Select Showcase" [(selected)]="this.selectedVideoDevice">
+
+				<nb-option *ngFor="let device of this.videoDeviceList" value="{{ device.deviceId }}" (click)="this.changeVideoInputDevice(device)" >{{ device.label }}</nb-option>
+			  </nb-select>
+			  <video #video style="width: 100%; object-fit: cover; border-radius: 3px"></video>
+		</div>
+		<p>
+			<nb-icon *ngIf="this.audioAllowed" icon="checkmark-circle-2-outline" status="success" nbTooltip="Access granted to use your mic." nbTooltipStatus="basic"></nb-icon>
+			<nb-icon *ngIf="!this.audioAllowed" (click)="this._localInputProviderService.requestPermissions('audio')" icon="close-circle-outline" status="danger" nbTooltip="No access to your microphone." nbTooltipStatus="danger" style="cursor: pointer"></nb-icon>
+			Audio input:
+		</p>
+		<div class="input-container-audio">
+			<nb-select placeholder="Select Showcase" >
+
+				<nb-option *ngFor="let device of this.audioDeviceList" value="{{ device.deviceId }}" (click)="this.changeAudioInputDevice(device)" >{{ device.label }}</nb-option>
+			  </nb-select>
+			<div class="meter-wrapper">
+				<div class="audio-level-pass-meter">
+					GOOD LEVEL
+				</div>
+				<div class="meter-container">
+					<div class="meter-pass-point"></div>
+					<div class="input-meter" [style.width.%]="selectedAudioDeviceLevel" style="background: white; height: 20px; width: 0px; border-radius: 3px; transition: .2s; opacity: .7; margin-top: 20px">
+				</div>
+			</div>
+
+			</div>
+		</div>
+	</nb-layout-column>
+</nb-layout>
+
 <button nbButton (click)="this.saveName()">Join room</button>

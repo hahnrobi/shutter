@@ -1,15 +1,19 @@
-import { interval, ReplaySubject } from 'rxjs';
+import { interval, ReplaySubject, Subject, Subscriber } from 'rxjs';
 export class MediaStreamProvider {
 	private stream:MediaStream;
 	private micAudioLevel:number;
+	private meteringSubscription;
 
 	private audioInterval;
 
 	private isSpeakingValue:boolean = false;
 	public isSpeaking:ReplaySubject<boolean>;
 
+	public opt_audiolevel:Subject<number>;
+
 	constructor(_stream:MediaStream) {
 		this.stream = _stream;
+		this.opt_audiolevel = new Subject<number>();
 	}
 	private setAudioTracksEnabled(state:boolean):void {
 		let tracks = this.stream.getAudioTracks();
@@ -48,7 +52,7 @@ export class MediaStreamProvider {
 		tracks.forEach(track => {muted = !track.enabled});
 		return muted;
 	}
-	public measureMicLevel() {
+	public measureMicLevel(int = 1000, withLevel = false) {
 		this.isSpeaking = new ReplaySubject<boolean>();
 		const context = new(window.AudioContext)();
 
@@ -104,14 +108,17 @@ export class MediaStreamProvider {
 		  return avgPowerDecibels;
 		  
 		}
-		this.audioInterval = interval(1000);
-		const subscribe = this.audioInterval.subscribe(v => {
+		this.audioInterval = interval(int);
+		this.meteringSubscription = this.audioInterval.subscribe(v => {
 			let audioLevel = 0;
 			let muted = false;
 			if(this.isAudioMuted()) {
 				muted = true;
 			}else {
 				audioLevel = loop();
+			}
+			if(withLevel) {
+			this.opt_audiolevel.next(audioLevel);
 			}
 			
 			if(muted || audioLevel < -80) {
@@ -126,5 +133,10 @@ export class MediaStreamProvider {
 				}
 			}
 		});
+	}
+
+	public dispose() {
+		console.log("[MEDIASTREAMPROVIDER] Dispose");
+		this.meteringSubscription.unsubscribe()
 	}
 }
