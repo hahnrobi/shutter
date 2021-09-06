@@ -1,3 +1,4 @@
+import { LocalInputProviderService } from './../local-input-provider.service';
 import { WelcomeDialogComponent } from './welcome-dialog/welcome-dialog.component';
 import { ConnectionService } from './../connection.service';
 import { Component, EventEmitter, OnInit, Output } from '@angular/core';
@@ -52,7 +53,9 @@ export class RoomComponent implements OnInit {
   public setMyName(name:string) {
     this._roomManagerSerivce.selfDataProvider.setName(name);
     this.isUserInitialized = true;
-    this._roomManagerSerivce.connectToRoom();
+  }
+  public connectToRoom(service:LocalInputProviderService) {
+    this._roomManagerSerivce.connectToRoom(service);
   }
   ngOnDestroy(){
     for( const sub of this.subs){

@@ -1,5 +1,5 @@
 <div *ngIf="!this.isUserInitialized">
-    <app-welcome-dialog (enteredName)="setMyName($event)">
+    <app-welcome-dialog (enteredName)="setMyName($event)" (deviceConfig)="connectToRoom($event)">
 
     </app-welcome-dialog>
 </div>

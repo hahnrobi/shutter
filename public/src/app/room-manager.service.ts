@@ -1,3 +1,4 @@
+import { LocalInputProviderService } from './local-input-provider.service';
 import { ISelfDataProvider } from './room/userdata/iself-data-provider';
 import { SelfDataLocalStorageProvider } from './room/userdata/selfdata/self-data-local-storage-provider';
 import { ReplaySubject, Observable } from 'rxjs';
@@ -84,7 +85,7 @@ export class RoomManagerService {
   public getUsers():Observable<User[]> {
     return this._userManagerService.getUsers();
   }
-  public connectToRoom():void {
-    this._connectionService.startConnection();
+  public connectToRoom(service:LocalInputProviderService = null):void {
+    this._connectionService.startConnection(service);
   }
 }

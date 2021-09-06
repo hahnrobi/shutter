@@ -1,4 +1,4 @@
-import { Observable, Subject } from 'rxjs';
+import { Observable, Subject, ReplaySubject } from 'rxjs';
 import { MediaStreamProvider } from './room/mediastreamprovider';
 import { Injectable } from '@angular/core';
 
@@ -13,17 +13,32 @@ export class LocalInputProviderService {
   
   public defaultAudioInput:MediaDeviceInfo;
   public defaultVideoInput:MediaDeviceInfo;
+
+  public currentAudioInput:MediaDeviceInfo;
+  public currentVideoInput:MediaDeviceInfo;
   
+  public videoEnabled:boolean = true;
+  public micEnabled:boolean = true;
 
   public micAllowed:Subject<boolean>;
   public videoAllowed:Subject<boolean>;
 
+  public deviceReceived:ReplaySubject<[MediaDeviceInfo, MediaDeviceInfo]>;
+
   constructor() {
     this.micAllowed = new Subject<boolean>();
     this.videoAllowed = new Subject<boolean>();
+    this.deviceReceived = new ReplaySubject<[MediaDeviceInfo, MediaDeviceInfo]>();
     this.requestPermissions();
     navigator.mediaDevices.enumerateDevices()
-    .then((devices) => this.setInputDevices(devices))
+    .then((devices) => {
+      this.setInputDevices(devices)
+      this.getDefaultInputDevices();
+
+      this.deviceReceived.next([this.defaultAudioInput, this.defaultVideoInput]);
+      this.currentAudioInput = this.defaultAudioInput;
+      this.currentVideoInput = this.defaultVideoInput;
+    })
     .catch(function(err) {
       console.log(err.name + ": " + err.message);
     });
@@ -31,16 +46,82 @@ export class LocalInputProviderService {
     this.audioInputs.forEach(a => {
       console.log(a);
     })
+
   }
 
-  public refreshInputDevices() {
-    navigator.mediaDevices.enumerateDevices()
-    .then((devices) => this.setInputDevices(devices))
+  private getLastUsedDevices() {
+    const storageItem = localStorage.getItem("lastUsedDevices");
+    let parsedObj = null;
+    if(storageItem != null && storageItem.length > 0) {
+      try {
+        parsedObj = JSON.parse(storageItem);
+      } catch (e) {
+        
+      }
+    }
+    return parsedObj;
+  }
+  public saveUsedDevices(videoId:string, audioId: string) {
+    const item = {
+      "video": videoId,
+      "audio": audioId
+    }
+    console.log("[LOCALINPUT-PROVIDER] Saving to localstorage ", item);
+    localStorage.setItem("lastUsedDevices", JSON.stringify(item));
+  }
+
+  public getDefaultInputDevices():void {
+    let audioDevice = null;
+    let videoDevice = null;
+
+    const lastUsed = this.getLastUsedDevices();
+
+
+    if(this.videoAllowed) {
+      if(lastUsed != null && lastUsed.hasOwnProperty("video")) {
+        const arrayCheck = this.videoInputs.filter(x => x.deviceId === lastUsed.video);
+        if(arrayCheck.length > 0) {
+          videoDevice = arrayCheck[0];
+        }
+      }
+      if(videoDevice == null && this.videoInputs.length > 0) {
+        videoDevice = this.videoInputs[0];
+      }
+    }
+    
+
+    if(this.micAllowed) {
+      const lastUsed = this.getLastUsedDevices();
+      if(lastUsed != null && lastUsed.hasOwnProperty("audio")) {
+        const arrayCheck = this.audioInputs.filter(x => x.deviceId === lastUsed.audio);
+        if(arrayCheck.length > 0) {
+          audioDevice = arrayCheck[0];
+        }
+      }
+      if(audioDevice == null && this.audioInputs.length > 0) {
+        audioDevice = this.audioInputs[0];
+      }
+    }
+
+    this.defaultVideoInput = videoDevice;
+    this.defaultAudioInput = audioDevice;
+  }
+
+  public async refreshInputDevices() {
+    let newDevices = [];
+    await navigator.mediaDevices.enumerateDevices()
+    .then((devices) => {
+      if(devices.length > 0) {
+        this.setInputDevices(newDevices);
+      }
+    })
     .catch(function(err) {
       console.log(err.name + ": " + err.message);
     });
   }
   public setInputDevices(devices:MediaDeviceInfo[]) {
+    //this.audioInputs = [];
+    //this.videoInputs = [];
     devices.forEach(dev => {
       if (dev.kind == "audioinput") {
         this.audioInputs.push(dev);
@@ -49,8 +130,6 @@ export class LocalInputProviderService {
         this.videoInputs.push(dev);
       }
     });
-    console.log(this.audioInputs);
-    console.log(this.videoInputs);
   }
 
   public async requestPermissions(type:"audio"|"video"|"both" = "both")
