@@ -35,6 +35,8 @@ export class LocalInputProviderService {
       this.setInputDevices(devices)
       this.getDefaultInputDevices();
 
+      console.log(this.videoInputs);
+
       this.deviceReceived.next([this.defaultAudioInput, this.defaultVideoInput]);
       this.currentAudioInput = this.defaultAudioInput;
       this.currentVideoInput = this.defaultVideoInput;
@@ -60,6 +62,11 @@ export class LocalInputProviderService {
       }
     }
     return parsedObj;
+  }
+  private stopStreamTracks(stream:MediaStream) {
+    stream.getTracks().forEach(function(track) {
+      track.stop();
+    });
   }
   public saveUsedDevices(videoId:string, audioId: string) {
     const item = {
@@ -136,13 +143,19 @@ export class LocalInputProviderService {
   {
     if(type == "video" || type == "both") {
     await navigator.mediaDevices.getUserMedia({video: true, audio: false})
-      .then(() => this.videoAllowed.next(true))
+      .then((stream) => {
+        this.videoAllowed.next(true);
+        this.stopStreamTracks(stream);
+      })
       .catch((err) => this.videoAllowed.next(false));
     }
 
     if(type == "audio" || type == "both") {
     await navigator.mediaDevices.getUserMedia({video: false, audio: true})
-      .then(() => this.micAllowed.next(true))
+      .then((stream) => {
+        this.micAllowed.next(true);
+        this.stopStreamTracks(stream);
+      })
       .catch((err) => this.micAllowed.next(false));
 
     }
@@ -151,7 +164,7 @@ export class LocalInputProviderService {
     this.refreshInputDevices();
   }
   public async getVideo(deviceId:string) {
-    let stream = null;;
+    let stream = null;
     await navigator.mediaDevices.getUserMedia({video: {deviceId: deviceId}, audio: false})
       .then((s) => {this.videoAllowed.next(true); stream = s;})
       .catch((err) => this.videoAllowed.next(false));

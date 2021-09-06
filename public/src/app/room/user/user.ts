@@ -7,6 +7,7 @@ export class User {
 	public name:string;
 	public mediaStreamProvider:MediaStreamProvider;
 	public status:UserStatus;
+	public spectator:boolean;
 	private _locallyMuted:boolean = false;
 	public localMuteStateChanged:Subject<boolean>;
 	private _locallyPinned:boolean = false;
@@ -16,6 +17,7 @@ export class User {
 		this.name = "Connecting...";
 		this.localMuteStateChanged = new Subject<boolean>();
 		this.locallyPinnedStateChanged = new Subject<boolean>();
+		this.spectator = false;
 	}
 	get locallyMuted():boolean {
 		return this._locallyMuted;

@@ -44,7 +44,9 @@ export class UserManagerService {
   }
   public updateStatus(clientId:string, status:UserStatus) {
     let user = this.users[clientId];
-    user.status = status;
+    if(user) {
+      user.status = status;
+    }
   }
   public updateData(clientId:string, data:SelfDataTransfer) {
     let u:User = this.getUserByClientId(clientId);

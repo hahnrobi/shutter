@@ -16,10 +16,12 @@ export class MediaStreamProvider {
 		this.opt_audiolevel = new Subject<number>();
 	}
 	private setAudioTracksEnabled(state:boolean):void {
-		let tracks = this.stream.getAudioTracks();
-		tracks.forEach(track => {
-			track.enabled = state;
-		});
+		if(this.stream) {
+			let tracks = this.stream.getAudioTracks();
+			tracks.forEach(track => {
+				track.enabled = state;
+			});
+		}
 	}
 	public muteStream():void {
 		this.setAudioTracksEnabled(false);
@@ -31,14 +33,20 @@ export class MediaStreamProvider {
 		return this.stream
 	}
 	public isAudioMuted():boolean {
-		let tracks = this.stream.getAudioTracks();
-		let muted = false;
-		tracks.forEach(track => {muted = !track.enabled});
-		return muted;
+		if(this.stream) {
+			let tracks = this.stream.getAudioTracks();
+			let muted = false;
+			tracks.forEach(track => {muted = !track.enabled});
+			return muted;
+		}else {
+			return true;
+		}
 	}
 	private setVideoTracksEnabled(state:boolean):void {
-		let tracks = this.stream.getVideoTracks();
-		tracks.forEach(track => {track.enabled = state;});
+		if(this.stream) {
+			let tracks = this.stream.getVideoTracks();
+			tracks.forEach(track => {track.enabled = state;});
+		}
 	}
 	public turnOffCamera():void {
 		this.setVideoTracksEnabled(false);
@@ -47,12 +55,19 @@ export class MediaStreamProvider {
 		this.setVideoTracksEnabled(true);
 	}
 	public isWebcamOn():boolean {
-		let tracks = this.stream.getVideoTracks();
-		let muted = false;
-		tracks.forEach(track => {muted = !track.enabled});
-		return muted;
+		if(this.stream) {
+			let tracks = this.stream.getVideoTracks();
+			let muted = false;
+			tracks.forEach(track => {muted = !track.enabled});
+			return muted;
+		}else {
+			return false;
+		}
 	}
 	public measureMicLevel(int = 1000, withLevel = false) {
+		if(!this.stream) {
+			return;
+		}
 		this.isSpeaking = new ReplaySubject<boolean>();
 		const context = new(window.AudioContext)();
 
@@ -136,7 +151,12 @@ export class MediaStreamProvider {
 	}
 
 	public dispose() {
+		this.stream.getTracks().forEach(function(track) {
+			track.stop();
+		  });
 		console.log("[MEDIASTREAMPROVIDER] Dispose");
-		this.meteringSubscription.unsubscribe()
+		if(this.meteringSubscription) {
+			this.meteringSubscription.unsubscribe();
+		}
 	}
 }

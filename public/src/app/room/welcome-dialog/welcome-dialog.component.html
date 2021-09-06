@@ -5,23 +5,26 @@
 		<input type="text" nbInput [(ngModel)]="inputNameText" placeholder="Your nickname" /></nb-layout-column>
 	<nb-layout-column>
 		<nb-icon icon="video-outline"></nb-icon>
-		<nb-toggle status="basic" [disabled]="!this.videoAllowed" [(checked)]="this.videoEnabled">Video input</nb-toggle>
+		<nb-toggle status="basic" [disabled]="!this.videoAllowed" [(checked)]="this.videoEnabled" (checkedChange)="this.changeVideoEnabledStatus($event)">Video input</nb-toggle>
 		<!--<nb-icon *ngIf="this.videoAllowed" icon="checkmark-circle-2-outline" status="success" nbTooltip="Access granted to use webcam." nbTooltipStatus="basic"></nb-icon>
 		<nb-icon *ngIf="!this.videoAllowed" (click)="this._localInputProviderService.requestPermissions('video')" icon="close-circle-outline" status="danger" nbTooltip="No access to your webcam." nbTooltipStatus="danger" style="cursor: pointer"></nb-icon>-->
-		<div *ngIf="this.videoEnabled" class="input-container-video">
-			<nb-select placeholder="Select webcam" [(selected)]="selectedVideoDevice">
-				<nb-option *ngFor="let device of this.videoDeviceList" value="{{ device.deviceId }}" (click)="this.changeVideoInputDevice(device)" >{{ device.label }}</nb-option>
+		<div class="input-container-video">
+			<nb-select placeholder="Select webcam" [(selected)]="selectedVideoDevice" [disabled]="!this.videoAllowed || !this.videoEnabled">
+				<nb-option *ngFor="let device of this.videoDeviceList" value="{{ device.deviceId }}" (click)="this.changeVideoInputDevice(device.deviceId)" >{{ device.label }}</nb-option>
 			  </nb-select>
-			  <video #video style="width: 100%; object-fit: cover; border-radius: 3px"></video>
+			  <div class="videoContainer">
+				<nb-icon *ngIf="!(this.videoAllowed && this.videoEnabled)" icon="video-outline"></nb-icon>
+			  	<video *ngIf="this.videoAllowed && this.videoEnabled" #video style="width: 100%; object-fit: cover; border-radius: 3px"></video>
+			  </div>
 		</div>
 		<nb-icon icon="mic-outline"></nb-icon>
-		<nb-toggle status="basic" [disabled]="!this.audioAllowed" [(checked)]="this.audioEnabled">Audio input</nb-toggle>
+		<nb-toggle status="basic" [disabled]="!this.audioAllowed" [(checked)]="this.audioEnabled" (checkedChange)="this.changeAudioEnabledStatus($event)">Audio input</nb-toggle>
 		<!--<nb-icon *ngIf="this.audioAllowed" icon="checkmark-circle-2-outline" status="success" nbTooltip="Access granted to use your mic." nbTooltipStatus="basic"></nb-icon>
 		<nb-icon *ngIf="!this.audioAllowed" (click)="this._localInputProviderService.requestPermissions('audio')" icon="close-circle-outline" status="danger" nbTooltip="No access to your microphone." nbTooltipStatus="danger" style="cursor: pointer"></nb-icon>-->
 		
 		<div class="input-container-audio">
 			<nb-select placeholder="Select input device" [(selected)]="selectedAudioDevice" [disabled]="!this.audioAllowed || !this.audioEnabled">
-				<nb-option *ngFor="let device of this.audioDeviceList" value="{{ device.deviceId }}" (click)="this.changeAudioInputDevice(device)" >{{ device.label }}</nb-option>
+				<nb-option *ngFor="let device of this.audioDeviceList" value="{{ device.deviceId }}" (click)="this.changeAudioInputDevice(device.deviceId)" >{{ device.label }}</nb-option>
 			  </nb-select>
 			<div class="meter-wrapper">
 				<div class="audio-level-pass-meter">

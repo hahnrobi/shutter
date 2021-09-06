@@ -87,104 +87,115 @@ export class ConnectionService {
     }
 
     console.log("[CONN] UserMedia Query: ", userMediaQuery);
-    navigator.mediaDevices.getUserMedia(userMediaQuery).then(stream => {
-        this.selfStreamProvider = new MediaStreamProvider(stream);
-        this.selfStream = this.selfStreamProvider.getStream();
-
-
-        this.selfStreamProvider.measureMicLevel();
-        this.selfStreamProvider.isSpeaking.subscribe(talkState => {
-          if(talkState) {
-            console.log("[CONN MIC] Speaking");
-            
-          }else {
-            console.log("[CONN MIC] Not speaking");
-          }
-          this.updateSpeakingStateStatus(talkState);
-        })
-
-
-        this.incomingStreamEvent.next([this.clientId, this.selfStreamProvider]);
-
-        this.addVideoStream(this.selfStream, this.clientId);
-        
-        //Other useres connecting to me when I join the room.
-        this.peer.on('call', call => {
-          let opts = call.options;
-          console.log("[CONN] Call options: ");
-          console.log(opts);
-          let caller = opts.metadata.caller;
-          console.log("[CONN] Incoming call... answering...");
-          call.answer(this.selfStream);
-          call.on('stream', userVideoStream => {
-            console.log("[CONN] Sending my own stream...");
-            this.addVideoStream(userVideoStream, caller.id)
-            let mediaStreamProvider = new MediaStreamProvider(userVideoStream);
-            this.incomingStreamEvent.next([caller.id, mediaStreamProvider]);
-          })
-        });
-
-        this.socket.emit('join-room', "asd", this.clientId)
-        console.log("[CONN] Joining room: " + "asd");
-        console.log("[CONN] My id is: " + this.clientId);
-
-        this.socket.on('user-connected', userId => {
-          this.connectToNewUser(userId, this.selfStream)
-          console.log("[CONN] New user connected to the room: " + userId);
-          this.userJoinEvent.next(userId);
-        })
-
-        this.socket.on('user-disconnected', userId => {
-          if (this.peers[userId]) this.peers[userId].close()
-          console.log("[CONN] User disconnected: " + userId);
-          this.removeVideoStream(userId);
-          this.userLeaveEvent.next(userId);
-        })
-
-        this.peer.on('connection', conn => {
-          console.log("[CONN DATA IN] Incoming data connection with " + conn.peer);
-          this.makeStatusConnection(conn.peer);
-          conn.on('open', () => {
-            this.broadcastMyStatus();
-            this.sendMySelfData(conn.peer);
-            // Receive messages
-            conn.on('data', data => {
-              console.log('[CONN DATA IN] Received', data);
-              try {
-                console.log(data);
-                if(data !== null) {
-                  switch(data[0]) {
-                    case "status":
-                      this.statusChanged.next([conn.peer, data[1]]);
-                    break;
-                    case "chatMessage":
-                      this.receiveMessage.next([conn.peer, data[1]]);
-                    break;
-                    case "self-data":
-                      this.userDataIncoming.next([conn.peer, data[1]]);
-                      this.sendMySelfData(conn.peer, true);
-                    break;
-                    case "self-data-answer":
-                      this.userDataIncoming.next([conn.peer, data[1]]);
-                    break;
-                    default:
-                      console.error("[CONN] Unknown received data type:" + data);
-                    break;
-                  }
-                    
-                }
-                return true;
-              } catch (e) {
-                  console.error(e);
-                  return false;
-              }
-            });
-          
-          });
-        });
+    if(userMediaQuery.audio == false && userMediaQuery.video == false) {
+      console.log("[CONN] No video and audio permission. Joining only as spectator.");
+      this.setUpConnections(null, true);
+    }else {
+      console.log("[CONN] Got video and audio permission. Joining...");
+      navigator.mediaDevices.getUserMedia(userMediaQuery).then(stream => {
+        this.setUpConnections(stream, false);
       });
+    }
   }
 
+  private setUpConnections(stream:MediaStream = null, spectator = false) {
+    this.selfStreamProvider = new MediaStreamProvider(stream);
+    this.selfStream = this.selfStreamProvider.getStream();
+
+
+    if(!spectator){
+      this.selfStreamProvider.measureMicLevel();
+      this.selfStreamProvider.isSpeaking.subscribe(talkState => {
+        if(talkState) {
+          console.log("[CONN MIC] Speaking");
+          
+        }else {
+          console.log("[CONN MIC] Not speaking");
+        }
+        this.updateSpeakingStateStatus(talkState);
+      })
+    }
+
+
+    this.incomingStreamEvent.next([this.clientId, this.selfStreamProvider]);
+
+    this.addVideoStream(this.selfStream, this.clientId);
+    
+    //Other useres connecting to me when I join the room.
+    this.peer.on('call', call => {
+      let opts = call.options;
+      console.log("[CONN] Call options: ");
+      console.log(opts);
+      let caller = opts.metadata.caller;
+      console.log("[CONN] Incoming call... answering...");
+      call.answer(this.selfStream);
+      call.on('stream', userVideoStream => {
+        console.log("[CONN] Sending my own stream...");
+        this.addVideoStream(userVideoStream, caller.id)
+        let mediaStreamProvider = new MediaStreamProvider(userVideoStream);
+        this.incomingStreamEvent.next([caller.id, mediaStreamProvider]);
+      })
+    });
+
+    this.socket.emit('join-room', "asd", this.clientId)
+    console.log("[CONN] Joining room: " + "asd");
+    console.log("[CONN] My id is: " + this.clientId);
+
+    this.socket.on('user-connected', userId => {
+      this.connectToNewUser(userId, this.selfStream)
+      console.log("[CONN] New user connected to the room: " + userId);
+      this.userJoinEvent.next(userId);
+    })
+
+    this.socket.on('user-disconnected', userId => {
+      if (this.peers[userId]) this.peers[userId].close()
+      console.log("[CONN] User disconnected: " + userId);
+      this.removeVideoStream(userId);
+      this.userLeaveEvent.next(userId);
+    })
+
+    this.peer.on('connection', conn => {
+      console.log("[CONN DATA IN] Incoming data connection with " + conn.peer);
+      this.makeStatusConnection(conn.peer);
+      conn.on('open', () => {
+        this.broadcastMyStatus();
+        this.sendMySelfData(conn.peer);
+        // Receive messages
+        conn.on('data', data => {
+          console.log('[CONN DATA IN] Received', data);
+          try {
+            console.log(data);
+            if(data !== null) {
+              switch(data[0]) {
+                case "status":
+                  this.statusChanged.next([conn.peer, data[1]]);
+                break;
+                case "chatMessage":
+                  this.receiveMessage.next([conn.peer, data[1]]);
+                break;
+                case "self-data":
+                  this.userDataIncoming.next([conn.peer, data[1]]);
+                  this.sendMySelfData(conn.peer, true);
+                break;
+                case "self-data-answer":
+                  this.userDataIncoming.next([conn.peer, data[1]]);
+                break;
+                default:
+                  console.error("[CONN] Unknown received data type:" + data);
+                break;
+              }
+                
+            }
+            return true;
+          } catch (e) {
+              console.error(e);
+              return false;
+          }
+        });
+      
+      });
+    });
+  }
   public addVideoStream(stream: MediaStream, id:string) {
     console.log("[CONN] Adding video stream: " + id);
     this.streams[id] = stream;

@@ -24,10 +24,13 @@ export class WelcomeDialogComponent implements OnInit {
   public selectedVideoDevice:string;
   public selectedAudioDevice:string;
 
+
   public selectedAudioDeviceMediaStreamProvider:MediaStreamProvider;
   public selectedAudioDeviceLevel:number;
 
   public selectedVideoChanged:EventEmitter<string> = new EventEmitter<string>();
+
+  public selectedVideoDeviceMediaStreamProvider:MediaStreamProvider;
 
   @ViewChild('video') videoElement:ElementRef;
   @Output() enteredName = new EventEmitter<string>();
@@ -39,8 +42,8 @@ export class WelcomeDialogComponent implements OnInit {
       this.selectedAudioDevice = d[0]?.deviceId;
       this.selectedVideoDevice = d[1]?.deviceId;
 
-      this.changeAudioInputDevice(d[0]);
-      this.changeVideoInputDevice(d[1]);
+      this.changeAudioInputDevice(d[0].deviceId);
+      this.changeVideoInputDevice(d[1].deviceId);
       
     });
     this.audioDeviceList = _localInputProviderService.audioInputs;
@@ -60,25 +63,55 @@ export class WelcomeDialogComponent implements OnInit {
     this.deviceConfig.emit(this._localInputProviderService);
   }
 
-  changeVideoInputDevice(device:MediaDeviceInfo) {
-    this._localInputProviderService.saveUsedDevices(device.deviceId, this.selectedAudioDevice);
-    this._localInputProviderService.getVideo(device.deviceId).then(streamProvider => {
+  public changeAudioEnabledStatus(status:boolean) {
+    this.audioEnabled = status;
+    this._localInputProviderService.micEnabled = status;
+    if(status) {
+      this.changeAudioInputDevice(this.selectedAudioDevice);
+    }else {
+      if(this.selectedAudioDeviceMediaStreamProvider) {
+        this.selectedAudioDeviceMediaStreamProvider.dispose()
+        this.selectedAudioDeviceMediaStreamProvider = null;
+      }
+    }
+  }
+  public changeVideoEnabledStatus(status:boolean) {
+    this.videoEnabled = status;
+    this._localInputProviderService.videoEnabled = status;
+    if(status) {
+      this.changeVideoInputDevice(this.selectedVideoDevice);
+    }else {
+      if(this.selectedVideoDeviceMediaStreamProvider) {
+        this.selectedVideoDeviceMediaStreamProvider.dispose();
+        this.selectedVideoDeviceMediaStreamProvider= null;
+      }
+    }
+  }
+  changeVideoInputDevice(deviceId:string) {
+    this._localInputProviderService.saveUsedDevices(deviceId, this.selectedAudioDevice);
+    
+    this._localInputProviderService.getVideo(deviceId).then(streamProvider => {
+      if(this.selectedAudioDeviceMediaStreamProvider != null) {
+        this.selectedAudioDeviceMediaStreamProvider.dispose();
+        this.selectedAudioDeviceMediaStreamProvider = null;
+      }
+
+      this.selectedVideoDeviceMediaStreamProvider = streamProvider;
       this.videoElement.nativeElement.srcObject = streamProvider.getStream();
       this.videoElement.nativeElement.addEventListener('loadedmetadata', () => {
         this.videoElement.nativeElement.play()
       })
     });
   }
-  changeAudioInputDevice(device:MediaDeviceInfo) {
-    this._localInputProviderService.saveUsedDevices(this.selectedVideoDevice, device.deviceId);
+  changeAudioInputDevice(deviceId) {
+    this._localInputProviderService.saveUsedDevices(this.selectedVideoDevice, deviceId);
     if(this.selectedAudioDeviceMediaStreamProvider != null) {
       
       this.selectedAudioDeviceMediaStreamProvider.dispose();
       this.selectedAudioDeviceMediaStreamProvider = null;
     }
-    let s = this._localInputProviderService.getAudio(device.deviceId).then((s) => {
+    let s = this._localInputProviderService.getAudio(deviceId).then((s) => {
       this.selectedAudioDeviceMediaStreamProvider = s;
-      console.log(device.deviceId)
       s.measureMicLevel(200, true);
       s.opt_audiolevel.subscribe(l => {
         let level = 80 - (-l);
