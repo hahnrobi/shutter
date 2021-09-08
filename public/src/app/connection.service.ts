@@ -10,6 +10,8 @@ import {io} from 'socket.io-client';
 import { ReplaySubject } from 'rxjs';
 import { convertPropertyBindingBuiltins } from '@angular/compiler/src/compiler_util/expression_converter';
 import { Local } from 'protractor/built/driverProviders';
+import { User } from './room/user/user';
+import { send } from 'process';
 
 declare var Peer:any;
 @Injectable({
@@ -32,8 +34,8 @@ export class ConnectionService {
 
   public selfDataProvier:ISelfDataProvider;
 
-  public userJoinEvent:ReplaySubject<any> = new ReplaySubject<any>(1);
-  public userLeaveEvent:ReplaySubject<any> = new ReplaySubject<any>(1);
+  public userJoinEvent:ReplaySubject<User> = new ReplaySubject<User>(1);
+  public userLeaveEvent:ReplaySubject<string> = new ReplaySubject<string>(1);
   public incomingStreamEvent:ReplaySubject<[string, MediaStreamProvider]> = new ReplaySubject<[string, MediaStreamProvider]>(1);
   public statusChanged:ReplaySubject<[string, UserStatus]> = new ReplaySubject<[string, UserStatus]>(1);
   public receiveMessage:ReplaySubject<[string, ChatMessage]> = new ReplaySubject<[string, ChatMessage]>(1);
@@ -53,9 +55,18 @@ export class ConnectionService {
       console.log("[CONN] MY PEERJS ID IS: " +id);
       this.clientId = id;
       this.currentStatus.clientId = id;
-      this.userJoinEvent.next(id);
+
+      let userData = this.getMyDataForPreSending();
+      this.userJoinEvent.next(userData);
       this.init(inputService);
     })
+  }
+  private getMyDataForPreSending() {
+    let sendingData = new User();
+    sendingData.clientId = this.clientId;
+    sendingData.name = this.selfDataProvier.getName();
+    sendingData.status = this.currentStatus;
+    return sendingData;
   }
   private init(localInputProvider:LocalInputProviderService = null) {
     this.socket = io("/");
@@ -137,17 +148,23 @@ export class ConnectionService {
       })
     });
 
-    this.socket.emit('join-room', "asd", this.clientId)
-    console.log("[CONN] Joining room: " + "asd");
-    console.log("[CONN] My id is: " + this.clientId);
+    let myData = this.getMyDataForPreSending();
+    console.log(myData);
 
-    this.socket.on('user-connected', userId => {
-      this.connectToNewUser(userId, this.selfStream)
-      console.log("[CONN] New user connected to the room: " + userId);
-      this.userJoinEvent.next(userId);
+    this.socket.emit('join-room', "asd", myData);
+    console.log("[CONN] Joining room: " + "asd");
+    console.log("[CONN] My id is: " + myData.clientId);
+    console.log("[CONN] My own details initially sent: ", myData);
+
+
+    this.socket.on('user-connected', (userData:User) => {
+      this.connectToNewUser(userData.clientId, this.selfStream)
+      console.log("[CONN] New user connected to the room: " + userData.clientId, userData);
+      this.userJoinEvent.next(userData);
     })
 
-    this.socket.on('user-disconnected', userId => {
+    this.socket.on('user-disconnected', user => {
+      let userId = user?.clientId;
       if (this.peers[userId]) this.peers[userId].close()
       console.log("[CONN] User disconnected: " + userId);
       this.removeVideoStream(userId);
@@ -233,9 +250,18 @@ export class ConnectionService {
       this.sendMySelfData(userId);
     }
   }
+  public updateVideoMuteStatus(muted:boolean = true) {
+    console.log("[CONN STATUS] Video status updated: " + muted);
+    this.currentStatus.isVideoOff = muted;
+    this.statusChanged.next([this.clientId, this.currentStatus]);
+    this.broadcastMyStatus();
+  }
   public updateMicMuteStatus(muted:boolean = true) {
     console.log("[CONN STATUS] Mic status updated: " + muted);
     this.currentStatus.isMuted = muted;
+    if(muted) {
+      this.currentStatus.isSpeaking = false;
+    }
     this.statusChanged.next([this.clientId, this.currentStatus]);
     this.broadcastMyStatus();
   }

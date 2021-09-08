@@ -43,9 +43,11 @@ export class RoomComponent implements OnInit {
 
   public turnOffMyWebcam() {
     this._connectionService.selfStreamProvider?.turnOffCamera();
+    this._connectionService.updateVideoMuteStatus(true);
   }
   public turnOnMyWebcam() {
     this._connectionService.selfStreamProvider?.turnOnCamera();
+    this._connectionService.updateVideoMuteStatus(false);
   }
   public isMyWebcamOn() {
     return this._connectionService.selfStreamProvider?.isWebcamOn();

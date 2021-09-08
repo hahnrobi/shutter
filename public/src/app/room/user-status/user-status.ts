@@ -5,8 +5,8 @@ export class UserStatus {
 	public isVideoOff:boolean;
 	public isSpeaking:boolean;
 	constructor() {
-		this.isMuted = true;
-		this.isVideoOff = true;
+		this.isMuted = false;
+		this.isVideoOff = false;
 		this.isSpeaking = false;
 	}
 }

@@ -4,4 +4,31 @@
 .user-item {
 	padding: 5px;
 	padding-left: 15px;
+	position: relative;
+}
+.statusContainer {
+	position: absolute;
+	top: 0;
+	right: 0;
+	display: flex;
+	align-items: center;
+	flex-wrap: nowrap;
+	align-content: flex-start;
+	flex-direction: row;
+	height: 100%;
+	padding-left: 5px;
+
+}
+.hide_name {
+	&:before {
+		content: "";
+		display: block;
+		background: linear-gradient(67deg, rgba(34,43,69,0) 0%, rgba(34,43,69,1) 100%);
+		position: absolute;
+		left: -10px;
+		top: 0;
+		width: 10px;
+		height: 100%;
+	}
+	background: rgb(34,43,69);
 }

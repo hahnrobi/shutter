@@ -1,9 +1,6 @@
-<nb-layout >
-	<nb-layout-column>
 		<h1>Welcome to this Shutter room!</h1>
 		<p>Please fill in your name in order to enter the room.</p>
-		<input type="text" nbInput [(ngModel)]="inputNameText" placeholder="Your nickname" /></nb-layout-column>
-	<nb-layout-column>
+		<input type="text" nbInput [(ngModel)]="inputNameText" placeholder="Your nickname" />
 		<nb-icon icon="video-outline"></nb-icon>
 		<nb-toggle status="basic" [disabled]="!this.videoAllowed" [(checked)]="this.videoEnabled" (checkedChange)="this.changeVideoEnabledStatus($event)">Video input</nb-toggle>
 		<!--<nb-icon *ngIf="this.videoAllowed" icon="checkmark-circle-2-outline" status="success" nbTooltip="Access granted to use webcam." nbTooltipStatus="basic"></nb-icon>
@@ -38,7 +35,5 @@
 
 			</div>
 		</div>
-	</nb-layout-column>
-</nb-layout>
 
 <button nbButton (click)="this.saveName()">Join room</button>

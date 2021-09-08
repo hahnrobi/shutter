@@ -24,10 +24,16 @@ export class RoomManagerService {
     this._userManagerService.setSelfDataProvider(this.selfDataProvider);
     
     console.log("%c[ROOM-MANAGER] ROOM MANAGER INIT", 'color: blue');
-    this._connectionService.userJoinEvent.subscribe(value => {
-      console.log("%c[ROOM-MANAGER] User joined: " + value, "color: green");
-      this._userManagerService.addNewUser(value, value==this._connectionService.clientId);
-      this._chatManagerService.broadcastMessage("User joined to room.");
+    this._connectionService.userJoinEvent.subscribe(user => {
+      console.log("%c[ROOM-MANAGER] User joined: " + user.clientId, "color: green");
+      this._userManagerService.addNewUserByObject(user, user.clientId==this._connectionService.clientId);
+      //this._chatManagerService.broadcastMessage(user.name + " joined to room.");
+      if(user.clientId!==this._connectionService.clientId) {
+        this.toastrService.show(
+          `Welcome ${ user.name } in the room.`,
+          `${ user.name } joined.`,
+          {limit: 3, position: NbGlobalLogicalPosition.BOTTOM_START, status: "success"});
+      }
     });
     this._connectionService.userLeaveEvent.subscribe(value => {
       console.log("%c[ROOM-MANAGER] User left: " + value, "color: orange");

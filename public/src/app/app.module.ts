@@ -18,6 +18,7 @@ import { ChatDisplayComponent } from './room/chat/chat-display/chat-display.comp
 import { FormsModule } from '@angular/forms';
 import { WelcomeDialogComponent } from './room/welcome-dialog/welcome-dialog.component';
 import { UserListComponent } from './room/user-list/user-list.component';
+import { OverlayContainer } from '@angular/cdk/overlay';
 
 
 @NgModule({
@@ -50,7 +51,7 @@ import { UserListComponent } from './room/user-list/user-list.component';
     NbToastrModule.forRoot(),
     NbMenuModule.forRoot()
   ],
-  providers: [ConnectionService, UserManagerService, RoomManagerService, NbMenuService, LocalInputProviderService],
+  providers: [ConnectionService, UserManagerService, RoomManagerService, NbMenuService, LocalInputProviderService ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -1,9 +1,15 @@
-<video #video [ngStyle]="this.videoSizing === 'contain' && {'object-fit': 'contain'}"></video>
+<video #video
+	[ngStyle]="this.videoSizing === 'contain' && {'object-fit': 'contain'}"
+	[ngStyle]="this.user?.status?.isVideoOff && {'display': 'none'}"
+	></video>
+<div class="novideo" [ngStyle]="(!this.user?.status?.isVideoOff) && {'display': 'block'}">
+	<span class="name">{{this.user?.name}}</span>
+</div>
 <button class="moreButton" [nbContextMenu]="this.contextMenuItems" nbContextMenuTag="videoframe-{{ this.user.clientId }}">
 	<fa-icon [icon]="faEllipsisH"></fa-icon>
 </button>
 
-<div class="nameWrapper"><div class="nameContainer">{{this.user?.name}}<span *ngIf="this.user?.isMe"> (you)</span></div></div>
+<div class="nameWrapper" [ngStyle]="this.user?.status?.isVideoOff && {'display': 'none'}"><div class="nameContainer">{{this.user?.name}}<span *ngIf="this.user?.isMe"> (you)</span></div></div>
 <div class="statusIcons">
 	<fa-icon *ngIf="this.user?.status?.isMuted" [icon]="faMicrophoneSlash" nbTooltip="User muted themselves" nbTooltipStatus="basic" nbTooltipPlacement="top" status="basic" class="muted-icon"></fa-icon>
 	<fa-icon *ngIf="this.user?.locallyMuted" [icon]="faUserSlash" class="muted-icon" nbTooltip="User is locally muted." nbTooltipStatus="basic" nbTooltipPlacement="top" status="basic"></fa-icon>

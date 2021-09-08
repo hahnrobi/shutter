@@ -18,7 +18,7 @@ export class UserManagerService {
   constructor() {
 
   }
-  public addNewUser(clientId:string, self:boolean = false) {
+  public addNewUserByClientId(clientId:string, self:boolean = false) {
     let u = new User();
     u.clientId = clientId;
     u.isMe=self;
@@ -28,6 +28,20 @@ export class UserManagerService {
       u.name = this.myName;
     }
     console.log(this.users);
+  }
+  public addNewUserByObject(user:User, self:boolean = false) {
+    let u = new User();
+    u.clientId = user.clientId;
+    u.name = user.name;
+    u.isMe = self;
+    u.status = user.status
+    u.spectator = user.spectator;
+    this.users[user.clientId] = u;
+    this.me = user.clientId;
+    if(self) {
+      u.name = this.myName;
+    }
+
   }
   public removeUser(clientId:string) {
     delete this.users[clientId];
