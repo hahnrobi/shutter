@@ -2,7 +2,7 @@
 	[ngStyle]="this.videoSizing === 'contain' && {'object-fit': 'contain'}"
 	[ngStyle]="this.user?.status?.isVideoOff && {'display': 'none'}"
 	></video>
-<div class="novideo" [ngStyle]="(!this.user?.status?.isVideoOff) && {'display': 'block'}">
+<div class="novideo" [ngStyle]="(!this.user?.status?.isVideoOff) && {'display': 'none'}">
 	<span class="name">{{this.user?.name}}</span>
 </div>
 <button class="moreButton" [nbContextMenu]="this.contextMenuItems" nbContextMenuTag="videoframe-{{ this.user.clientId }}">

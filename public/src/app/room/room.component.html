@@ -4,18 +4,11 @@
     </app-welcome-dialog>
 </div>
 <div class="room-container" *ngIf="this.isUserInitialized">
-    <div *ngIf="this.view == 'gallery'"class="videoGridContainer">
-        <div #videoGrid class="videoGrid">
-            <div #videoFrame *ngFor="let u of users | keyvalue" @fadeIn class="videoContainer" [class.speaking]="u.value?.status?.isSpeaking">
-
-                <app-videoelement style="object-fit: cover;
-                overflow: hidden;
-                border-radius: 3px" *ngIf="u.value?.mediaStreamProvider?.stream != null && u.value?.mediaStreamProvider?.stream != undefined" [user]=u.value></app-videoelement>
-            </div>
+    <div style="width: 100%; height: 100%; position: relative">
+            <room-layout-gallery *ngIf="this.view == 'gallery'" [users]="this.users"></room-layout-gallery>
+        <div *ngIf="this.view == 'spotlight'">
+            <room-layout-spotlight *ngIf="this.view == 'spotlight'" [users]="this.users"></room-layout-spotlight>
         </div>
-    </div>
-    <div *ngIf="this.view == 'spotlight'"class="videoGridContainer">
-        spotlight
     </div>
     <div class="meetingControlsContainer">
     <button nbButton aria-label="Unmute microphone" *ngIf="this.isMyAudioMuted() == true" (click)="this.unMuteMyAudio()"><fa-icon [icon]="faMicrophoneSlash"></fa-icon></button>
@@ -23,12 +16,12 @@
 
     <button [hidden]="!this.isMyWebcamOn()" (click)="this.turnOnMyWebcam()">Turn Camera On</button>
     <button [hidden]="this.isMyWebcamOn()" (click)="this.turnOffMyWebcam()">Turn Camera off</button>
-    <button (click)="this.testAddVideoBox()">Add</button>
-    <button (click)="this.testResize()">resize</button>
+    <!--<button (click)="this.testAddVideoBox()">Add</button>
+    <button (click)="this.testResize()">resize</button>-->
     </div>
     <div class="sidebar">
         <div class="sidebar-item view-container">
-            <app-view-selector [view]="view" (viewChanged)="this.viewChange($event)"></app-view-selector>
+            <room-layout-selector [view]="view" (viewChanged)="this.viewChange($event)"></room-layout-selector>
         </div>
         <div class="sidebar-item user-list-container">
             <app-user-list></app-user-list>

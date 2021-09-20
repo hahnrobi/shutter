@@ -11,9 +11,11 @@ export class LastSpeakersService {
   private _speakerList:string[] = [];
   private _connectionService:ConnectionService;
   public speakersList:ReplaySubject<string[]>;
+  public latestSpeaker:ReplaySubject<string>;
 
   constructor(_connectionService:ConnectionService) {
     this.speakersList = new ReplaySubject<string[]>();
+    this.latestSpeaker = new ReplaySubject<string>();
     this._connectionService = _connectionService;
     
   }
@@ -32,6 +34,7 @@ export class LastSpeakersService {
     if(status) {
         this._speakerList[clientId] = clientId;
         this.speakersList.next(this._speakerList);
+        this.latestSpeaker.next(clientId);
     }else {
         delete this._speakerList[clientId];
         this.speakersList.next(this._speakerList);

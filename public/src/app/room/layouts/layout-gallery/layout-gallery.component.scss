@@ -1,0 +1,34 @@
+.videoGridContainer, :host {
+	position: relative;
+	width: 100%;
+	height: 100%;
+}
+.videoGrid {
+	display: flex;
+	align-content: center;
+	flex-wrap: wrap;
+	align-items: center;
+	justify-content: center;
+	vertical-align: middle;
+	position: absolute;
+	left: 0px;
+	bottom: 0px;
+	top: 0px;
+	right: 0px;
+	.videoContainer {
+		border-radius: 3px;
+		object-fit: cover;
+		background: #283048;
+		transition: .2s box-shadow;
+
+		position: relative;
+        vertical-align: middle;
+        align-self: center;
+        border-radius: 10px;
+        overflow: hidden;
+        display: inline-block;
+	}
+}
+.speaking {
+	box-shadow: 0 0 0 3pt #00d68f;
+}

@@ -1,20 +1,20 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { ViewGalleryComponent } from './view-gallery.component';
+import { LayoutSpotlightComponent } from './layout-spotlight.component';
 
-describe('ViewGalleryComponent', () => {
-  let component: ViewGalleryComponent;
-  let fixture: ComponentFixture<ViewGalleryComponent>;
+describe('LayoutSpotlightComponent', () => {
+  let component: LayoutSpotlightComponent;
+  let fixture: ComponentFixture<LayoutSpotlightComponent>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
-      declarations: [ ViewGalleryComponent ]
+      declarations: [ LayoutSpotlightComponent ]
     })
     .compileComponents();
   });
 
   beforeEach(() => {
-    fixture = TestBed.createComponent(ViewGalleryComponent);
+    fixture = TestBed.createComponent(LayoutSpotlightComponent);
     component = fixture.componentInstance;
     fixture.detectChanges();
   });

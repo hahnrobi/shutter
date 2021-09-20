@@ -1,0 +1,8 @@
+<div *ngFor="let u of users | keyvalue" class="videoContainer">
+adwad
+	<app-videoelement
+	[ngClass]="{'speaking': this.latestSpeaker === u.value?.clientId}"
+	style="object-fit: cover;
+	overflow: hidden;
+	border-radius: 3px" class="video-item" *ngIf="u.value?.mediaStreamProvider?.stream != null && u.value?.mediaStreamProvider?.stream != undefined" [user]=u.value></app-videoelement>
+</div>

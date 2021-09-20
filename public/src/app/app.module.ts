@@ -20,9 +20,9 @@ import { FormsModule } from '@angular/forms';
 import { WelcomeDialogComponent } from './room/welcome-dialog/welcome-dialog.component';
 import { UserListComponent } from './room/user-list/user-list.component';
 import { OverlayContainer } from '@angular/cdk/overlay';
-import { ViewSelectorComponent } from './room/view-selector/view-selector.component';
-import { ViewGalleryComponent } from './room/view-gallery/view-gallery.component';
-import { ViewSpotlightComponent } from './room/view-spotlight/view-spotlight.component';
+import { LayoutSelectorComponent } from './room/layout-selector/layout-selector.component';
+import { LayoutGalleryComponent } from './room/layouts/layout-gallery/layout-gallery.component';
+import { LayoutSpotlightComponent } from './room/layouts/layout-spotlight/layout-spotlight.component';
 
 
 @NgModule({
@@ -33,9 +33,9 @@ import { ViewSpotlightComponent } from './room/view-spotlight/view-spotlight.com
     ChatDisplayComponent,
     WelcomeDialogComponent,
     UserListComponent,
-    ViewSelectorComponent,
-    ViewGalleryComponent,
-    ViewSpotlightComponent,
+    LayoutSelectorComponent,
+    LayoutGalleryComponent,
+    LayoutSpotlightComponent,
     ],
   imports: [
     BrowserModule,
