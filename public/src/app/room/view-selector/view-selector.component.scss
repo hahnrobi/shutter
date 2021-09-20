@@ -1,0 +1,17 @@
+:host {
+	display: flex;
+	flex-direction: row;
+	justify-content: center;
+}
+button {
+	width: 50%;
+	&:focus {
+		box-shadow: none !important;
+	}
+}
+.inactive {
+	background: #394056 !important;
+    border: 1px solid #21273a !important;
+    color: #a9a9a9 !important;
+
+}

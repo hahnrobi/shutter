@@ -1,3 +1,4 @@
+import { LastSpeakersService } from './last-speakers.service';
 import { LocalInputProviderService } from './local-input-provider.service';
 import { ISelfDataProvider } from './room/userdata/iself-data-provider';
 import { SelfDataLocalStorageProvider } from './room/userdata/selfdata/self-data-local-storage-provider';
@@ -18,7 +19,7 @@ export class RoomManagerService {
   selfDataProvider:ISelfDataProvider;
 
 
-  constructor(private _connectionService:ConnectionService, private _userManagerService:UserManagerService, private _chatManagerService:ChatManagerService, private toastrService: NbToastrService) {
+  constructor(private _connectionService:ConnectionService, private _userManagerService:UserManagerService, private _chatManagerService:ChatManagerService, private _lastSpeakersService:LastSpeakersService, private toastrService: NbToastrService) {
     this.selfDataProvider = new SelfDataLocalStorageProvider();
     this._connectionService.selfDataProvier = this.selfDataProvider;
     this._userManagerService.setSelfDataProvider(this.selfDataProvider);
@@ -84,6 +85,15 @@ export class RoomManagerService {
         console.error("[ROOM-MANAGER] Unknown user");
       }
 
+    })
+
+    this._connectionService.initDone.subscribe((v) => {
+      if(v) {
+        this._lastSpeakersService.init();
+      }
+    })
+    this._lastSpeakersService.speakersList.subscribe(speakers => {
+      console.log("Speaking speakers: ", speakers);
     })
 
 

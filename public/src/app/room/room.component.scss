@@ -4,6 +4,9 @@
 	flex-wrap: nowrap;
 	height: 100%;
 	width: 100%;
+	position: relative;
+}
+.viewChangeButton {
 }
 .sidebar {
 	width: 300px;
@@ -16,11 +19,17 @@
     align-items: stretch;
 	position: relative;
 }
-.user-list-container, .chat-container {
-	min-height: 50%;
+.sidebar-item {
 	background: #222B45;
 	margin-top: 5px;
 	margin-bottom: 5px;
+}
+.view-container {
+
+}
+.user-list-container, .chat-container{
+	min-height: calc(50% - 20px);
+	
 }
 .videoGridContainer {
 	position: relative;
@@ -50,7 +59,6 @@
         border-radius: 10px;
         overflow: hidden;
         display: inline-block;
-        box-shadow: 0px 12px 22px rgba(0, 0, 0, 0.4);
 	}
 }
 .meetingControlsContainer {

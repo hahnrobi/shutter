@@ -1,3 +1,4 @@
+import { LastSpeakersService } from './last-speakers.service';
 import { LocalInputProviderService } from './local-input-provider.service';
 import { BrowserModule } from '@angular/platform-browser';
 import { NgModule } from '@angular/core';
@@ -19,6 +20,9 @@ import { FormsModule } from '@angular/forms';
 import { WelcomeDialogComponent } from './room/welcome-dialog/welcome-dialog.component';
 import { UserListComponent } from './room/user-list/user-list.component';
 import { OverlayContainer } from '@angular/cdk/overlay';
+import { ViewSelectorComponent } from './room/view-selector/view-selector.component';
+import { ViewGalleryComponent } from './room/view-gallery/view-gallery.component';
+import { ViewSpotlightComponent } from './room/view-spotlight/view-spotlight.component';
 
 
 @NgModule({
@@ -29,6 +33,9 @@ import { OverlayContainer } from '@angular/cdk/overlay';
     ChatDisplayComponent,
     WelcomeDialogComponent,
     UserListComponent,
+    ViewSelectorComponent,
+    ViewGalleryComponent,
+    ViewSpotlightComponent,
     ],
   imports: [
     BrowserModule,
@@ -51,7 +58,7 @@ import { OverlayContainer } from '@angular/cdk/overlay';
     NbToastrModule.forRoot(),
     NbMenuModule.forRoot()
   ],
-  providers: [ConnectionService, UserManagerService, RoomManagerService, NbMenuService, LocalInputProviderService ],
+  providers: [ConnectionService, UserManagerService, RoomManagerService, NbMenuService, LocalInputProviderService, LastSpeakersService ],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

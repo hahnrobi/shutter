@@ -27,9 +27,13 @@ export class RoomComponent implements OnInit {
   @Output() mutedAudioEvent = new EventEmitter<boolean>();
   @HostListener('window:resize', ['$event'])
   onResize(event) {
-    this.resizeVideoFrames()
+    if(this.view === "gallery") {
+      this.resizeVideoFrames()
+    }
   }
   public users = [];
+  public view:"gallery"|"spotlight" = "gallery";
+
   private iterableDiffer : any;
   private subs: Subscription[] = []
 
@@ -38,24 +42,37 @@ export class RoomComponent implements OnInit {
   faMicrophone = faMicrophone;
   faMicrophoneSlash = faMicrophoneSlash;
 
+  viewChangeMenuItems = [
+    { title: 'Gallery', icon: "camera-outline", target: "galleryView" },
+    { title: 'Spotlight', icon: "crop-outline", target: "spotlightView" }];
+
   constructor(private _roomManagerSerivce:RoomManagerService, private _connectionService:ConnectionService, private iterableDiffers: IterableDiffers) {
     this.iterableDiffer = iterableDiffers.find([]).create(null);
   }
 
   ngDoCheck() {
-    let changes = this.iterableDiffer.diff(this.users);
-    if (changes) {
-      this.resizeVideoFrames();
-    }
+    if(this.view === "gallery") {
+      let changes = this.iterableDiffer.diff(this.users);
+      if (changes) {
+        this.resizeVideoFrames();
+      }
 
-    changes = this.iterableDiffer.diff(this.videoGrid?.nativeElement?.childNodes);
-    if (changes) {
-      this.resizeVideoFrames();
+      changes = this.iterableDiffer.diff(this.videoGrid?.nativeElement?.childNodes);
+      if (changes) {
+        this.resizeVideoFrames();
+      }
     }
   }
   ngOnInit(): void {
     const sub = this._roomManagerSerivce.getUsers().subscribe(data => {this.users = data});
     this.subs.push(sub);
+  }
+
+  public viewChange(view) {
+    console.log("view changed: ", view);
+    if(view === "gallery" || view === "spotlight") {
+      this.view = view;
+    }
   }
 
   public muteMyAudio() {

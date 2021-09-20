@@ -5,7 +5,7 @@ import { ChatMessage } from './room/chat/chat-message';
 import { UserStatus } from './room/user-status/user-status';
 import { MediaStreamProvider } from './room/mediastreamprovider';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, of } from 'rxjs';
+import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
 import {io} from 'socket.io-client';
 import { ReplaySubject } from 'rxjs';
 import { convertPropertyBindingBuiltins } from '@angular/compiler/src/compiler_util/expression_converter';
@@ -24,8 +24,9 @@ export class ConnectionService {
   private dataConnections:any[] = [];
   public currentStatus:UserStatus = new UserStatus();
 
+  public selfStreamProvider:MediaStreamProvider = new MediaStreamProvider(null);
 
-  public selfStreamProvider:MediaStreamProvider;
+  public initDone:BehaviorSubject<boolean>;
 
   public peers = [];
   public clientId:string;
@@ -42,7 +43,7 @@ export class ConnectionService {
   public userDataIncoming:ReplaySubject<[string, SelfDataTransfer]> = new ReplaySubject<[string, SelfDataTransfer]>(1);
 
   constructor() {
-
+    this.initDone = new BehaviorSubject<boolean>(false);
   }
   public startConnection(inputService:LocalInputProviderService = null) {
     const myPeer = new Peer(undefined, {
@@ -107,10 +108,11 @@ export class ConnectionService {
         this.setUpConnections(stream, false);
       });
     }
+    this.initDone.next(true); //init done.
   }
 
   private setUpConnections(stream:MediaStream = null, spectator = false) {
-    this.selfStreamProvider = new MediaStreamProvider(stream);
+    this.selfStreamProvider.setMediaStream(stream);
     this.selfStream = this.selfStreamProvider.getStream();
 
 

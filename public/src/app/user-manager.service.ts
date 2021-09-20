@@ -57,7 +57,7 @@ export class UserManagerService {
     user.mediaStreamProvider = streamProvider;
   }
   public updateStatus(clientId:string, status:UserStatus) {
-    let user = this.users[clientId];
+    let user:User = this.users[clientId];
     if(user) {
       user.status = status;
     }

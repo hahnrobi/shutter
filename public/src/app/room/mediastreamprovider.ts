@@ -15,6 +15,9 @@ export class MediaStreamProvider {
 		this.stream = _stream;
 		this.opt_audiolevel = new Subject<number>();
 	}
+	public setMediaStream(_stream:MediaStream) {
+		this.stream = _stream;
+	}
 	private setAudioTracksEnabled(state:boolean):void {
 		if(this.stream) {
 			let tracks = this.stream.getAudioTracks();
