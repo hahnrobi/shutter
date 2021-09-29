@@ -1,6 +1,7 @@
 import { LastSpeakersService } from './last-speakers.service';
 import { LocalInputProviderService } from './local-input-provider.service';
 import { BrowserModule } from '@angular/platform-browser';
+import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';  
 import { ConnectionService } from './connection.service';
@@ -39,6 +40,7 @@ import { LayoutSpotlightComponent } from './room/layouts/layout-spotlight/layout
     ],
   imports: [
     BrowserModule,
+    HttpClientModule,
     CommonModule,
     AppRoutingModule,
     BrowserAnimationsModule,

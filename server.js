@@ -1,6 +1,10 @@
 const express = require("express");
 const app = express();
 const fs = require('fs');
+const mongoose = require('mongoose')
+
+
+require('dotenv').config();
 
 //const server = require("http").Server(app);
 const server = require('https').Server({
@@ -18,6 +22,7 @@ function getRandomInt(max) {
 
 app.set('view engine', 'ejs');
 app.use(express.static('public'));
+app.use(express.json());
 
 app.get('/', (req, res) => {
 	res.redirect('/'+uuidV4());
@@ -26,6 +31,7 @@ app.get('/', (req, res) => {
 app.get('/:room', (req, res) => {
 	res.render('room', {roomId: req.params.room});
 })
+
 
 io.on('connection', socket => {
 	socket.on('join-room', (roomId, userId) => {
@@ -44,6 +50,33 @@ io.on('connection', socket => {
 
 
 
-server.listen(4430);
+
+
+const jsonErrorHandler = async (err, req, res, next) => {
+	res.status(500).send({ error: err });
+  }
+
+  app.use(jsonErrorHandler)
+
+
+app.use(require('./routes/auth'))
+app.use(require('./routes/rooms'))
+app.use(require('./routes/users'))
+
+const start = async() => {
+	try {
+		await server.listen(4430);
+		mongoose.connect('mongodb://localhost/shutter')
+ 		.then(() => console.log('MongoDB connected…'))
+ 		.catch(err => console.log(err));
+	}
+	catch(err) {
+		console.log("Error: ", err);
+		process.exit(1);
+	}
+}
+
+
+start();
 //server_https.listen(4430);
 

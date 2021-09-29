@@ -18,7 +18,6 @@ import { NbToastrService, NbGlobalLogicalPosition, NbComponentStatus } from '@ne
 export class RoomManagerService {
   selfDataProvider:ISelfDataProvider;
 
-
   constructor(private _connectionService:ConnectionService, private _userManagerService:UserManagerService, private _chatManagerService:ChatManagerService, private _lastSpeakersService:LastSpeakersService, private toastrService: NbToastrService) {
     this.selfDataProvider = new SelfDataLocalStorageProvider();
     this._connectionService.selfDataProvier = this.selfDataProvider;

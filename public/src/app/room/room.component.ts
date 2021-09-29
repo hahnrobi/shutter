@@ -1,3 +1,4 @@
+import { RoomDetailsProviderService } from './../room-details-provider.service';
 import { LocalInputProviderService } from './../local-input-provider.service';
 import { WelcomeDialogComponent } from './welcome-dialog/welcome-dialog.component';
 import { ConnectionService } from './../connection.service';
@@ -19,6 +20,8 @@ export class RoomComponent implements OnInit {
   public users = [];
   public view:"gallery"|"spotlight" = "gallery";
 
+  roomDetailsProviderService:RoomDetailsProviderService;
+
   private iterableDiffer : any;
   private subs: Subscription[] = []
 
@@ -31,8 +34,9 @@ export class RoomComponent implements OnInit {
     { title: 'Gallery', icon: "camera-outline", target: "galleryView" },
     { title: 'Spotlight', icon: "crop-outline", target: "spotlightView" }];
 
-  constructor(private _roomManagerSerivce:RoomManagerService, private _connectionService:ConnectionService, private iterableDiffers: IterableDiffers) {
+  constructor(private _roomDetailsProvider:RoomDetailsProviderService, private _roomManagerSerivce:RoomManagerService, private _connectionService:ConnectionService, private iterableDiffers: IterableDiffers) {
     this.iterableDiffer = iterableDiffers.find([]).create(null);
+    this.roomDetailsProviderService = _roomDetailsProvider;
   }
 
 
