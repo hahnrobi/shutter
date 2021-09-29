@@ -27,6 +27,9 @@ app.use(express.json());
 app.get('/', (req, res) => {
 	res.redirect('/'+uuidV4());
 });
+app.get("/assets/i18n/:file", (req, res) => {
+	res.redirect("/dist/shutter/assets/i18n/"+req.params.file);
+})
 
 app.get('/:room', (req, res) => {
 	res.render('room', {roomId: req.params.room});

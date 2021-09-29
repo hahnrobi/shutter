@@ -1,5 +1,5 @@
 <div class="inner">
-Users in the room
+	{{'Users in the room' | translate}}
 <div *ngFor="let user of users | keyvalue" class="user-item">
 	{{ (user.value?.name.length>18)? (user.value?.name | slice:0:18)+'..':(user.value?.name) }}
 	<div class="statusContainer" [ngClass]="{'hide_name': (user.value?.name.length>15) && (user.value?.status.isMuted || user.value?.status.isVideoOff || user.value?.status.isSpeaking)}">

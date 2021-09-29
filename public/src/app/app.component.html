@@ -2,6 +2,10 @@
 
   <nb-layout-header fixed>
   <!-- Insert header here -->
+  <nb-select placeholder="Select language" [(selected)]="language" >
+    <nb-option value="en" (click)="changeLanguage('en')">English</nb-option>
+    <nb-option value="hu" (click)="changeLanguage('hu')">Magyar</nb-option>
+  </nb-select>
   </nb-layout-header>
 
   <nb-layout-column>

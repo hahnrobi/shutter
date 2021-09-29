@@ -1,8 +1,8 @@
 <button nbButton [ngClass]="{'inactive': this.view != 'gallery'}" (click)="change('gallery')" style="border-top-right-radius: 0; border-bottom-right-radius: 0;">
 	<nb-icon icon="grid-outline"></nb-icon>
-	Gallery
+	{{'Gallery' | translate}}
 </button>
 <button nbButton [ngClass]="{'inactive': this.view != 'spotlight'}" (click)="change('spotlight')" style="border-top-left-radius: 0; border-bottom-left-radius: 0;">
 	<nb-icon icon="person-outline"></nb-icon>
-	Spotlight
+	{{'Spotlight' | translate}}
 </button>

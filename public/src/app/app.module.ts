@@ -1,7 +1,7 @@
 import { LastSpeakersService } from './last-speakers.service';
 import { LocalInputProviderService } from './local-input-provider.service';
 import { BrowserModule } from '@angular/platform-browser';
-import { HttpClientModule } from '@angular/common/http';
+import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';  
 import { ConnectionService } from './connection.service';
@@ -24,7 +24,12 @@ import { OverlayContainer } from '@angular/cdk/overlay';
 import { LayoutSelectorComponent } from './room/layout-selector/layout-selector.component';
 import { LayoutGalleryComponent } from './room/layouts/layout-gallery/layout-gallery.component';
 import { LayoutSpotlightComponent } from './room/layouts/layout-spotlight/layout-spotlight.component';
+import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 
+export function HttpLoaderFactory(http:HttpClient) {
+  return new TranslateHttpLoader(http);
+}
 
 @NgModule({
   declarations: [
@@ -58,7 +63,14 @@ import { LayoutSpotlightComponent } from './room/layouts/layout-spotlight/layout
     NbSelectModule,
     NbDialogModule.forRoot(),
     NbToastrModule.forRoot(),
-    NbMenuModule.forRoot()
+    NbMenuModule.forRoot(),
+    TranslateModule.forRoot({
+      loader: {
+        provide: TranslateLoader,
+        useFactory: HttpLoaderFactory,
+        deps: [HttpClient]
+    }
+    })
   ],
   providers: [ConnectionService, UserManagerService, RoomManagerService, NbMenuService, LocalInputProviderService, LastSpeakersService ],
   bootstrap: [AppComponent]
