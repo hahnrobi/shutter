@@ -104,7 +104,7 @@ export class RoomManagerService {
   public getUsers():Observable<User[]> {
     return this._userManagerService.getUsers();
   }
-  public connectToRoom(roomId:string, service:LocalInputProviderService = null):void {
-    this._connectionService.startConnection(roomId, service);
+  public connectToRoom(roomId:string, service:LocalInputProviderService = null, password?:string):void {
+    this._connectionService.startConnection(roomId, service, password);
   }
 }

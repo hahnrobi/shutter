@@ -17,21 +17,22 @@ export class ChatManagerService {
     return JSON.parse(JSON.stringify(this.messages));
   }
 
-  public addMessage(msg:ChatMessage):Observable<ChatMessage[]> {
+  public addMessage(msg:ChatMessage):ChatMessage[] {
     console.log("[CHAT-MANAGER] Adding message: " + msg.message);
     this.messages.push(msg);
     this.addingMessage.next(msg);
-    return of(this.cloneMessageArray());
+    console.log(this.messages)
+    return this.messages;
   }
   public sendMessage(msg:ChatMessage) {
     console.log("[CHAT-MANAGER] Sending message: " + msg.message);
     this.tryToSendMessage.next(msg);
   }
-  public getMessages() {
-    return of(this.cloneMessageArray());
+  public getMessages():Observable<ChatMessage[]> {
+    return of(this.messages);
   }
   public getMessagesDirect() {
-    return this.cloneMessageArray();
+    return this.messages;
   }
   public broadcastMessage(msg:string) {
     let u = new User();

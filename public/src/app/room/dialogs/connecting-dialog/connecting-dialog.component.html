@@ -1,6 +1,46 @@
-<div *ngIf="this.reply == undefined || this.reply == null">
-	Connecting...
+<div *ngIf="this.connecting">
+
+<div class="animation">
+	<svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="laptop" class="laptop svg-inline--fa fa-laptop fa-w-20" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 640 512"><path fill="currentColor" d="M624 416H381.54c-.74 19.81-14.71 32-32.74 32H288c-18.69 0-33.02-17.47-32.77-32H16c-8.8 0-16 7.2-16 16v16c0 35.2 28.8 64 64 64h512c35.2 0 64-28.8 64-64v-16c0-8.8-7.2-16-16-16zM576 48c0-26.4-21.6-48-48-48H112C85.6 0 64 21.6 64 48v336h512V48zm-64 272H128V64h384v256z"></path></svg>
+	<div class="line"></div>
+	<svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="server" class="server svg-inline--fa fa-server fa-w-16" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M480 160H32c-17.673 0-32-14.327-32-32V64c0-17.673 14.327-32 32-32h448c17.673 0 32 14.327 32 32v64c0 17.673-14.327 32-32 32zm-48-88c-13.255 0-24 10.745-24 24s10.745 24 24 24 24-10.745 24-24-10.745-24-24-24zm-64 0c-13.255 0-24 10.745-24 24s10.745 24 24 24 24-10.745 24-24-10.745-24-24-24zm112 248H32c-17.673 0-32-14.327-32-32v-64c0-17.673 14.327-32 32-32h448c17.673 0 32 14.327 32 32v64c0 17.673-14.327 32-32 32zm-48-88c-13.255 0-24 10.745-24 24s10.745 24 24 24 24-10.745 24-24-10.745-24-24-24zm-64 0c-13.255 0-24 10.745-24 24s10.745 24 24 24 24-10.745 24-24-10.745-24-24-24zm112 248H32c-17.673 0-32-14.327-32-32v-64c0-17.673 14.327-32 32-32h448c17.673 0 32 14.327 32 32v64c0 17.673-14.327 32-32 32zm-48-88c-13.255 0-24 10.745-24 24s10.745 24 24 24 24-10.745 24-24-10.745-24-24-24zm-64 0c-13.255 0-24 10.745-24 24s10.745 24 24 24 24-10.745 24-24-10.745-24-24-24z"></path></svg>
 </div>
-<div *ngIf="(this.reply | async)?.reason == 'wrong_password'">
-	Wrong password
+	<h1 style="text-align: center;">Connecting...</h1></div>
+<div *ngIf="this.askToPassword">
+
+  <nb-card>
+    <nb-card-body class="container">
+		<svg role="img" aria-hidden="true" focusable="false" data-prefix="fas" data-icon="key" class="password-icon svg-inline--fa fa-key fa-w-16" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M512 176.001C512 273.203 433.202 352 336 352c-11.22 0-22.19-1.062-32.827-3.069l-24.012 27.014A23.999 23.999 0 0 1 261.223 384H224v40c0 13.255-10.745 24-24 24h-40v40c0 13.255-10.745 24-24 24H24c-13.255 0-24-10.745-24-24v-78.059c0-6.365 2.529-12.47 7.029-16.971l161.802-161.802C163.108 213.814 160 195.271 160 176 160 78.798 238.797.001 335.999 0 433.488-.001 512 78.511 512 176.001zM336 128c0 26.51 21.49 48 48 48s48-21.49 48-48-21.49-48-48-48-48 21.49-48 48z"></path></svg>
+		<h1>{{'This room is password protected.' | translate}}</h1><br />
+		{{'Please enter the password to join:' | translate}}
+		<div class="input-container">
+      <nb-form-field>
+        <nb-icon nbPrefix icon="lock-outline" pack="eva"></nb-icon>
+        <input
+          [type]="getPasswordInputType()"
+          nbInput
+          [(ngModel)]="submittedPassword"
+          placeholder="{{'Password' | translate}}"
+        />
+        <button nbSuffix nbButton ghost (click)="toggleShowPassword()"
+		nbTooltip="{{'Toggle password visibility' | translate}}" nbTooltipPlacement="top" nbButton nbTooltipStatus="basic" status="basic"
+		>
+          <nb-icon
+            [icon]="showPassword ? 'eye-outline' : 'eye-off-2-outline'"
+            pack="eva"
+            [attr.aria-label]="showPassword ? 'hide password' : 'show password'"
+			
+          >
+          </nb-icon>
+        </button>
+      </nb-form-field>
+		</div>
+	  <div *ngIf="(this.reply$ | async)?.reason == 'wrong_password'" style="color: red; margin-bottom: 10px;">
+		{{'Wrong password, please try again.' | translate}}
+	  </div>
+	  <button nbButton (click)="authorizeWithPassword()">{{'Join Room' | translate}}</button>
+    </nb-card-body>
+  </nb-card>
+
+  
 </div>

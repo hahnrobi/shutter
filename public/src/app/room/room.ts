@@ -4,6 +4,6 @@ export class Room {
 	id:string;
 	name:string;
 	slug:string;
-	auth_type:"passwword"|"approve";
+	auth_type:"password"|"approve";
 	owner: User;
 }

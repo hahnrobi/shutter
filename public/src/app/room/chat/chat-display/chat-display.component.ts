@@ -14,8 +14,10 @@ export class ChatDisplayComponent implements OnInit {
   }
 
   ngOnInit(): void {
-    this.messages = this._chatManagerService.getMessagesDirect();
-    this._chatManagerService.addingMessage.subscribe((msg) => {this.messages = JSON.parse(JSON.stringify(this._chatManagerService.getMessagesDirect())); this.changeDetection.detectChanges();});
+    this._chatManagerService.getMessages().subscribe(m => {
+      this.messages = m;
+    }); 
+       //this._chatManagerService.addingMessage.subscribe((msg) => {this.messages = ; this.changeDetection.detectChanges();});
   }
 
   public sendMessage() {

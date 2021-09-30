@@ -1,0 +1,53 @@
+.password-icon{
+	width: 64px;
+	height: 64px;
+	display: block;
+	margin: auto;
+}
+.container {
+	text-align: center;
+}
+.input-container {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+.animation {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-direction: row;
+	flex-wrap: nowrap;
+	position: relative;
+	max-width: 350px;
+	margin: auto;
+}
+.laptop, .server {
+	width: 64px;
+	height: 64px;
+	display: block;
+
+}
+.line {
+	width: 60px;
+	height: 2px;
+	display: block;
+	background: white;
+	margin-left: 2rem;
+	margin-right: 2rem;
+	animation-delay: .2s;
+}
+.server {animation-delay: .4s;}
+.laptop, .server, .line {
+	animation-name: pulsing;
+	animation-duration: 1.2s;
+	animation-iteration-count: infinite;
+}
+
+@keyframes pulsing {
+	0% {opacity: 1;}
+	50% {opacity: .4;}
+	100% {opacity: 1;}
+  }

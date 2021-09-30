@@ -1,7 +1,7 @@
 import { ConnectionInitReply } from './connection-init-reply';
 import { RoomDetailsProviderService } from './../room-details-provider.service';
 import { LocalInputProviderService } from './../local-input-provider.service';
-import { WelcomeDialogComponent } from './welcome-dialog/welcome-dialog.component';
+import { WelcomeDialogComponent } from './dialogs/welcome-dialog/welcome-dialog.component';
 import { ConnectionService } from './../connection.service';
 import { Component, ElementRef, EventEmitter, HostListener, IterableDiffers, OnInit, Output, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { RoomManagerService } from '../room-manager.service';
@@ -23,9 +23,12 @@ export class RoomComponent implements OnInit {
   public view:"gallery"|"spotlight" = "gallery";
   public connectionReply:ReplaySubject<ConnectionInitReply>;
 
+  public localInputProviderService:LocalInputProviderService;
+
   public roomId:string;
 
 
+  public connect_ask_to_password = false;
 
   roomDetailsProviderService:RoomDetailsProviderService;
 
@@ -96,9 +99,27 @@ export class RoomComponent implements OnInit {
   public setMyName(name:string) {
     this._roomManagerSerivce.selfDataProvider.setName(name);
   }
-  public connectToRoom(service:LocalInputProviderService) {
-    this._roomManagerSerivce.connectToRoom(this.roomId, service);
-    this.currentState = "connecting";
+
+
+  public finalizeConfiguration(inputService:LocalInputProviderService) {
+    if(inputService != null) {
+      this.localInputProviderService = inputService;
+      this.currentState = "connecting";
+      this.roomDetailsProviderService.getRoom(this.roomId).subscribe(room => {
+        if(room?.auth_type == "password") {
+          this.connect_ask_to_password = true;
+        }else {
+          this.connectToRoom();
+        }
+      })
+    }
+  }
+  public connectWithPassword(password) {
+    console.log("Connecting with password: ", password);
+    this._roomManagerSerivce.connectToRoom(this.roomId, this.localInputProviderService, password);
+  }
+  public connectToRoom() {
+    this._roomManagerSerivce.connectToRoom(this.roomId, this.localInputProviderService);
   }
 
   public testAddVideoBox() {

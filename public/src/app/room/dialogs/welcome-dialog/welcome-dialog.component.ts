@@ -1,5 +1,5 @@
-import { MediaStreamProvider } from './../mediastreamprovider';
-import { LocalInputProviderService } from './../../local-input-provider.service';
+import { MediaStreamProvider } from './../../mediastreamprovider';
+import { LocalInputProviderService } from './../../../local-input-provider.service';
 import { Component, OnInit,  Output, EventEmitter, ViewChild, ElementRef } from '@angular/core';
 import { of } from 'rxjs';
 

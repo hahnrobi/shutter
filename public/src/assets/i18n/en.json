@@ -9,5 +9,12 @@
 	"Gallery": "Gallery",
 	"Spotlight": "Spotlight",
 	"Users in the room": "Users in the room",
-	"Message": "Message"
+	"Message": "Message",
+	"This room is password protected.": "This room is password protected.",
+	"Please enter the password to join:": "Please enter the password to join:",
+	"Password": "Password",
+	"Toggle password visibility": "Toggle password visibility",
+	"Wrong password, please try again.": "Wrong password, please try again.",
+	"(you)": "(you)"
+
 }

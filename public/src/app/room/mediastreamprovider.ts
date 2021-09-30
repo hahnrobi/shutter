@@ -139,7 +139,7 @@ export class MediaStreamProvider {
 			this.opt_audiolevel.next(audioLevel);
 			}
 			
-			if(muted || audioLevel < -80) {
+			if(muted || audioLevel < -60) {
 				if(this.isSpeakingValue != false) {
 					this.isSpeakingValue = false;
 					this.isSpeaking.next(false);

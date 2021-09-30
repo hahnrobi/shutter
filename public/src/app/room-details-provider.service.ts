@@ -1,20 +1,22 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, throwError } from 'rxjs';
 import { catchError, retry } from 'rxjs/operators';
 import { Room } from './room/room';
+import { of } from 'rxjs';
 
 @Injectable({
-  providedIn: 'root'
+  providedIn: 'root',
 })
 export class RoomDetailsProviderService {
   apiUrl = '/api/rooms';
-  private http:HttpClient;
+  private http: HttpClient;
   constructor(private _http: HttpClient) {
     this.http = _http;
-    this.getConfig().subscribe(c => console.log(c));
   }
-  getConfig() {
-    return this.http.get<Room>(this.apiUrl+"/612cdb8f9f842e8c630802ff");
+  getRoom(roomId) {
+    return this.http.get<Room>(this.apiUrl + '/' + roomId).pipe(catchError((err:HttpErrorResponse) => {
+      return of(null);
+    }));
   }
 }

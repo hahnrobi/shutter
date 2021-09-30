@@ -9,5 +9,11 @@
 	"Gallery": "Galéria",
 	"Spotlight": "Beszélő",
 	"Users in the room": "Felhasználók a szobában",
-	"Message": "Üzenet"
+	"Message": "Üzenet",
+	"This room is password protected.": "Ezt a szobát jelszó védi.",
+	"Please enter the password to join:": "Kérlek írd be a jelszót a belépéshez:",
+	"Password": "Jelszó",
+	"Toggle password visibility": "Jelszó láthatóságának váltása",
+	"Wrong password, please try again.": "Rossz jelszó, kérlek próbáld újra.",
+	"(you)": "(én)"
 }

@@ -13,12 +13,12 @@ import { AppComponent } from './app.component';
 import { RoomComponent } from './room/room.component';
 import { VideoelementComponent } from './room/videoelement/videoelement.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { NbThemeModule, NbLayoutModule, NbButtonModule, NbIconModule, NbInputModule, NbDialogModule, NbToastrModule, NbContextMenuModule, NbMenuService, NbMenuModule, NbTooltipModule, NbSelectModule, NbToggleModule, NbCardComponent, NbCardHeaderComponent, NbCardBodyComponent, NbCardFooterComponent, NbCardModule } from '@nebular/theme';
+import { NbThemeModule, NbLayoutModule, NbButtonModule, NbIconModule, NbInputModule, NbDialogModule, NbToastrModule, NbContextMenuModule, NbMenuService, NbMenuModule, NbTooltipModule, NbSelectModule, NbToggleModule, NbCardComponent, NbCardHeaderComponent, NbCardBodyComponent, NbCardFooterComponent, NbCardModule, NbFormFieldModule } from '@nebular/theme';
 import { NbEvaIconsModule } from '@nebular/eva-icons';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { ChatDisplayComponent } from './room/chat/chat-display/chat-display.component';
 import { FormsModule } from '@angular/forms';
-import { WelcomeDialogComponent } from './room/welcome-dialog/welcome-dialog.component';
+import { WelcomeDialogComponent } from './room/dialogs/welcome-dialog/welcome-dialog.component';
 import { UserListComponent } from './room/user-list/user-list.component';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { LayoutSelectorComponent } from './room/layout-selector/layout-selector.component';
@@ -56,6 +56,7 @@ export function HttpLoaderFactory(http:HttpClient) {
     NbEvaIconsModule,
     NbButtonModule,
     NbIconModule,
+    NbFormFieldModule,
     NbContextMenuModule,
     NbInputModule,
     NbDialogModule.forRoot(),

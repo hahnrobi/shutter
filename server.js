@@ -37,7 +37,7 @@ app.get('/:room', (req, res) => {
 })
 
 io.on('connection', socket => {
-	socket.on('join-room', async (roomId, user, auth = "") => {
+	socket.on('join-room', async (roomId, user, auth = {}) => {
 		let roomData;
 		try {
 			roomData = await roomController.getSingleRoomFromDb(roomId, true);
@@ -56,7 +56,11 @@ io.on('connection', socket => {
 			if(roomData.hasOwnProperty("auth_type")) {
 				if(roomData.auth_type == "password") {
 					authType = "password";
-					let correct = bcrypt.compareSync(auth, roomData.auth_password);
+					let correct = false;
+					if(auth.hasOwnProperty("submittedPassword")) {
+						console.log("User loggin in with password: ", auth.submittedPassword);
+						correct = bcrypt.compareSync(auth.submittedPassword, roomData.auth_password);
+					}
 					if(!correct) canJoin = false;
 				}else {
 					authType = "approve";
