@@ -1,3 +1,4 @@
+import { ConnectionInitReply } from './room/connection-init-reply';
 import { LocalInputProviderService } from './local-input-provider.service';
 import { SelfDataTransfer } from './room/userdata/selfdata/self-data-transfer';
 import { ISelfDataProvider } from './room/userdata/iself-data-provider';
@@ -24,12 +25,15 @@ export class ConnectionService {
   private dataConnections:any[] = [];
   public currentStatus:UserStatus = new UserStatus();
 
+  public connectionStatusChanged:ReplaySubject<ConnectionInitReply> = new ReplaySubject<ConnectionInitReply>();
+
   public selfStreamProvider:MediaStreamProvider = new MediaStreamProvider(null);
 
   public initDone:BehaviorSubject<boolean>;
 
   public peers = [];
   public clientId:string;
+  public roomId:string;
 
   public selfStream:MediaStream;
 
@@ -45,7 +49,8 @@ export class ConnectionService {
   constructor() {
     this.initDone = new BehaviorSubject<boolean>(false);
   }
-  public startConnection(inputService:LocalInputProviderService = null) {
+  public startConnection(roomId:string, inputService:LocalInputProviderService = null) {
+    this.roomId = roomId;
     const myPeer = new Peer(undefined, {
       host: 'dev.local',
       secure: true,
@@ -69,9 +74,10 @@ export class ConnectionService {
     sendingData.status = this.currentStatus;
     return sendingData;
   }
-  private init(localInputProvider:LocalInputProviderService = null) {
+  private async init(localInputProvider:LocalInputProviderService = null) {
     this.socket = io("/");
-
+    console.log( "[CONN] Socket ID: ", this.socket.id );
+    console.log( "[CONN] Socket ID: ", this.socket);
     console.log( this.peer );
 
     let userMediaQuery = {
@@ -97,18 +103,45 @@ export class ConnectionService {
     if(userMediaQuery.video == null) {
       userMediaQuery.video = false;
     }
+    
 
-    console.log("[CONN] UserMedia Query: ", userMediaQuery);
-    if(userMediaQuery.audio == false && userMediaQuery.video == false) {
-      console.log("[CONN] No video and audio permission. Joining only as spectator.");
-      this.setUpConnections(null, true);
-    }else {
-      console.log("[CONN] Got video and audio permission. Joining...");
-      navigator.mediaDevices.getUserMedia(userMediaQuery).then(stream => {
-        this.setUpConnections(stream, false);
-      });
-    }
+    this.connectionStatusChanged.subscribe(reply =>  {
+      if(reply.result == "successful") {
+        console.log("[CONN] UserMedia Query: ", userMediaQuery);
+        if(userMediaQuery.audio == false && userMediaQuery.video == false) {
+          console.log("[CONN] No video and audio permission. Joining only as spectator.");
+          this.setUpConnections(null, true);
+        }else {
+          console.log("[CONN] Got video and audio permission. Joining...");
+          navigator.mediaDevices.getUserMedia(userMediaQuery).then(stream => {
+            this.setUpConnections(stream, false);
+          });
+        }
+      }
+    })
+
+
+    
     this.initDone.next(true); //init done.
+    this.connectToRoom();
+  }
+  private async connectToRoom() {
+    this.socket.on('join-room-answer', (object) => {
+      
+      let conn = new ConnectionInitReply();
+      conn.reason = object.reason;
+      conn.result = object.result;
+
+      this.connectionStatusChanged.next(conn);
+      console.log("[CONN] Reply from joining: ", conn);
+      return (conn.result) == "successful";
+    })
+
+    let myData = this.getMyDataForPreSending();
+    this.socket.emit('join-room', this.roomId, myData);
+    console.log("[CONN] Joining room: " + this.roomId);
+    console.log("[CONN] My id is: " + myData.clientId);
+    console.log("[CONN] My own details initially sent: ", myData);
   }
 
   private setUpConnections(stream:MediaStream = null, spectator = false) {
@@ -152,11 +185,6 @@ export class ConnectionService {
 
     let myData = this.getMyDataForPreSending();
     console.log(myData);
-
-    this.socket.emit('join-room', "asd", myData);
-    console.log("[CONN] Joining room: " + "asd");
-    console.log("[CONN] My id is: " + myData.clientId);
-    console.log("[CONN] My own details initially sent: ", myData);
 
 
     this.socket.on('user-connected', (userData:User) => {

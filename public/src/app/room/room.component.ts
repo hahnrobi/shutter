@@ -1,3 +1,4 @@
+import { ConnectionInitReply } from './connection-init-reply';
 import { RoomDetailsProviderService } from './../room-details-provider.service';
 import { LocalInputProviderService } from './../local-input-provider.service';
 import { WelcomeDialogComponent } from './welcome-dialog/welcome-dialog.component';
@@ -5,8 +6,9 @@ import { ConnectionService } from './../connection.service';
 import { Component, ElementRef, EventEmitter, HostListener, IterableDiffers, OnInit, Output, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { RoomManagerService } from '../room-manager.service';
 import { faMicrophone, faMicrophoneSlash } from '@fortawesome/free-solid-svg-icons';
-import { Subscription } from 'rxjs';
+import { ReplaySubject, Subscription } from 'rxjs';
 import { User } from './user/user';
+import { ActivatedRoute } from '@angular/router';
 import { animate, style, transition, trigger } from '@angular/animations';
 
 @Component({
@@ -19,13 +21,18 @@ export class RoomComponent implements OnInit {
 
   public users = [];
   public view:"gallery"|"spotlight" = "gallery";
+  public connectionReply:ReplaySubject<ConnectionInitReply>;
+
+  public roomId:string;
+
+
 
   roomDetailsProviderService:RoomDetailsProviderService;
 
   private iterableDiffer : any;
   private subs: Subscription[] = []
 
-  isUserInitialized:boolean = false;
+  currentState:"welcome"|"connecting"|"room" = "welcome";
 
   faMicrophone = faMicrophone;
   faMicrophoneSlash = faMicrophoneSlash;
@@ -34,9 +41,20 @@ export class RoomComponent implements OnInit {
     { title: 'Gallery', icon: "camera-outline", target: "galleryView" },
     { title: 'Spotlight', icon: "crop-outline", target: "spotlightView" }];
 
-  constructor(private _roomDetailsProvider:RoomDetailsProviderService, private _roomManagerSerivce:RoomManagerService, private _connectionService:ConnectionService, private iterableDiffers: IterableDiffers) {
+  constructor(private _roomDetailsProvider:RoomDetailsProviderService, private _roomManagerSerivce:RoomManagerService, private _connectionService:ConnectionService, private iterableDiffers: IterableDiffers, private route: ActivatedRoute) {
     this.iterableDiffer = iterableDiffers.find([]).create(null);
     this.roomDetailsProviderService = _roomDetailsProvider;
+    route.params.subscribe(p => {this.roomId = p.room;});
+    this.connectionReply = this._connectionService.connectionStatusChanged;
+    this._connectionService.connectionStatusChanged.subscribe(connectionInitReply => {
+      if(connectionInitReply.result == "successful") {
+        this.currentState = "room";
+      }else {
+        if(connectionInitReply.reason == "wrong_password") {
+          
+        }
+      }
+    })
   }
 
 
@@ -77,11 +95,12 @@ export class RoomComponent implements OnInit {
   }
   public setMyName(name:string) {
     this._roomManagerSerivce.selfDataProvider.setName(name);
-    this.isUserInitialized = true;
   }
   public connectToRoom(service:LocalInputProviderService) {
-    this._roomManagerSerivce.connectToRoom(service);
+    this._roomManagerSerivce.connectToRoom(this.roomId, service);
+    this.currentState = "connecting";
   }
+
   public testAddVideoBox() {
     let user = new User();
     user.name = "Test";

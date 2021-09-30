@@ -1,9 +1,11 @@
-<div *ngIf="!this.isUserInitialized">
+<div *ngIf="this.currentState == 'welcome'">
     <app-welcome-dialog (enteredName)="setMyName($event)" (deviceConfig)="connectToRoom($event)">
-
     </app-welcome-dialog>
 </div>
-<div class="room-container" *ngIf="this.isUserInitialized">
+<div *ngIf="this.currentState == 'connecting'">
+    <app-connecting-dialog [reply]="this.connectionReply"></app-connecting-dialog>
+</div>
+<div class="room-container" *ngIf="this.currentState == 'room'">
     <div style="width: 100%; height: 100%; position: relative">
             <room-layout-gallery *ngIf="this.view == 'gallery'" [users]="this.users"></room-layout-gallery>
         <div *ngIf="this.view == 'spotlight'">

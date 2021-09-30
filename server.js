@@ -2,7 +2,8 @@ const express = require("express");
 const app = express();
 const fs = require('fs');
 const mongoose = require('mongoose')
-
+const roomController = require("./controllers/roomController");
+const bcrypt = require('bcryptjs');
 
 require('dotenv').config();
 
@@ -35,20 +36,58 @@ app.get('/:room', (req, res) => {
 	res.render('room', {roomId: req.params.room});
 })
 
-
 io.on('connection', socket => {
-	socket.on('join-room', (roomId, userId) => {
-		console.log(roomId + " " + userId);
-		socket.join(roomId);
-		socket.to(roomId).broadcast.emit('user-connected', userId);
+	socket.on('join-room', async (roomId, user, auth = "") => {
+		let roomData;
+		try {
+			roomData = await roomController.getSingleRoomFromDb(roomId, true);
+		}
+		catch (err) {
+			roomData = null;
+		}
+		console.log(socket.id);
 
-		socket.on('disconnect', () => {
-			socket.to(roomId).broadcast.emit('user-disconnected', userId);
-		});
+		let canJoin = true;
+		let authType = null;
+
+		let correctPassword = false;
+
+		if(roomData != null || roomData != undefined) {
+			if(roomData.hasOwnProperty("auth_type")) {
+				if(roomData.auth_type == "password") {
+					authType = "password";
+					let correct = bcrypt.compareSync(auth, roomData.auth_password);
+					if(!correct) canJoin = false;
+				}else {
+					authType = "approve";
+					canJoin = false;
+				}
+			}
+		}
+		
+		if(canJoin) {
+			socket.emit('join-room-answer', {result: "successful"});
+			console.log(roomId + " " + user.status.clientId);
+			socket.join(roomId);
+			socket.to(roomId).broadcast.emit('user-connected', user);
+
+			socket.once('disconnect', () => {
+				socket.to(roomId).broadcast.emit('user-disconnected', user);
+			});
+		}else {
+			if(authType == "password" && !correctPassword) {
+				socket.emit('join-room-answer', {result: "failed", reason: "wrong_password"});
+				console.log("[ " + socket.id + " ] Wrong password");
+			} else if(authType == "approve") {
+				socket.emit('join-room-answer', {result: "failed", reason: "waiting_approval"});
+				console.log("[ " + socket.id + " ] Waiting on approval");
+			} else {
+				socket.emit('join-room-answer', {result: "failed", reason: "error"});
+				console.log("[ " + socket.id + " ] Err");
+			}
+		}
 
 	});
-
-
 })
 
 

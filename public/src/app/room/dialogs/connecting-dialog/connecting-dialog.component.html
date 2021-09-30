@@ -1,0 +1,6 @@
+<div *ngIf="this.reply == undefined || this.reply == null">
+	Connecting...
+</div>
+<div *ngIf="(this.reply | async)?.reason == 'wrong_password'">
+	Wrong password
+</div>

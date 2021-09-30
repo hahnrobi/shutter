@@ -20,7 +20,7 @@ exports.getRooms = async (req, reply) => {
 // Get single car by ID
 exports.getSingleRoom = async (req, reply) => {
   try {
-    const room = await getSingleRoom(req.params.id);
+    const room = await this.getSingleRoomFromDb(req.params.id);
     reply.json(room);
   } catch (err) {
 	  reply.statusCode = 404;
@@ -29,12 +29,14 @@ exports.getSingleRoom = async (req, reply) => {
   }
 }
 
-async function getSingleRoom(id) {
+exports.getSingleRoomFromDb = async(id, complete = false) => {
   const room = await Room.findById(id).populate("owner")
   let copyRoom = JSON.parse(JSON.stringify(room));
-  delete copyRoom["auth_password"];
-  delete copyRoom["approved_users"];
-  delete copyRoom["owner"]["passwordHash"];
+  if(!complete) {
+    delete copyRoom["auth_password"];
+    delete copyRoom["approved_users"];
+    delete copyRoom["owner"]["passwordHash"];
+  }
   return copyRoom;
 }
 
@@ -53,7 +55,7 @@ exports.addRoom = async (req, reply, userId) => {
       room.owner = user;
       reply.statusCode = 200;
       const savedRoom = await room.save();
-      reply.send(await getSingleRoom(savedRoom._id));
+      reply.send(await this.getSingleRoomFromDb(savedRoom._id));
       
     } else {
       reply.statusCode = 406;
@@ -75,7 +77,7 @@ exports.updateRoom = async (req, reply, userId = undefined) => {
       const { ...updateData } = room
       updateData.owner = checkRoom.owner;
       const update = await Room.findByIdAndUpdate(id, updateData, { new: true })
-      reply.send(await getSingleRoom(req.params.id));
+      reply.send(await this.getSingleRoomFromDb(req.params.id));
     }else {
       reply.statusCode = 403;
       reply.send("Room is not owned by the user.");

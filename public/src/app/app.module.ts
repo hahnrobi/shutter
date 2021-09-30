@@ -13,7 +13,7 @@ import { AppComponent } from './app.component';
 import { RoomComponent } from './room/room.component';
 import { VideoelementComponent } from './room/videoelement/videoelement.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { NbThemeModule, NbLayoutModule, NbButtonModule, NbIconModule, NbInputModule, NbDialogModule, NbToastrModule, NbContextMenuModule, NbMenuService, NbMenuModule, NbTooltipModule, NbSelectModule, NbToggleModule } from '@nebular/theme';
+import { NbThemeModule, NbLayoutModule, NbButtonModule, NbIconModule, NbInputModule, NbDialogModule, NbToastrModule, NbContextMenuModule, NbMenuService, NbMenuModule, NbTooltipModule, NbSelectModule, NbToggleModule, NbCardComponent, NbCardHeaderComponent, NbCardBodyComponent, NbCardFooterComponent, NbCardModule } from '@nebular/theme';
 import { NbEvaIconsModule } from '@nebular/eva-icons';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { ChatDisplayComponent } from './room/chat/chat-display/chat-display.component';
@@ -26,6 +26,7 @@ import { LayoutGalleryComponent } from './room/layouts/layout-gallery/layout-gal
 import { LayoutSpotlightComponent } from './room/layouts/layout-spotlight/layout-spotlight.component';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { ConnectingDialogComponent } from './room/dialogs/connecting-dialog/connecting-dialog.component';
 
 export function HttpLoaderFactory(http:HttpClient) {
   return new TranslateHttpLoader(http);
@@ -42,6 +43,7 @@ export function HttpLoaderFactory(http:HttpClient) {
     LayoutSelectorComponent,
     LayoutGalleryComponent,
     LayoutSpotlightComponent,
+    ConnectingDialogComponent,
     ],
   imports: [
     BrowserModule,
@@ -56,9 +58,11 @@ export function HttpLoaderFactory(http:HttpClient) {
     NbIconModule,
     NbContextMenuModule,
     NbInputModule,
+    NbDialogModule.forRoot(),
     FontAwesomeModule,
     FormsModule,
     NbTooltipModule,
+    NbCardModule,
     NbToggleModule,
     NbSelectModule,
     NbDialogModule.forRoot(),

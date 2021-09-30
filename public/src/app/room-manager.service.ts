@@ -1,3 +1,4 @@
+import { ConnectingDialogComponent } from './room/dialogs/connecting-dialog/connecting-dialog.component';
 import { LastSpeakersService } from './last-speakers.service';
 import { LocalInputProviderService } from './local-input-provider.service';
 import { ISelfDataProvider } from './room/userdata/iself-data-provider';
@@ -9,7 +10,7 @@ import { UserManagerService } from './user-manager.service';
 import { Injectable } from '@angular/core';
 import { ConnectionService } from './connection.service';
 import { User } from './room/user/user';
-import { NbToastRef } from '@nebular/theme';
+import { NbDialogService, NbToastRef } from '@nebular/theme';
 import { NbToastrService, NbGlobalLogicalPosition, NbComponentStatus } from '@nebular/theme';
 
 @Injectable({
@@ -17,9 +18,11 @@ import { NbToastrService, NbGlobalLogicalPosition, NbComponentStatus } from '@ne
 })
 export class RoomManagerService {
   selfDataProvider:ISelfDataProvider;
+  private dialogService:NbDialogService;
 
-  constructor(private _connectionService:ConnectionService, private _userManagerService:UserManagerService, private _chatManagerService:ChatManagerService, private _lastSpeakersService:LastSpeakersService, private toastrService: NbToastrService) {
+  constructor(private _connectionService:ConnectionService, private _userManagerService:UserManagerService, private _chatManagerService:ChatManagerService, private _lastSpeakersService:LastSpeakersService, private toastrService: NbToastrService, private _dialogService: NbDialogService) {
     this.selfDataProvider = new SelfDataLocalStorageProvider();
+    this.dialogService = _dialogService;
     this._connectionService.selfDataProvier = this.selfDataProvider;
     this._userManagerService.setSelfDataProvider(this.selfDataProvider);
     
@@ -44,6 +47,7 @@ export class RoomManagerService {
         {limit: 3, position: NbGlobalLogicalPosition.BOTTOM_START, status: "danger"});
       this._userManagerService.removeUser(value);
     });
+
 
     this._connectionService.incomingStreamEvent.subscribe(tuple => {
       console.log("%c[ROOM-MANAGER] Incoming stream: " + tuple[0], "color: green");
@@ -100,7 +104,7 @@ export class RoomManagerService {
   public getUsers():Observable<User[]> {
     return this._userManagerService.getUsers();
   }
-  public connectToRoom(service:LocalInputProviderService = null):void {
-    this._connectionService.startConnection(service);
+  public connectToRoom(roomId:string, service:LocalInputProviderService = null):void {
+    this._connectionService.startConnection(roomId, service);
   }
 }

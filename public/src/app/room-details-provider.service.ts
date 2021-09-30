@@ -8,7 +8,7 @@ import { Room } from './room/room';
   providedIn: 'root'
 })
 export class RoomDetailsProviderService {
-  apiUrl = 'http://dev.local:3000/rooms';
+  apiUrl = '/api/rooms';
   private http:HttpClient;
   constructor(private _http: HttpClient) {
     this.http = _http;
