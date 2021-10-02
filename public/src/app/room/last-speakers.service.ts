@@ -1,7 +1,7 @@
-import { UserStatus } from './room/user-status/user-status';
+import { UserStatus } from './user-status/user-status';
 import { ConnectionService } from './connection.service';
 import { Injectable } from '@angular/core';
-import { User } from './room/user/user';
+import { User } from './user/user';
 import { ReplaySubject } from 'rxjs';
 
 @Injectable({

@@ -1,18 +1,18 @@
-import { AuthData } from './room/auth-data';
-import { ConnectionInitReply } from './room/connection-init-reply';
+import { AuthData } from './auth-data';
+import { ConnectionInitReply } from './connection-init-reply';
 import { LocalInputProviderService } from './local-input-provider.service';
-import { SelfDataTransfer } from './room/userdata/selfdata/self-data-transfer';
-import { ISelfDataProvider } from './room/userdata/iself-data-provider';
-import { ChatMessage } from './room/chat/chat-message';
-import { UserStatus } from './room/user-status/user-status';
-import { MediaStreamProvider } from './room/mediastreamprovider';
+import { SelfDataTransfer } from './userdata/selfdata/self-data-transfer';
+import { ISelfDataProvider } from './userdata/iself-data-provider';
+import { ChatMessage } from './chat/chat-message';
+import { UserStatus } from './user-status/user-status';
+import { MediaStreamProvider } from './mediastreamprovider';
 import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
 import { io } from 'socket.io-client';
 import { ReplaySubject } from 'rxjs';
 import { convertPropertyBindingBuiltins } from '@angular/compiler/src/compiler_util/expression_converter';
 import { Local } from 'protractor/built/driverProviders';
-import { User } from './room/user/user';
+import { User } from './user/user';
 import { send } from 'process';
 import { tap } from 'rxjs/operators';
 

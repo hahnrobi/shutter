@@ -1,12 +1,9 @@
-import { LastSpeakersService } from './last-speakers.service';
-import { LocalInputProviderService } from './local-input-provider.service';
+
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';  
-import { ConnectionService } from './connection.service';
-import { UserManagerService } from './user-manager.service';
-import { RoomManagerService } from './room-manager.service';
+
 
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
@@ -30,6 +27,8 @@ import { ConnectingDialogComponent } from './room/dialogs/connecting-dialog/conn
 import { WaitingListComponent } from './room/user-list/waiting-list/waiting-list.component';
 import { WaitingUserComponent } from './room/user-list/waiting-list/waiting-user/waiting-user.component';
 
+import {RoomModule} from './room/room.module';
+
 export function HttpLoaderFactory(http:HttpClient) {
   return new TranslateHttpLoader(http);
 }
@@ -37,20 +36,10 @@ export function HttpLoaderFactory(http:HttpClient) {
 @NgModule({
   declarations: [
     AppComponent,
-    RoomComponent,
-    VideoelementComponent,
-    ChatDisplayComponent,
-    WelcomeDialogComponent,
-    UserListComponent,
-    LayoutSelectorComponent,
-    LayoutGalleryComponent,
-    LayoutSpotlightComponent,
-    ConnectingDialogComponent,
-    WaitingListComponent,
-    WaitingUserComponent,
     ],
   imports: [
     BrowserModule,
+    RoomModule,
     HttpClientModule,
     CommonModule,
     AppRoutingModule,
@@ -81,7 +70,7 @@ export function HttpLoaderFactory(http:HttpClient) {
     }
     })
   ],
-  providers: [ConnectionService, UserManagerService, RoomManagerService, NbMenuService, LocalInputProviderService, LastSpeakersService ],
+  providers: [NbMenuService],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

@@ -1,10 +1,10 @@
 import { ConnectionInitReply } from './connection-init-reply';
 import { RoomDetailsProviderService } from './../room-details-provider.service';
-import { LocalInputProviderService } from './../local-input-provider.service';
+import { LocalInputProviderService } from './local-input-provider.service';
 import { WelcomeDialogComponent } from './dialogs/welcome-dialog/welcome-dialog.component';
-import { ConnectionService } from './../connection.service';
+import { ConnectionService } from './connection.service';
 import { Component, ElementRef, EventEmitter, HostListener, IterableDiffers, OnInit, Output, QueryList, ViewChild, ViewChildren } from '@angular/core';
-import { RoomManagerService } from '../room-manager.service';
+import { RoomManagerService } from './room-manager.service';
 import { faMicrophone, faMicrophoneSlash } from '@fortawesome/free-solid-svg-icons';
 import { ReplaySubject, Subscription } from 'rxjs';
 import { User } from './user/user';

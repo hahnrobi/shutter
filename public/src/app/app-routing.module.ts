@@ -5,7 +5,10 @@ import { Routes, RouterModule } from '@angular/router';
 import {TranslateModule} from '@ngx-translate/core';
 
 const routes: Routes = [
-  {path: ':room', component: RoomComponent},
+  {
+    path: ':room',
+    loadChildren: './room.module#RoomModule'
+  },
   {path: "", component: AppComponent}
 ];
 

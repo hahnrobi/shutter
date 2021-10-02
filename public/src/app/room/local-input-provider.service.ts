@@ -1,5 +1,5 @@
 import { Observable, Subject, ReplaySubject } from 'rxjs';
-import { MediaStreamProvider } from './room/mediastreamprovider';
+import { MediaStreamProvider } from './mediastreamprovider';
 import { Injectable } from '@angular/core';
 
 @Injectable({

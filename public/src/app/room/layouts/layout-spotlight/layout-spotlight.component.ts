@@ -1,4 +1,4 @@
-import { LastSpeakersService } from './../../../last-speakers.service';
+import { LastSpeakersService } from './../../last-speakers.service';
 import { Component, Input, OnInit } from '@angular/core';
 import { User } from '../../user/user';
 

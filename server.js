@@ -5,8 +5,28 @@ const mongoose = require('mongoose')
 const roomController = require("./controllers/roomController");
 const bcrypt = require('bcryptjs');
 const validateToken = require("./includes/validate-token");
+const winston = require('winston');
+const expressWinston = require('express-winston');
 
 require('dotenv').config();
+
+const logger = winston.createLogger({
+	level: 'info',
+	format:  winston.format.combine(winston.format.json(), winston.format.prettyPrint()),
+	defaultMeta: { service: 'user-service' },
+	transports: [
+	  //
+	  // - Write all logs with level `error` and below to `error.log`
+	  // - Write all logs with level `info` and below to `combined.log`
+	  //
+	  new winston.transports.File({filename: "/dev/stderr", level: "warn"}),
+      new winston.transports.File({filename: "/dev/stdout"}),
+	  new winston.transports.File({ filename: 'error.log', level: 'error' }),
+	  new winston.transports.File({ filename: 'combined.log' }),
+	  
+	],
+  });
+
 
 //const server = require("http").Server(app);
 const server = require('https').Server({
@@ -23,8 +43,23 @@ function getRandomInt(max) {
   }
 
 app.set('view engine', 'ejs');
-app.use(express.static('public'));
+app.use(express.static('public/dist/shutter'));
 app.use(express.json());
+
+app.use(expressWinston.logger({
+	transports: [
+	  new winston.transports.Console()
+	],
+	format: winston.format.combine(
+	  winston.format.colorize(),
+	  winston.format.json()
+	),
+	meta: true, // optional: control whether you want to log the meta data about the request (default to true)
+	msg: "HTTP {{req.method}} {{req.url}}", // optional: customize the default logging message. E.g. "{{res.statusCode}} {{req.method}} {{res.responseTime}}ms {{req.url}}"
+	expressFormat: true, // Use the default Express/morgan request formatting. Enabling this will override any msg if true. Will only output colors with colorize set to true
+	colorize: false, // Color the text and status code, using the Express/morgan color palette (text: gray, status: default green, 3XX cyan, 4XX yellow, 5XX red).
+	ignoreRoute: function (req, res) { return false; } // optional: allows to skip some log messages based on request and/or response
+  }));
 
 app.get('/', (req, res) => {
 	res.redirect('/'+uuidV4());
@@ -68,6 +103,7 @@ io.on('connection', socket => {
 			if(roomData.hasOwnProperty("auth_type")) {
 				if(roomData.auth_type == "password") {
 					authType = "password";
+					console.log("Room is protected by password.");
 					let correct = false;
 					if(auth.hasOwnProperty("submittedPassword")) {
 						console.log("User loggin in with password: ", auth.submittedPassword);
@@ -76,13 +112,14 @@ io.on('connection', socket => {
 					if(!correct) canJoin = false;
 				}else {
 					authType = "approve";
+					console.log("Approval needed to enter.");
 					canJoin = false;
 
 					if(socket.userId != undefined) {
 						if(roomData.owner._id === socket.userId) {
 							//the owner wants to join
 							canJoin = true;
-
+							console.log("The user is the owner of the room.");
 
 						} else {
 							//TODO: someone else (with account), check if they're already approved to toom
@@ -100,7 +137,6 @@ io.on('connection', socket => {
 				socket.emit('join-room-answer', {result: "failed", reason: "wrong_password"});
 				console.log("[ " + socket.id + " ] Wrong password");
 			} else if(authType == "approve") {
-				
 				const room = io.sockets.adapter.rooms.get(roomId);
 					let ownerInRoom = false;
 					if(room != undefined) {
@@ -131,12 +167,13 @@ io.on('connection', socket => {
 								}
 							})
 						}
-					}
 
+					}
 					if(!ownerInRoom) {
-						socket.emit("join-room-answer", {result: "failed", reason: "approval_denied"});
+						socket.emit("join-room-answer", {result: "failed", reason: "no_auth_user"});
 						console.log("[ " + socket.id + " ] Owner is not in the room for auth.");
 					}
+
 			} else {
 				socket.emit('join-room-answer', {result: "failed", reason: "error"});
 				console.log("[ " + socket.id + " ] Err");

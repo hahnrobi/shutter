@@ -1,9 +1,9 @@
-import { SelfDataTransfer } from './room/userdata/selfdata/self-data-transfer';
-import { ISelfDataProvider } from './room/userdata/iself-data-provider';
-import { UserStatus } from './room/user-status/user-status';
-import { MediaStreamProvider } from './room/mediastreamprovider';
+import { SelfDataTransfer } from './userdata/selfdata/self-data-transfer';
+import { ISelfDataProvider } from './userdata/iself-data-provider';
+import { UserStatus } from './user-status/user-status';
+import { MediaStreamProvider } from './mediastreamprovider';
 import { Injectable } from '@angular/core';
-import { User } from './room/user/user';
+import { User } from './user/user';
 import { Observable, of } from 'rxjs';
 
 @Injectable({

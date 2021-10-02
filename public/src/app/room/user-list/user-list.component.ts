@@ -1,4 +1,4 @@
-import { UserManagerService } from './../../user-manager.service';
+import { UserManagerService } from './../user-manager.service';
 import { Component, OnInit } from '@angular/core';
 import { User } from '../user/user';
 import { animate, state, style, transition, trigger } from '@angular/animations';

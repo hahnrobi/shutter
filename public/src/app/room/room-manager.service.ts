@@ -1,15 +1,15 @@
-import { ConnectingDialogComponent } from './room/dialogs/connecting-dialog/connecting-dialog.component';
+import { ConnectingDialogComponent } from './dialogs/connecting-dialog/connecting-dialog.component';
 import { LastSpeakersService } from './last-speakers.service';
 import { LocalInputProviderService } from './local-input-provider.service';
-import { ISelfDataProvider } from './room/userdata/iself-data-provider';
-import { SelfDataLocalStorageProvider } from './room/userdata/selfdata/self-data-local-storage-provider';
+import { ISelfDataProvider } from './userdata/iself-data-provider';
+import { SelfDataLocalStorageProvider } from './userdata/selfdata/self-data-local-storage-provider';
 import { ReplaySubject, Observable } from 'rxjs';
-import { ChatManagerService } from './room/chat/chat-manager.service';
-import { ChatMessage } from './room/chat/chat-message';
+import { ChatManagerService } from './chat/chat-manager.service';
+import { ChatMessage } from './chat/chat-message';
 import { UserManagerService } from './user-manager.service';
 import { Injectable } from '@angular/core';
 import { ConnectionService } from './connection.service';
-import { User } from './room/user/user';
+import { User } from './user/user';
 import { NbDialogService, NbToastRef } from '@nebular/theme';
 import { NbToastrService, NbGlobalLogicalPosition, NbComponentStatus } from '@nebular/theme';
 
