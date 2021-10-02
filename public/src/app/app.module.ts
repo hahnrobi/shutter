@@ -27,6 +27,8 @@ import { LayoutSpotlightComponent } from './room/layouts/layout-spotlight/layout
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { ConnectingDialogComponent } from './room/dialogs/connecting-dialog/connecting-dialog.component';
+import { WaitingListComponent } from './room/user-list/waiting-list/waiting-list.component';
+import { WaitingUserComponent } from './room/user-list/waiting-list/waiting-user/waiting-user.component';
 
 export function HttpLoaderFactory(http:HttpClient) {
   return new TranslateHttpLoader(http);
@@ -44,6 +46,8 @@ export function HttpLoaderFactory(http:HttpClient) {
     LayoutGalleryComponent,
     LayoutSpotlightComponent,
     ConnectingDialogComponent,
+    WaitingListComponent,
+    WaitingUserComponent,
     ],
   imports: [
     BrowserModule,

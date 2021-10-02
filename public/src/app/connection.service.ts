@@ -14,6 +14,7 @@ import { convertPropertyBindingBuiltins } from '@angular/compiler/src/compiler_u
 import { Local } from 'protractor/built/driverProviders';
 import { User } from './room/user/user';
 import { send } from 'process';
+import { tap } from 'rxjs/operators';
 
 declare var Peer: any;
 @Injectable({
@@ -41,7 +42,11 @@ export class ConnectionService {
 
   public selfDataProvier: ISelfDataProvider;
 
-  public authData:AuthData = new AuthData();;
+  public authData:AuthData = new AuthData();
+
+  public usersOnApproval: Subject<[string, User][]>;
+  private _usersOnApprovalArray:[string, User][] = [];
+  public approvingUserJoined: ReplaySubject<User> = new ReplaySubject<User>(1);
 
   public userJoinEvent: ReplaySubject<User> = new ReplaySubject<User>(1);
   public userLeaveEvent: ReplaySubject<string> = new ReplaySubject<string>(1);
@@ -52,6 +57,8 @@ export class ConnectionService {
 
   constructor() {
     this.initDone = new BehaviorSubject<boolean>(false);
+    this.usersOnApproval = new Subject<[string, User][]>();
+    this.usersOnApproval.next(this._usersOnApprovalArray);
   }
   public startConnection(
     roomId: string,
@@ -89,6 +96,14 @@ export class ConnectionService {
   }
   private async init(localInputProvider: LocalInputProviderService = null) {
     this.socket = io('/');
+
+    //TODO: FROM AUTH MODULE EVERYTHING
+    //REAL TOKEN NEEDS TO BE ADDED HERE:
+    let localToken = localStorage.getItem("user-token");
+    if(localToken != null) {
+      this.socket.emit("user-token", localToken); 
+    }
+    
     console.log('[CONN] Socket ID: ', this.socket.id);
     console.log('[CONN] Socket ID: ', this.socket);
     console.log(this.peer);
@@ -126,22 +141,19 @@ export class ConnectionService {
       userMediaQuery.video = false;
     }
 
-    this.connectionStatusChanged.subscribe((reply) => {
-      if (reply.result == 'successful') {
-        console.log('[CONN] UserMedia Query: ', userMediaQuery);
-        if (userMediaQuery.audio == false && userMediaQuery.video == false) {
-          console.log(
-            '[CONN] No video and audio permission. Joining only as spectator.'
-          );
-          this.setUpConnections(null, true);
-        } else {
-          console.log('[CONN] Got video and audio permission. Joining...');
-          navigator.mediaDevices.getUserMedia(userMediaQuery).then((stream) => {
-            this.setUpConnections(stream, false);
-          });
-        }
-      }
-    });
+
+    console.log('[CONN] UserMedia Query: ', userMediaQuery);
+    if (userMediaQuery.audio == false && userMediaQuery.video == false) {
+      console.log(
+        '[CONN] No video and audio permission. Joining only as spectator.'
+      );
+      this.setUpConnections(null, true);
+    } else {
+      console.log('[CONN] Got video and audio permission. Joining...');
+      navigator.mediaDevices.getUserMedia(userMediaQuery).then((stream) => {
+        this.setUpConnections(stream, false);
+      });
+    }
 
     this.initDone.next(true); //init done.
     this.connectToRoom();
@@ -213,6 +225,12 @@ export class ConnectionService {
       this.userJoinEvent.next(userData);
     });
 
+    this.socket.on('join-room-request', (socketId, user) => {
+      console.log("New user would like to enter the room. Socket: " + socketId + "\nUser: ", user);
+      this.approvingUserJoined.next(user);
+      this.addApprovalWaitingUser(socketId, user);
+    });
+
     this.socket.on('user-disconnected', (user) => {
       let userId = user?.clientId;
       if (this.peers[userId]) this.peers[userId].close();
@@ -220,6 +238,11 @@ export class ConnectionService {
       this.removeVideoStream(userId);
       this.userLeaveEvent.next(userId);
     });
+
+    this.socket.on('waiting-user-disconnected', (socketId) => {
+      console.log('[CONN] Waiting user disconnected: ', socketId);
+      this.removeApprovalWaitingUser(socketId);
+    })
 
     this.peer.on('connection', (conn) => {
       console.log('[CONN DATA IN] Incoming data connection with ' + conn.peer);
@@ -368,5 +391,23 @@ export class ConnectionService {
 
   public getVideos(): Observable<MediaStream[]> {
     return of(this.streams);
+  }
+
+  private addApprovalWaitingUser(socketId, user) {
+    this._usersOnApprovalArray.push([socketId, user]);
+    this.usersOnApproval.next(this._usersOnApprovalArray);
+    console.log(this._usersOnApprovalArray);
+  }
+  private removeApprovalWaitingUser(socketId) {
+    for (let i = 0; i < this._usersOnApprovalArray.length; i++) {
+      if(this._usersOnApprovalArray[i][0] === socketId) {
+        this._usersOnApprovalArray.splice(i, 1);
+        this.usersOnApproval.next(this._usersOnApprovalArray);
+      }
+    }
+  }
+  public approveWaitingUser(socketId:string, reply:boolean) {
+    this.socket.emit('join-room-request-answer', reply, socketId);
+    this.removeApprovalWaitingUser(socketId);
   }
 }

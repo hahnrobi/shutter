@@ -48,6 +48,13 @@ export class RoomManagerService {
       this._userManagerService.removeUser(value);
     });
 
+    this._connectionService.approvingUserJoined.subscribe(user => {
+      this.toastrService.show(
+        `${user.name} would like to join to the room.`,
+        `Join request`,
+        {limit: 1, position: NbGlobalLogicalPosition.BOTTOM_START, status: "info"});
+    })
+
 
     this._connectionService.incomingStreamEvent.subscribe(tuple => {
       console.log("%c[ROOM-MANAGER] Incoming stream: " + tuple[0], "color: green");

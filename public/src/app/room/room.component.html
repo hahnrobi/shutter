@@ -26,6 +26,7 @@
             <room-layout-selector [view]="view" (viewChanged)="this.viewChange($event)"></room-layout-selector>
         </div>
         <div class="sidebar-item user-list-container">
+            <app-waiting-list></app-waiting-list>
             <app-user-list></app-user-list>
         </div>
         <div class="sidebar-item chat-container">

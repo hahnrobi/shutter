@@ -1,0 +1,7 @@
+<div class="name">
+	{{ (entry[1].name.length>12)? (entry[1].name | slice:0:12)+'..':(entry[1].name) }}
+</div>
+<div class="buttons">
+	<button (click)="this.approveWaitingUser()" nbButton ghost size="small" nbTooltip="Approve to room" nbTooltipStatus="primary" status="success"><nb-icon icon="checkmark-outline"></nb-icon></button>
+	<button (click)="this.denyWaitingUser()" nbButton ghost size="small" nbTooltip="Deny join request" nbTooltipStatus="primary" status="danger"><nb-icon icon="close-outline"></nb-icon></button>
+</div>

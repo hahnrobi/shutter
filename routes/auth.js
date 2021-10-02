@@ -8,7 +8,7 @@ const validateToken = require("../includes/validate-token");
 
 module.exports = router;
 
-router.get('/api/protected', validateToken, function(req, res) {
+router.get('/api/protected', validateToken.validateToken, function(req, res) {
 	console.log(req.user);
 	res.send("Hello " + req.user);
 });

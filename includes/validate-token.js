@@ -1,6 +1,6 @@
 const jwt = require("jsonwebtoken");
 
-function validateToken(req, res, next) {
+module.exports.validateToken = (req, res, next) => {
 	const headerAuth = req.headers['authorization'];
 	const token = headerAuth && headerAuth.split(' ')[1];
 	if(token == null) {
@@ -21,5 +21,15 @@ function validateToken(req, res, next) {
   
 	
   }
-
-module.exports = validateToken;
+  module.exports.isTokenValid = (token) => {
+	try {
+		tk = jwt.verify(token, process.env.SHUTTER_ACCESS_TOKEN_SECRET);
+		if(tk.exp < Date.now()/1000) {
+			return false;
+		}else {
+			return tk;
+		}
+	}catch(err) {
+		throw err;
+	}
+}
