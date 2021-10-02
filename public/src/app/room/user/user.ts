@@ -9,14 +9,12 @@ export class User {
 	public status:UserStatus;
 	public spectator:boolean;
 	private _locallyMuted:boolean = false;
-	public localMuteStateChanged:Subject<boolean>;
+	public localMuteStateChanged:Subject<boolean> = new Subject<boolean>();
 	private _locallyPinned:boolean = false;
-	public locallyPinnedStateChanged:Subject<boolean>;
+	public locallyPinnedStateChanged:Subject<boolean> = new Subject<boolean>();
 	constructor() {
 		this.status = new UserStatus();
 		this.name = "Connecting...";
-		this.localMuteStateChanged = new Subject<boolean>();
-		this.locallyPinnedStateChanged = new Subject<boolean>();
 		this.spectator = false;
 	}
 	get locallyMuted():boolean {

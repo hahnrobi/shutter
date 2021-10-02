@@ -16,6 +16,7 @@ export class ConnectingDialogComponent implements OnInit {
   connecting = true;
 
   submittedPassword:string;
+  isPasswordSubmitted = false;
 
   constructor() {}
 
@@ -25,11 +26,13 @@ export class ConnectingDialogComponent implements OnInit {
       this.connecting = false;
       if(r.result == "failed" && r.reason == "wrong_password") {
         this.submittedPassword = "";
+        this.isPasswordSubmitted = false;
       }
     })
   }
 
   public authorizeWithPassword() {
+    this.isPasswordSubmitted = true;
     this.passwordSubmitted.next(this.submittedPassword);
   }
   faKey = faKey;

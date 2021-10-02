@@ -76,8 +76,8 @@ export class LayoutGalleryComponent implements OnInit {
         let Width = this.videoGrid.nativeElement.offsetWidth - (Margin * 2);
         let Height = this.videoGrid.nativeElement.offsetHeight - (Margin * 2);
         let max = 0;
-        console.log(Width)
-        console.log(Height)
+        //console.log(Width)
+        //console.log(Height)
     
     // loop (i recommend you optimize this)
         let i = 1;

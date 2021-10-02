@@ -12,7 +12,7 @@ import { LayoutSpotlightComponent } from './layouts/layout-spotlight/layout-spot
 import { ConnectingDialogComponent } from './dialogs/connecting-dialog/connecting-dialog.component';
 import { WaitingListComponent } from './user-list/waiting-list/waiting-list.component';
 import { WaitingUserComponent } from './user-list/waiting-list/waiting-user/waiting-user.component';
-import { NbButtonModule, NbCardModule, NbContextMenuModule, NbDialogModule, NbFormFieldModule, NbIconModule, NbInputModule, NbLayoutModule, NbMenuModule, NbMenuService, NbSelectModule, NbThemeModule, NbToastrModule, NbToggleModule, NbTooltipModule } from '@nebular/theme';
+import { NbButtonModule, NbCardModule, NbChatModule, NbContextMenuModule, NbDialogModule, NbFormFieldModule, NbIconModule, NbInputModule, NbLayoutModule, NbMenuModule, NbMenuService, NbSelectModule, NbThemeModule, NbToastrModule, NbToggleModule, NbTooltipModule } from '@nebular/theme';
 import { FormsModule } from '@angular/forms';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { NbEvaIconsModule } from '@nebular/eva-icons';
@@ -66,6 +66,7 @@ export function HttpLoaderFactory(http:HttpClient) {
     FormsModule,
     NbTooltipModule,
     NbCardModule,
+    NbChatModule,
     NbToggleModule,
     NbSelectModule,
     NbDialogModule.forRoot(),

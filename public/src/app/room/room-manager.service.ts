@@ -12,6 +12,7 @@ import { ConnectionService } from './connection.service';
 import { User } from './user/user';
 import { NbDialogService, NbToastRef } from '@nebular/theme';
 import { NbToastrService, NbGlobalLogicalPosition, NbComponentStatus } from '@nebular/theme';
+import { first } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root'
@@ -19,6 +20,7 @@ import { NbToastrService, NbGlobalLogicalPosition, NbComponentStatus } from '@ne
 export class RoomManagerService {
   selfDataProvider:ISelfDataProvider;
   private dialogService:NbDialogService;
+  private isConnectionServiceInitialized = false;
 
   constructor(private _connectionService:ConnectionService, private _userManagerService:UserManagerService, private _chatManagerService:ChatManagerService, private _lastSpeakersService:LastSpeakersService, private toastrService: NbToastrService, private _dialogService: NbDialogService) {
     this.selfDataProvider = new SelfDataLocalStorageProvider();
@@ -76,7 +78,7 @@ export class RoomManagerService {
       console.log("[ROOM-MANAGER] Message received: " + tuple[1]);
       let user = this._userManagerService.getUserByClientId(tuple[0]);
       if(user != null) {
-        this._chatManagerService.addMessage(tuple[1]);
+        this._chatManagerService.addMessage(new ChatMessage(user,tuple[1]));
         console.log(this._userManagerService.getUsersDirect());
       }else {
         console.error("[ROOM-MANAGER] Unknown user clientId: " + tuple[0]);
@@ -97,14 +99,15 @@ export class RoomManagerService {
 
     })
 
-    this._connectionService.initDone.subscribe((v) => {
+    this._connectionService.joinedToRoom.pipe(first()).subscribe((v) => {
       if(v) {
-        this._lastSpeakersService.init();
+        _lastSpeakersService.init();
+        _lastSpeakersService.speakersList.subscribe(speakers => {
+          console.log("Speaking speakers: ", speakers);
+        })
       }
     })
-    this._lastSpeakersService.speakersList.subscribe(speakers => {
-      console.log("Speaking speakers: ", speakers);
-    })
+
 
 
   }
@@ -112,6 +115,6 @@ export class RoomManagerService {
     return this._userManagerService.getUsers();
   }
   public connectToRoom(roomId:string, service:LocalInputProviderService = null, password?:string):void {
-    this._connectionService.startConnection(roomId, service, password);
+      this._connectionService.startConnection(roomId, service, password);
   }
 }

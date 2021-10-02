@@ -5,7 +5,7 @@
 	<div class="line"></div>
 	<svg aria-hidden="true" focusable="false" data-prefix="fas" data-icon="server" class="server svg-inline--fa fa-server fa-w-16" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512"><path fill="currentColor" d="M480 160H32c-17.673 0-32-14.327-32-32V64c0-17.673 14.327-32 32-32h448c17.673 0 32 14.327 32 32v64c0 17.673-14.327 32-32 32zm-48-88c-13.255 0-24 10.745-24 24s10.745 24 24 24 24-10.745 24-24-10.745-24-24-24zm-64 0c-13.255 0-24 10.745-24 24s10.745 24 24 24 24-10.745 24-24-10.745-24-24-24zm112 248H32c-17.673 0-32-14.327-32-32v-64c0-17.673 14.327-32 32-32h448c17.673 0 32 14.327 32 32v64c0 17.673-14.327 32-32 32zm-48-88c-13.255 0-24 10.745-24 24s10.745 24 24 24 24-10.745 24-24-10.745-24-24-24zm-64 0c-13.255 0-24 10.745-24 24s10.745 24 24 24 24-10.745 24-24-10.745-24-24-24zm112 248H32c-17.673 0-32-14.327-32-32v-64c0-17.673 14.327-32 32-32h448c17.673 0 32 14.327 32 32v64c0 17.673-14.327 32-32 32zm-48-88c-13.255 0-24 10.745-24 24s10.745 24 24 24 24-10.745 24-24-10.745-24-24-24zm-64 0c-13.255 0-24 10.745-24 24s10.745 24 24 24 24-10.745 24-24-10.745-24-24-24z"></path></svg>
 </div>
-	<h1 style="text-align: center;">Connecting...</h1></div>
+	<h1 style="text-align: center;">{{ 'Connecting...' | translate }}</h1></div>
 <div *ngIf="this.askToPassword">
 
   <nb-card>
@@ -38,9 +38,36 @@
 	  <div *ngIf="(this.reply$ | async)?.reason == 'wrong_password'" style="color: red; margin-bottom: 10px;">
 		{{'Wrong password, please try again.' | translate}}
 	  </div>
-	  <button nbButton (click)="authorizeWithPassword()">{{'Join Room' | translate}}</button>
+	  <button *ngIf="!this.isPasswordSubmitted" nbButton (click)="authorizeWithPassword()">{{'Join Room' | translate}}</button>
+    <button *ngIf="this.isPasswordSubmitted" nbButton disabled (click)="authorizeWithPassword()">{{'Join Room' | translate}}</button>
     </nb-card-body>
   </nb-card>
 
   
+</div>
+
+<div *ngIf="(this.reply$ | async)?.reason == 'no_auth_user'" style="margin-bottom: 10px;">
+  <nb-card>
+    <nb-card-body class="container">
+      <h1>{{ 'The room owner cannot let you in.' | translate }}</h1>
+      <p>{{ 'The owner of the room is not connected to the room to autenticate you.' | translate }}</p>
+    </nb-card-body>
+  </nb-card>
+</div>
+<div *ngIf="(this.reply$ | async)?.reason == 'waiting_approval'" style="margin-bottom: 10px;">
+  <nb-card>
+    <nb-card-body class="container">
+      <h1>{{ 'Waiting to approve.' | translate }}</h1>
+      <p>{{ 'We notified the room owner about your join request. Please wait for its decision.' | translate }}</p>
+    </nb-card-body>
+  </nb-card>
+</div>
+<div *ngIf="(this.reply$ | async)?.reason == 'approval_denied'" style="margin-bottom: 10px;">
+  <nb-card>
+    <nb-card-body class="container">
+      <svg aria-hidden="true" style="width: 64px; height: 64px; display: block;margin: auto;" focusable="false" data-prefix="fas" data-icon="exclamation" class="svg-inline--fa fa-exclamation fa-w-6" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 512"><path fill="currentColor" d="M176 432c0 44.112-35.888 80-80 80s-80-35.888-80-80 35.888-80 80-80 80 35.888 80 80zM25.26 25.199l13.6 272C39.499 309.972 50.041 320 62.83 320h66.34c12.789 0 23.331-10.028 23.97-22.801l13.6-272C167.425 11.49 156.496 0 142.77 0H49.23C35.504 0 24.575 11.49 25.26 25.199z"></path></svg>
+      <h1>{{ 'Join request denied' | translate }}</h1>
+      <p>{{ 'Sorry, the room owner denied your request to join to the room.' | translate }}</p>
+    </nb-card-body>
+  </nb-card>
 </div>

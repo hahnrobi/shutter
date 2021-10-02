@@ -15,5 +15,12 @@
 	"Password": "Jelszó",
 	"Toggle password visibility": "Jelszó láthatóságának váltása",
 	"Wrong password, please try again.": "Rossz jelszó, kérlek próbáld újra.",
-	"(you)": "(én)"
+	"(you)": "(én)",
+	"The room owner cannot let you in.": "A szoba tulajdonosa nem tud beengedni.",
+	"The owner of the room is not connected to the room to autenticate you.": "Jelenleg nincs kapcsolódva a szobához annak tulajdonosa, hogy beengedhessen.",
+	"Waiting to approve.": "Várakozás a jóváhagyásra.",
+	"We notified the room owner about your join request. Please wait for its decision.": "Értesítettük a szoba tulajdonosát a csatlakozási kérelmedről. Kérlek várj amíg döntést hoz.",
+	"Join request denied": "Csatlakozási kérelem visszautasítva.",
+	"Sorry, the room owner denied your request to join to the room.": "Sajnáljuk, de a szoba tulajdonosa visszautasította a csatlakozási kérelmed a szobához.",
+	"Connecting...": "Kapcsolódás..."
 }

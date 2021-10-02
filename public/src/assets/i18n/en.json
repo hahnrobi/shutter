@@ -15,6 +15,13 @@
 	"Password": "Password",
 	"Toggle password visibility": "Toggle password visibility",
 	"Wrong password, please try again.": "Wrong password, please try again.",
-	"(you)": "(you)"
+	"(you)": "(you)",
+	"The room owner cannot let you in.": "The room owner cannot let you in.",
+	"The owner of the room is not connected to the room to autenticate you.": "The owner of the room is not connected to the room to autenticate you.",
+	"Waiting to approve.": "Waiting to approve.",
+	"We notified the room owner about your join request. Please wait for its decision.": "We notified the room owner about your join request. Please wait for it's decision.",
+	"Join request denied": "Join request denied",
+	"Sorry, the room owner denied your request to join to the room.": "Sorry, the room owner denied your request to join to the room.",
+	"Connecting...": "Kapcsolódás..."
 
 }

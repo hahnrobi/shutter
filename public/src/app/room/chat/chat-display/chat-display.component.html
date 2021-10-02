@@ -6,3 +6,12 @@
 	</div>
 	<input class="message-input" type="text" [(ngModel)]="messageBoxText" (keydown.enter)="this.sendMessage();false" nbInput placeholder="{{'Message' | translate}}" />
 </div>
+<!--<nb-chat title="Nebular Conversational UI" *ngIf="this.messages != null">
+	<nb-chat-message  *ngFor="let msg of this.messages"
+	[message]="msg.message"
+	[sender]="msg.sender.name">
+</nb-chat-message>
+<nb-chat-form (send)="this.sendMessage()"  [dropFiles]="true">
+</nb-chat-form>
+</nb-chat>
+-->

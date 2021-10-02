@@ -10,11 +10,8 @@ import { Injectable } from '@angular/core';
 import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
 import { io } from 'socket.io-client';
 import { ReplaySubject } from 'rxjs';
-import { convertPropertyBindingBuiltins } from '@angular/compiler/src/compiler_util/expression_converter';
-import { Local } from 'protractor/built/driverProviders';
 import { User } from './user/user';
-import { send } from 'process';
-import { tap } from 'rxjs/operators';
+import { first } from 'rxjs/operators';
 
 declare var Peer: any;
 @Injectable({
@@ -32,7 +29,8 @@ export class ConnectionService {
 
   public selfStreamProvider: MediaStreamProvider = new MediaStreamProvider(null);
 
-  public initDone: BehaviorSubject<boolean>;
+  public initDone:boolean = false;
+  
 
   public peers = [];
   public clientId: string;
@@ -52,11 +50,11 @@ export class ConnectionService {
   public userLeaveEvent: ReplaySubject<string> = new ReplaySubject<string>(1);
   public incomingStreamEvent: ReplaySubject<[string, MediaStreamProvider]> = new ReplaySubject<[string, MediaStreamProvider]>(1);
   public statusChanged: ReplaySubject<[string, UserStatus]> = new ReplaySubject<[string, UserStatus]>(1);
-  public receiveMessage: ReplaySubject<[string, ChatMessage]> = new ReplaySubject<[string, ChatMessage]>(1);
+  public receiveMessage: ReplaySubject<[string, string]> = new ReplaySubject<[string, string]>(1);
   public userDataIncoming: ReplaySubject<[string, SelfDataTransfer]> = new ReplaySubject<[string, SelfDataTransfer]>(1);
+  public joinedToRoom:ReplaySubject<boolean> = new ReplaySubject<boolean>();
 
   constructor() {
-    this.initDone = new BehaviorSubject<boolean>(false);
     this.usersOnApproval = new Subject<[string, User][]>();
     this.usersOnApproval.next(this._usersOnApprovalArray);
   }
@@ -95,7 +93,7 @@ export class ConnectionService {
     return sendingData;
   }
   private async init(localInputProvider: LocalInputProviderService = null) {
-    this.socket = io('/');
+    this.socket = await io('/');
 
     //TODO: FROM AUTH MODULE EVERYTHING
     //REAL TOKEN NEEDS TO BE ADDED HERE:
@@ -104,8 +102,7 @@ export class ConnectionService {
       this.socket.emit("user-token", localToken); 
     }
     
-    console.log('[CONN] Socket ID: ', this.socket.id);
-    console.log('[CONN] Socket ID: ', this.socket);
+    console.log('[CONN] Socket: ', this.socket);
     console.log(this.peer);
 
     let userMediaQuery = {
@@ -150,15 +147,16 @@ export class ConnectionService {
       this.setUpConnections(null, true);
     } else {
       console.log('[CONN] Got video and audio permission. Joining...');
-      navigator.mediaDevices.getUserMedia(userMediaQuery).then((stream) => {
+      await navigator.mediaDevices.getUserMedia(userMediaQuery).then((stream) => {
         this.setUpConnections(stream, false);
       });
     }
 
-    this.initDone.next(true); //init done.
+    this.initDone = true; //init done.
     this.connectToRoom();
   }
-  private async connectToRoom() {
+  private connectToRoom() {
+    console.log("[CONN] Connecting to room...");
     this.socket.on('join-room-answer', (object) => {
       let conn = new ConnectionInitReply();
       conn.reason = object.reason;
@@ -175,12 +173,18 @@ export class ConnectionService {
     console.log('[CONN] My id is: ' + myData.clientId);
     console.log('[CONN] My own details initially sent: ', myData);
     this.authData.submittedPassword = undefined;
+    this.connectionStatusChanged.subscribe(state => {
+      console.log(state);
+      if(state.result == "successful") {
+        this.startMediaAnalysis(myData.spectator);
+        console.log("%c[CONN] ✅ Successfully joined to the room.", "color: green")
+        this.joinedToRoom.next(true);
+      }else {
+        console.log("%c[CONN] ❌ Join failed. Reason: ", "color: red", state.reason);
+      }
+    })
   }
-
-  private setUpConnections(stream: MediaStream = null, spectator = false) {
-    this.selfStreamProvider.setMediaStream(stream);
-    this.selfStream = this.selfStreamProvider.getStream();
-
+  private startMediaAnalysis(spectator) {
     if (!spectator) {
       this.selfStreamProvider.measureMicLevel();
       this.selfStreamProvider.isSpeaking.subscribe((talkState) => {
@@ -192,6 +196,12 @@ export class ConnectionService {
         this.updateSpeakingStateStatus(talkState);
       });
     }
+  }
+
+  private setUpConnections(stream: MediaStream = null, spectator = false) {
+    this.selfStreamProvider.setMediaStream(stream);
+    this.selfStream = this.selfStreamProvider.getStream();
+
 
     this.incomingStreamEvent.next([this.clientId, this.selfStreamProvider]);
 
@@ -202,6 +212,7 @@ export class ConnectionService {
       let opts = call.options;
       console.log('[CONN] Call options: ');
       console.log(opts);
+
       let caller = opts.metadata.caller;
       console.log('[CONN] Incoming call... answering...');
       call.answer(this.selfStream);
@@ -212,6 +223,7 @@ export class ConnectionService {
         this.incomingStreamEvent.next([caller.id, mediaStreamProvider]);
       });
     });
+    
 
     let myData = this.getMyDataForPreSending();
     console.log(myData);
@@ -283,6 +295,7 @@ export class ConnectionService {
         });
       });
     });
+    console.log("[CONN] READY TO CALL");
   }
   public addVideoStream(stream: MediaStream, id: string) {
     console.log('[CONN] Adding video stream: ' + id);
@@ -299,7 +312,7 @@ export class ConnectionService {
     //Me connecting to other user who joined the room.
     let opts = { metadata: { caller: { id: this.clientId } } };
     const call = this.peer.call(userId, stream, opts);
-    console.log('[CONN] Calling user: ' + userId);
+    console.log('[CONN] Calling user: ' + userId, stream);
     call.on('stream', (userVideoStream) => {
       console.log('[CONN] Receiving stream from: ' + userId);
       this.addVideoStream(userVideoStream, userId);
@@ -385,7 +398,7 @@ export class ConnectionService {
     console.log(this.dataConnections);
     for (let key in this.dataConnections) {
       console.log('[CONN DATA] Sending my message.');
-      this.dataConnections[key].send(['chatMessage', message]);
+      this.dataConnections[key].send(['chatMessage', message.message]);
     }
   }
 

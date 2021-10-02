@@ -110,7 +110,7 @@ io.on('connection', socket => {
 						correct = bcrypt.compareSync(auth.submittedPassword, roomData.auth_password);
 					}
 					if(!correct) canJoin = false;
-				}else {
+				} if(roomData.auth_type == "approve") {
 					authType = "approve";
 					console.log("Approval needed to enter.");
 					canJoin = false;
@@ -130,6 +130,7 @@ io.on('connection', socket => {
 		}
 		
 		if(canJoin) {
+			console.log(socket.id + " user can join");
 			socket.emit('join-room-answer', {result: "successful"});
 			joinUserToRoom(socket, user, roomId);
 		}else {
@@ -156,7 +157,7 @@ io.on('connection', socket => {
 									searchSocket.on('join-room-request-answer', (reply, socketId) => {
 										console.log("[ " + socket.id + " ] Owner replied to auth request.");
 										if(reply === true) {
-											socket.emit("join-room-answer", {result: "successful"});
+											socket.emit('join-room-answer', {result: "successful"});
 											console.log("[ " + socket.id + " ] Owner approved user to the room.");
 											joinUserToRoom(socket, user, roomId);
 										}else {

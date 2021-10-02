@@ -20,8 +20,13 @@ export class ChatDisplayComponent implements OnInit {
        //this._chatManagerService.addingMessage.subscribe((msg) => {this.messages = ; this.changeDetection.detectChanges();});
   }
 
-  public sendMessage() {
-    let msg = new ChatMessage(null, this.messageBoxText);
+  public sendMessage(message = null) {
+    let msg:ChatMessage;
+    if(message) {
+      msg = new ChatMessage(null, message);  
+    }else {
+      msg = new ChatMessage(null, this.messageBoxText);  
+    }
     this._chatManagerService.sendMessage(msg);
     this.messageBoxText = "";
   }
