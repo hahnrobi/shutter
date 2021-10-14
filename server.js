@@ -46,6 +46,12 @@ app.set('view engine', 'ejs');
 app.use(express.static('public/dist/shutter'));
 app.use(express.json());
 
+/*app.use('/peerjs', require('peer').ExpressPeerServer(srv, {
+	debug: true
+}))*/
+
+
+
 app.use(expressWinston.logger({
 	transports: [
 	  new winston.transports.Console()
@@ -68,7 +74,7 @@ app.get("/assets/i18n/:file", (req, res) => {
 	res.redirect("/dist/shutter/assets/i18n/"+req.params.file);
 })
 
-app.get('/:room', (req, res) => {
+app.get('/:room(*)', (req, res) => {
 	res.render('room', {roomId: req.params.room});
 })
 
@@ -223,4 +229,3 @@ const start = async() => {
 
 start();
 //server_https.listen(4430);
-

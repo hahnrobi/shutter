@@ -1,3 +1,4 @@
+import { LocalizationProviderModule } from './localization-provider/localization-provider.module';
 
 import { BrowserModule } from '@angular/platform-browser';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
@@ -10,7 +11,7 @@ import { AppComponent } from './app.component';
 import { RoomComponent } from './room/room.component';
 import { VideoelementComponent } from './room/videoelement/videoelement.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { NbThemeModule, NbLayoutModule, NbButtonModule, NbIconModule, NbInputModule, NbDialogModule, NbToastrModule, NbContextMenuModule, NbMenuService, NbMenuModule, NbTooltipModule, NbSelectModule, NbToggleModule, NbCardComponent, NbCardHeaderComponent, NbCardBodyComponent, NbCardFooterComponent, NbCardModule, NbFormFieldModule } from '@nebular/theme';
+import { NbThemeModule, NbLayoutModule, NbButtonModule, NbIconModule, NbInputModule, NbDialogModule, NbToastrModule, NbContextMenuModule, NbMenuService, NbMenuModule, NbTooltipModule, NbSelectModule, NbToggleModule, NbCardComponent, NbCardHeaderComponent, NbCardBodyComponent, NbCardFooterComponent, NbCardModule, NbFormFieldModule, NbCheckboxModule, NbAlertModule } from '@nebular/theme';
 import { NbEvaIconsModule } from '@nebular/eva-icons';
 import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { ChatDisplayComponent } from './room/chat/chat-display/chat-display.component';
@@ -21,17 +22,15 @@ import { OverlayContainer } from '@angular/cdk/overlay';
 import { LayoutSelectorComponent } from './room/layout-selector/layout-selector.component';
 import { LayoutGalleryComponent } from './room/layouts/layout-gallery/layout-gallery.component';
 import { LayoutSpotlightComponent } from './room/layouts/layout-spotlight/layout-spotlight.component';
-import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
-import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+
 import { ConnectingDialogComponent } from './room/dialogs/connecting-dialog/connecting-dialog.component';
 import { WaitingListComponent } from './room/user-list/waiting-list/waiting-list.component';
 import { WaitingUserComponent } from './room/user-list/waiting-list/waiting-user/waiting-user.component';
 
 import {RoomModule} from './room/room.module';
+import {AuthModule} from './auth/auth.module';
 
-export function HttpLoaderFactory(http:HttpClient) {
-  return new TranslateHttpLoader(http);
-}
+
 
 @NgModule({
   declarations: [
@@ -39,7 +38,10 @@ export function HttpLoaderFactory(http:HttpClient) {
     ],
   imports: [
     BrowserModule,
-    RoomModule,
+    BrowserAnimationsModule,
+    //RoomModule,
+    LocalizationProviderModule,
+    AuthModule,
     HttpClientModule,
     CommonModule,
     AppRoutingModule,
@@ -47,6 +49,7 @@ export function HttpLoaderFactory(http:HttpClient) {
     NbThemeModule.forRoot({ name: 'dark' }),
     NbLayoutModule,
     NbEvaIconsModule,
+    NbCheckboxModule,
     NbButtonModule,
     NbIconModule,
     NbFormFieldModule,
@@ -62,13 +65,7 @@ export function HttpLoaderFactory(http:HttpClient) {
     NbDialogModule.forRoot(),
     NbToastrModule.forRoot(),
     NbMenuModule.forRoot(),
-    TranslateModule.forRoot({
-      loader: {
-        provide: TranslateLoader,
-        useFactory: HttpLoaderFactory,
-        deps: [HttpClient]
-    }
-    })
+
   ],
   providers: [NbMenuService],
   bootstrap: [AppComponent]

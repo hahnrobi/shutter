@@ -6,8 +6,12 @@ import {TranslateModule} from '@ngx-translate/core';
 
 const routes: Routes = [
   {
-    path: ':room',
-    loadChildren: './room.module#RoomModule'
+    path: 'room',
+    loadChildren: './room/room.module#RoomModule'
+  },
+  {
+    path: 'auth',
+    loadChildren: './auth/auth.module#AuthModule'
   },
   {path: "", component: AppComponent}
 ];

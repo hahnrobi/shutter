@@ -22,6 +22,25 @@
 	"We notified the room owner about your join request. Please wait for its decision.": "We notified the room owner about your join request. Please wait for it's decision.",
 	"Join request denied": "Join request denied",
 	"Sorry, the room owner denied your request to join to the room.": "Sorry, the room owner denied your request to join to the room.",
-	"Connecting...": "Kapcsolódás..."
+	"Connecting...": "Connecting...",
+	"Login": "Login",
+	"Hello! Log in with your email.": "Hello! Log in with your email.",
+	"Oh snap!": "Oh snap!",
+	"Hooray!": "Hooray",
+	"Email address": "Email address",
+	"Email is required!": "Email is required!",
+	"Email should be the real one!": "Email should be the real one!",
+	"Password is required!": "Password is required!",
+	"Password should contains": "Password should contains",
+	"from": "from",
+	"to": "to",
+	"characters": "characters",
+	"Log In": "Log In",
+	"Dont have an account?": "Don't have an account?",
+	"Register": "Register",
+	"Login/Email combination is not correct, please try again.": "Email or password is not correct, please try again."
+
+
+
 
 }

@@ -12,8 +12,10 @@ router.get('/api/protected', validateToken.validateToken, function(req, res) {
 	console.log(req.user);
 	res.send("Hello " + req.user);
 });
-
-router.post('/auth/login', async (req, res) => {
+router.delete('/api/auth/logout', async(req, res) => {
+	res.sendStatus(200);
+})
+router.post('/api/auth/login', async (req, res) => {
   try {
 	  if(req.body != "") {
 		  let params = eval(req.body);
@@ -22,6 +24,7 @@ router.post('/auth/login', async (req, res) => {
 
 		  let userId;
 		  console.log(req.body);
+		  console.log(params.email);
 		  try {
 			  let u = await userController.getSingleUserByEmail(params.email);
 			  if(u != null) {
@@ -47,5 +50,3 @@ router.post('/auth/login', async (req, res) => {
 	  res.send(err);
   }
 })
-
-

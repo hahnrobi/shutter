@@ -38,12 +38,9 @@ async function getUser(id) {
 exports.getSingleUserByEmail = async (email) => {
   try {
     const user = await User.findOne({email: email}).exec();
-	if(user == null) {
-		return reply.sendStatus(404);
-	}
     return user;
   } catch (err) {
-    reply.sendStatus(400);
+    return null;
   }
 }
 

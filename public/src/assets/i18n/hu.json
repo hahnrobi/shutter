@@ -22,5 +22,21 @@
 	"We notified the room owner about your join request. Please wait for its decision.": "Értesítettük a szoba tulajdonosát a csatlakozási kérelmedről. Kérlek várj amíg döntést hoz.",
 	"Join request denied": "Csatlakozási kérelem visszautasítva.",
 	"Sorry, the room owner denied your request to join to the room.": "Sajnáljuk, de a szoba tulajdonosa visszautasította a csatlakozási kérelmed a szobához.",
-	"Connecting...": "Kapcsolódás..."
+	"Connecting...": "Kapcsolódás...",
+	"Login": "Bejelentkezés",
+	"Hello! Log in with your email.": "Szia! Kérlek jelentkezz be az email címeddel.",
+	"Oh snap!": "A csuda vigye el!",
+	"Hooray!": "Ezaz!",
+	"Email address": "Email cím",
+	"Email is required!": "Email cím megadása kötelező!",
+	"Email should be the real one!": "Kérlek email címet adj meg!",
+	"Password is required!": "Jelszó megadása kötelező!",
+	"Password should contains": "A jelszónak",
+	"from": "legalább",
+	"to": "maximum",
+	"characters": "karakter hosszúnak kell lennie",
+	"Log In": "Bejelentkezés",
+	"Dont have an account?": "Nincs még fiókod?",
+	"Register": "Regisztrálj!",
+	"Login/Email combination is not correct, please try again.": "A beírt email cím/jelszó páros helytelen. Kérlek próbáld újra."
 }
