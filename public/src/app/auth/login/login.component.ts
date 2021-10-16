@@ -5,7 +5,7 @@ import { Router } from '@angular/router';
 import { NbAuthService, NbAuthResult, NB_AUTH_OPTIONS} from '@nebular/auth';
 
 @Component({
-  selector: 'nb-login',
+  selector: 'auth-login',
   templateUrl: './login.component.html',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })

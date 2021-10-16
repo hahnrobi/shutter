@@ -1,5 +1,5 @@
 import { FormsModule } from '@angular/forms';
-import { NbAlertModule, NbCheckboxModule, NbInputModule, NbButtonModule } from '@nebular/theme';
+import { NbAlertModule, NbCheckboxModule, NbInputModule, NbButtonModule, NbIconModule, NbTooltipModule, NbToastrModule } from '@nebular/theme';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
@@ -9,15 +9,19 @@ import {
 } from '@nebular/auth';
 import { AuthRoutingModule } from './auth-routing.module';
 import { LoginComponent } from './login/login.component';
-import { LocalizationProviderModule } from '../localization-provider/localization-provider.module';
 import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
 import { HttpClient } from '@angular/common/http';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
+import { UserTopMenuComponent } from './user-top-menu/user-top-menu.component';
+import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
+import { NbEvaIconsModule } from '@nebular/eva-icons';
+import { LogoutComponent } from './logout/logout.component';
+import { RegisterComponent } from './register/register.component';
 export function HttpLoaderFactory(http:HttpClient) {
   return new TranslateHttpLoader(http);
 }
 @NgModule({
-  declarations: [LoginComponent],
+  declarations: [LoginComponent, UserTopMenuComponent, LogoutComponent, RegisterComponent],
   imports: [
     CommonModule,
     TranslateModule,
@@ -26,21 +30,35 @@ export function HttpLoaderFactory(http:HttpClient) {
     NbInputModule,
     NbButtonModule,
     FormsModule,
+    NbButtonModule,
+    NbEvaIconsModule,
+    NbTooltipModule,
+    NbIconModule,
 
     AuthRoutingModule,
     NbAuthModule.forRoot({
       strategies: [
         NbPasswordAuthStrategy.setup({
           name: 'email',
+          baseEndpoint: '/api/',
           token: {
             class: NbAuthJWTToken,
             key: 'token',
+          },
+          login: {
+            endpoint: 'auth/login',
+          },
+          logout: {
+            endpoint: 'auth/logout'
+          },
+          register: {
+            endpoint: 'user',
           },
         }),
       ],
       forms: {
         login: {
-          redirectDelay: 500,
+          redirectDelay: 3000,
           strategy: 'email',
           showMessages: {
             success: true,
@@ -75,6 +93,7 @@ export function HttpLoaderFactory(http:HttpClient) {
         logout: {
           redirectDelay: 500,
           strategy: 'email',
+          requireValidToken: false,
         },
         validation: {
           password: {
@@ -94,5 +113,6 @@ export function HttpLoaderFactory(http:HttpClient) {
       },
     }),
   ],
+  exports: [UserTopMenuComponent]
 })
 export class AuthModule {}

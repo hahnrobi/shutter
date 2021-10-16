@@ -6,11 +6,10 @@
     <nb-option value="en" (click)="changeLanguage('en')">English</nb-option>
     <nb-option value="hu" (click)="changeLanguage('hu')">Magyar</nb-option>
   </nb-select>
+  <auth-user-top-menu></auth-user-top-menu>
   </nb-layout-header>
 
   <nb-layout-column>
-    {{'Join Room' | translate}}
-    <a routerLink="/auth/register">register</a>
     <router-outlet></router-outlet>
     <!--<app-room style="width: 100%; height: 100%"></app-room>-->
   </nb-layout-column>

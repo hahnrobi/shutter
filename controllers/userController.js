@@ -2,6 +2,8 @@
 const mongoose = require('mongoose')
 const bcrypt = require('bcryptjs');
 const validator = require("email-validator");
+const jwt = require('jsonwebtoken');
+const jwtGenerator = require('../includes/jwt-generator');
 
 // Get Data Models
 const User = require("../models/User");
@@ -63,6 +65,7 @@ exports.getSingleUserPassword = async (id) => {
 exports.addUser = async (req, reply) => {
 	try {
 		input = {...req.body};
+		console.log("Registration attempt with the following data: ", input);
 		const user = new User()
 		user._id = new mongoose.Types.ObjectId();
 
@@ -76,7 +79,7 @@ exports.addUser = async (req, reply) => {
 		if(input.hasOwnProperty("email") && validator.validate(input.email)) {
 			user.email = input.email;
 			const emailCheck = await User.findOne({email: user.email}).exec();
-			console.log(emailCheck);
+			console.log("Email check: ", emailCheck);
 			if(emailCheck != null) {
 				reply.statusCode = 400;
 				return reply.send("Email address already registered");
@@ -94,10 +97,15 @@ exports.addUser = async (req, reply) => {
 			return reply.send("Password required");
 		}
 
-
 		reply.statusCode = 200;
 		const savedUser = await user.save();
-		reply.send(await getUser(savedUser._id));
+		let token = jwtGenerator.generate({"user":savedUser.id});
+		if(reply.statusCode == 200) {
+			console.log("Registration successfull.");
+			console.log(token);
+			reply.send({"token": jwt.sign(token, process.env.SHUTTER_ACCESS_TOKEN_SECRET), "data": token});
+		}
+		//reply.send(await getUser(savedUser._id));
 
 	} catch (err) {
 	  reply.send(err);

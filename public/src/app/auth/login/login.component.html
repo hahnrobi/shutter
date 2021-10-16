@@ -9,7 +9,7 @@
 </nb-alert>
 
 <nb-alert *ngIf="showMessages.success && messages?.length && !submitted" outline="success" role="alert">
-  <p class="alert-title"><b>{{ 'Hooray!' || translate</b></p>
+  <p class="alert-title"><b>{{ 'Hooray!' | translate }}</b></p>
   <ul class="alert-message-list">
     <li *ngFor="let message of messages" class="alert-message">{{ message | translate}}</li>
   </ul>

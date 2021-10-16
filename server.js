@@ -70,6 +70,13 @@ app.use(expressWinston.logger({
 app.get('/', (req, res) => {
 	res.redirect('/'+uuidV4());
 });
+
+
+app.use(require('./routes/auth'))
+app.use(require('./routes/rooms'))
+app.use(require('./routes/users'))
+
+
 app.get("/assets/i18n/:file", (req, res) => {
 	res.redirect("/dist/shutter/assets/i18n/"+req.params.file);
 })
@@ -78,20 +85,25 @@ app.get('/:room(*)', (req, res) => {
 	res.render('room', {roomId: req.params.room});
 })
 
+
 io.on('connection', socket => {
 	socket.on('user-token', (token) => {
+		console.log(token);
 		try {
 			tk = validateToken.isTokenValid(token);
-			console.log("received token for: " + socket.id + ", with token:", tk);
+			console.log("[TOKEN] Received token for: " + socket.id + ", with token:", tk);
 			if(tk !== false) {
 				socket.userId = tk.user;
 			}
 		}catch(err) {
+			console.log("Error in receiving user token.");
+			console.log(err);
 			socket.userId = undefined;
 		}
 	})
 	socket.on('join-room', async (roomId, user, auth = {}) => {
 		let roomData;
+		console.log("Auth data: ", auth);
 		try {
 			roomData = await roomController.getSingleRoomFromDb(roomId, true);
 		}
@@ -121,14 +133,18 @@ io.on('connection', socket => {
 					console.log("Approval needed to enter.");
 					canJoin = false;
 
-					if(socket.userId != undefined) {
-						if(roomData.owner._id === socket.userId) {
-							//the owner wants to join
-							canJoin = true;
-							console.log("The user is the owner of the room.");
+					if(auth.hasOwnProperty("token")) {
+						const token = validateToken.isTokenValid(auth.token)
+						if(token !== false) {
+							if(roomData.owner._id === token.user) {
+								//the owner wants to join
+								canJoin = true;
+								socket.userId = token.user;
+								console.log("The user is the owner of the room.");
 
-						} else {
-							//TODO: someone else (with account), check if they're already approved to toom
+							} else {
+								//TODO: someone else (with account), check if they're already approved to toom
+							}
 						}
 					}
 				}
@@ -196,6 +212,7 @@ function joinUserToRoom(socket, user, roomId) {
 	socket.to(roomId).broadcast.emit('user-connected', user);
 
 	socket.once('disconnect', () => {
+		console.log("Room: "+ roomId + " disconnected: " + user.status.clientId);
 		socket.to(roomId).broadcast.emit('user-disconnected', user);
 	});
 }
@@ -209,9 +226,7 @@ const jsonErrorHandler = async (err, req, res, next) => {
   app.use(jsonErrorHandler)
 
 
-app.use(require('./routes/auth'))
-app.use(require('./routes/rooms'))
-app.use(require('./routes/users'))
+
 
 const start = async() => {
 	try {

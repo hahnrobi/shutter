@@ -45,7 +45,7 @@ export function HttpLoaderFactory(http:HttpClient) {
     LayoutSpotlightComponent,
     ConnectingDialogComponent,
     WaitingListComponent,
-    WaitingUserComponent,
+    WaitingUserComponent
     ],
   imports: [
     RoomRoutingModule,
@@ -67,10 +67,10 @@ export function HttpLoaderFactory(http:HttpClient) {
     NbChatModule,
     NbToggleModule,
     NbSelectModule,
-    NbDialogModule.forRoot(),
-    NbToastrModule.forRoot(),
+    NbToastrModule,
     NbMenuModule.forRoot(),
-    TranslateModule.forChild()
+    TranslateModule.forChild(),
+    NbDialogModule.forChild(),
   ],
   exports: [
     RoomComponent,

@@ -1,3 +1,4 @@
+import { NbDialogService, NbGlobalLogicalPosition, NbToastrService } from '@nebular/theme';
 import { ConnectionInitReply } from './connection-init-reply';
 import { RoomDetailsProviderService } from './../room-details-provider.service';
 import { LocalInputProviderService } from './local-input-provider.service';
@@ -10,6 +11,7 @@ import { ReplaySubject, Subscription } from 'rxjs';
 import { User } from './user/user';
 import { ActivatedRoute } from '@angular/router';
 import { animate, style, transition, trigger } from '@angular/animations';
+import { TranslateService } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-room',
@@ -44,7 +46,7 @@ export class RoomComponent implements OnInit {
     { title: 'Gallery', icon: "camera-outline", target: "galleryView" },
     { title: 'Spotlight', icon: "crop-outline", target: "spotlightView" }];
 
-  constructor(private _roomDetailsProvider:RoomDetailsProviderService, private _roomManagerSerivce:RoomManagerService, private _connectionService:ConnectionService, private iterableDiffers: IterableDiffers, private route: ActivatedRoute) {
+  constructor(private _roomDetailsProvider:RoomDetailsProviderService, private _roomManagerSerivce:RoomManagerService, private _connectionService:ConnectionService, private iterableDiffers: IterableDiffers, private route: ActivatedRoute, private toastrService:NbToastrService, private translate: TranslateService) {
     this.iterableDiffer = iterableDiffers.find([]).create(null);
     this.roomDetailsProviderService = _roomDetailsProvider;
     route.params.subscribe(p => {this.roomId = p.room;});
@@ -126,6 +128,20 @@ export class RoomComponent implements OnInit {
     let user = new User();
     user.name = "Test";
     this.users.push(user);
+  }
+
+  private leaveRoomTries = 0;
+  public leaveRoom() {
+    if(this.leaveRoomTries == 0) {
+        this.toastrService.show(
+          'Really want to exit?',
+          `Please tap again to conform.`,
+          {limit: 1, position: NbGlobalLogicalPosition.BOTTOM_START, status: "info"});
+        this.leaveRoomTries++;
+    } else {
+      this._connectionService.disconnect();
+    }
+    
   }
 
 

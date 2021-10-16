@@ -61,7 +61,7 @@ export class MediaStreamProvider {
 		if(this.stream) {
 			let tracks = this.stream.getVideoTracks();
 			let muted = false;
-			tracks.forEach(track => {muted = !track.enabled});
+			tracks.forEach(track => {muted = track.enabled});
 			return muted;
 		}else {
 			return false;

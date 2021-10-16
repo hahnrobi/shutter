@@ -29,12 +29,14 @@ import { WaitingUserComponent } from './room/user-list/waiting-list/waiting-user
 
 import {RoomModule} from './room/room.module';
 import {AuthModule} from './auth/auth.module';
+import { WelcomeComponent } from './welcome/welcome.component';
 
 
 
 @NgModule({
   declarations: [
     AppComponent,
+    WelcomeComponent,
     ],
   imports: [
     BrowserModule,

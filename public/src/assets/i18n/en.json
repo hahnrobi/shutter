@@ -38,9 +38,22 @@
 	"Log In": "Log In",
 	"Dont have an account?": "Don't have an account?",
 	"Register": "Register",
-	"Login/Email combination is not correct, please try again.": "Email or password is not correct, please try again."
-
-
-
+	"Login/Email combination is not correct, please try again.": "Email or password is not correct, please try again.",
+	"Log Out": "Log Out",
+	"Logging out, please wait...": "Logging out, please wait...",
+	"Token is empty or invalid.": "Token is empty or invalid.",
+	"You have been successfully logged in.": "You have been successfully logged in.",
+	"welcome_paragraph": "By filling this form you can enjoy all the services of Shutter, especially with creating permanent room. Join us!",
+	"Name": "Name",
+	"Name is required!": "Name is required!",
+	"Name should contains": "Name should contains",
+	"Repeat password": "Repeat password",
+	"Confirm password": "Confirm password",
+	"Password confirmation is required!": "Password confirmation is required!",
+	"Password does not match the confirm password.": "Password does not match the confirm password.",
+	"Already have an account?": "Already have an account?",
+	"Something went wrong, please try again.": "Something went wrong, please try again. Please keep in mind that you cannot reuse email address form an already existing account.",
+	"Really want to exit?": "Really want to exit?",
+	"Leave Room": "Leave Room"
 
 }

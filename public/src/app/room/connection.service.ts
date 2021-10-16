@@ -1,3 +1,4 @@
+import { NbAuthService, NbAuthToken } from '@nebular/auth';
 import { AuthData } from './auth-data';
 import { ConnectionInitReply } from './connection-init-reply';
 import { LocalInputProviderService } from './local-input-provider.service';
@@ -54,7 +55,7 @@ export class ConnectionService {
   public userDataIncoming: ReplaySubject<[string, SelfDataTransfer]> = new ReplaySubject<[string, SelfDataTransfer]>(1);
   public joinedToRoom:ReplaySubject<boolean> = new ReplaySubject<boolean>();
 
-  constructor() {
+  constructor(private authService:NbAuthService) {
     this.usersOnApproval = new Subject<[string, User][]>();
     this.usersOnApproval.next(this._usersOnApprovalArray);
   }
@@ -94,13 +95,6 @@ export class ConnectionService {
   }
   private async init(localInputProvider: LocalInputProviderService = null) {
     this.socket = await io('/');
-
-    //TODO: FROM AUTH MODULE EVERYTHING
-    //REAL TOKEN NEEDS TO BE ADDED HERE:
-    let localToken = localStorage.getItem("user-token");
-    if(localToken != null) {
-      this.socket.emit("user-token", localToken); 
-    }
     
     console.log('[CONN] Socket: ', this.socket);
     console.log(this.peer);
@@ -153,9 +147,20 @@ export class ConnectionService {
     }
 
     this.initDone = true; //init done.
-    this.connectToRoom();
+    this.authService.getToken().subscribe({
+      next: (token:NbAuthToken) => {
+        let tk = token.getValue();
+        if(!(tk == undefined || tk == null || tk == "")) {
+          return this.connectToRoom(tk);
+        }
+        return this.connectToRoom();
+      },
+      error: (err) => {console.log(err), this.connectToRoom();}
+    }
+    );
+    
   }
-  private connectToRoom() {
+  private connectToRoom(token = undefined) {
     console.log("[CONN] Connecting to room...");
     this.socket.on('join-room-answer', (object) => {
       let conn = new ConnectionInitReply();
@@ -168,7 +173,8 @@ export class ConnectionService {
     });
 
     let myData = this.getMyDataForPreSending();
-    this.socket.emit('join-room', this.roomId, myData, JSON.parse(JSON.stringify(this.authData)));
+    
+    this.socket.emit('join-room', this.roomId, myData, {...JSON.parse(JSON.stringify(this.authData)), token});
     console.log('[CONN] Joining room: ' + this.roomId);
     console.log('[CONN] My id is: ' + myData.clientId);
     console.log('[CONN] My own details initially sent: ', myData);
@@ -422,5 +428,11 @@ export class ConnectionService {
   public approveWaitingUser(socketId:string, reply:boolean) {
     this.socket.emit('join-room-request-answer', reply, socketId);
     this.removeApprovalWaitingUser(socketId);
+  }
+
+  public disconnect() {
+    this.socket.disconnect();
+    this.selfStreamProvider.dispose();
+    this.peer.disconnect();
   }
 }
