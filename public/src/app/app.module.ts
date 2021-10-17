@@ -1,3 +1,5 @@
+import { AuthGuard } from './auth/auth-guard.service';
+import { RoomAddEditModule } from './room-add-edit/room-add-edit.module';
 import { LocalizationProviderModule } from './localization-provider/localization-provider.module';
 
 import { BrowserModule } from '@angular/platform-browser';
@@ -30,6 +32,7 @@ import { WaitingUserComponent } from './room/user-list/waiting-list/waiting-user
 import {RoomModule} from './room/room.module';
 import {AuthModule} from './auth/auth.module';
 import { WelcomeComponent } from './welcome/welcome.component';
+import { RoomAddEditComponent } from './room-add-edit/room-add-edit.component';
 
 
 
@@ -69,7 +72,7 @@ import { WelcomeComponent } from './welcome/welcome.component';
     NbMenuModule.forRoot(),
 
   ],
-  providers: [NbMenuService],
+  providers: [NbMenuService, AuthGuard],
   bootstrap: [AppComponent]
 })
 export class AppModule { }

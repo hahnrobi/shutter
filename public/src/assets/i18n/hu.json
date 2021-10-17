@@ -54,5 +54,10 @@
 	"Already have an account?": "Van már fiókod?",
 	"Something went wrong, please try again.": "Valami nem működik megfelelően. Kérlek próbáld meg újra.Ne feledd, hogy nem használhatsz fel olyan email címet, amellyel már regisztráltak.",
 	"Really want to exit?": "Biztosan ki akarsz lépni a szobából?",
-	"Leave Room": "Kilépés a szobából"
+	"Leave Room": "Kilépés a szobából",
+	"Room name": "Szoba neve",
+	"Authentication type": "Védelem típusa",
+	"approve": "Jóváhagyás",
+	"password": "Jelszó",
+	"none": "Egyik sem"
 }

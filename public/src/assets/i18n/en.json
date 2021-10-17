@@ -54,6 +54,11 @@
 	"Already have an account?": "Already have an account?",
 	"Something went wrong, please try again.": "Something went wrong, please try again. Please keep in mind that you cannot reuse email address form an already existing account.",
 	"Really want to exit?": "Really want to exit?",
-	"Leave Room": "Leave Room"
+	"Leave Room": "Leave Room",
+	"Room name": "Room's name",
+	"Authentication type": "Authentication type",
+	"approve": "Approve",
+	"password": "Password",
+	"none": "None"
 
 }

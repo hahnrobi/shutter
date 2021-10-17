@@ -45,6 +45,7 @@ exports.addRoom = async (req, reply, userId) => {
   try {
     let usersRooms = await Room.find({"owner": userId});
     if(usersRooms.length < 2) {
+      delete req.body._id;
       const room = new Room({...req.body})
 	    room._id = new mongoose.Types.ObjectId();
       room.created_at = new Date();

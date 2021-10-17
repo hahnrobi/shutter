@@ -71,24 +71,7 @@ export function HttpLoaderFactory(http:HttpClient) {
           showMessages: {
             success: true,
             error: true,
-          },
-          terms: true,
-        },
-        requestPassword: {
-          redirectDelay: 500,
-          strategy: 'email',
-          showMessages: {
-            success: true,
-            error: true,
-          },
-        },
-        resetPassword: {
-          redirectDelay: 500,
-          strategy: 'email',
-          showMessages: {
-            success: true,
-            error: true,
-          },
+          }
         },
         logout: {
           redirectDelay: 500,
@@ -104,8 +87,8 @@ export function HttpLoaderFactory(http:HttpClient) {
           email: {
             required: true,
           },
-          fullName: {
-            required: false,
+          name: {
+            required: true,
             minLength: 4,
             maxLength: 50,
           },

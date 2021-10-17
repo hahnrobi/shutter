@@ -1,9 +1,10 @@
-import { User } from "./user/user";
 
 export class Room {
 	id:string;
 	name:string;
 	slug:string;
-	auth_type:"password"|"approve";
-	owner: User;
+	auth_type:"password"|"approve"|"none" = "none";
+	auth_password:string;
+	owner: {};
+	public:boolean;
 }
