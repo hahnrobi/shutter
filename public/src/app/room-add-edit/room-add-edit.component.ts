@@ -1,9 +1,11 @@
+import { NbGlobalLogicalPosition, NbToastrService } from '@nebular/theme';
 import { AuthService } from './../auth/auth.service';
 import { RoomDetailsProviderService } from './../room-details-provider.service';
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { Room } from '../room/room';
 import { RoomAddEditService } from './room-add-edit.service';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-room-add-edit',
@@ -24,7 +26,7 @@ export class RoomAddEditComponent implements OnInit {
    "none"
   ]
   
-  constructor(private addEditService:RoomAddEditService, private route: ActivatedRoute, private roomDetailsProviderService:RoomDetailsProviderService, private authService:AuthService) {
+  constructor(private addEditService:RoomAddEditService, private route: ActivatedRoute, private roomDetailsProviderService:RoomDetailsProviderService, private authService:AuthService, private toastrService:NbToastrService, private translatePipe:TranslatePipe) {
     this.room = new Room();
     route.params.subscribe(p => {
       console.log(p);
@@ -54,21 +56,26 @@ export class RoomAddEditComponent implements OnInit {
   async save() {
     this.submitted = true;
     console.log(this.room);
-    if(this.validateForm()) {
-      this.addEditService.saveRoom(this.room, this.isNew);
-    }
-    this.submitted = false;
+      this.addEditService.saveRoom(this.room, this.isNew).subscribe({
+        next: (room) => {
+          this.toastrService.show(
+            this.translatePipe.transform('Your changes have been saved successfully.'),
+            this.translatePipe.transform('Save successfull.'),
+            {limit: 3, position: NbGlobalLogicalPosition.BOTTOM_START, status: "success"});
+          this.submitted = false;
+        },
+        error: (err) => {
+          this.toastrService.show(
+            this.translatePipe.transform(err.error),
+            this.translatePipe.transform('Cannot save room.'),
+            {limit: 3, position: NbGlobalLogicalPosition.BOTTOM_START, status: "danger"});
+          console.error("", err);
+          this.submitted = false;
+        }
+
+      });
+    
   }
 
-  validateForm() {
-    this.errors = [];
-    if(!this.room.name || this.room.name.length < 1) {
-      this.errors.push("Name required");
-    }
-    if(this.room.auth_type == "password" && (!this.room.auth_password || this.room.auth_password == "")) {
-      this.errors.push("Password required");
-    }
-    return this.errors.length == 0;
-  }
 
 }

@@ -1,4 +1,4 @@
-import { TranslateModule } from '@ngx-translate/core';
+import { TranslateModule, TranslatePipe } from '@ngx-translate/core';
 import { FormsModule } from '@angular/forms';
 import { NbAlertModule, NbButton, NbButtonModule, NbInputModule, NbRadioComponent, NbRadioModule } from '@nebular/theme';
 import { NgModule } from '@angular/core';
@@ -21,6 +21,9 @@ import { RoomAddEditComponent } from './room-add-edit.component';
     FormsModule,
     TranslateModule,
     RoomAddEditRoutingModule
+  ],
+  providers: [
+    TranslatePipe
   ]
 })
 export class RoomAddEditModule { }

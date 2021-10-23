@@ -63,11 +63,11 @@ exports.getSingleRoomFromDb = async(id, complete = false) => {
 exports.addRoom = async (req, reply, userId) => {
   try {
     let usersRooms = await Room.find({"owner": userId});
-    if(usersRooms.length < 2) {
+    if(usersRooms.length < 3) {
       delete req.body._id;
       const room = new Room({...req.body})
 	    room._id = new mongoose.Types.ObjectId();
-      room.created_at = new Date();
+      room.created_at = Date.now();
       if(room.auth_password) {
         room.auth_password = bcrypt.hashSync(room.auth_password, 10)
       }
@@ -79,7 +79,7 @@ exports.addRoom = async (req, reply, userId) => {
       
     } else {
       reply.statusCode = 406;
-      reply.send("User reached the maximum number of permanent rooms that can be owned.");
+      reply.send("You have reached the maximum number of permanent rooms that can be owned.");
     }
   } catch (err) {
     reply.send(err);
@@ -94,6 +94,14 @@ exports.updateRoom = async (req, reply, userId = undefined) => {
     if(await isRoomOwnedByUser(req.params.id, userId)) {
       const id = checkRoom._id
       const room = reqestBody
+      if(room.name == undefined || room.name.length < 3) {
+        reply.statusCode = 400;
+        return reply.send("Room name has to be at least 3 characters long.");
+      }
+      if(room.auth_type == "password" && (room.auth_password == undefined || room.auth_password.length < 5)) {
+        reply.statusCode = 400;
+        return reply.send("Password should be at least 5 characters long.");
+      }
       const { ...updateData } = room
       updateData.owner = checkRoom.owner;
       const update = await Room.findByIdAndUpdate(id, updateData, { new: true })

@@ -8,11 +8,14 @@ import { Observable } from 'rxjs';
   providedIn: 'root'
 })
 export class RoomAddEditService {
+  private isLoggedIn:boolean = false;
 
-  constructor(private authService: AuthService, private http:HttpClient) { }
-  async saveRoom(room:Room, isNew = false) {
-    this.authService.$isLoggedIn.subscribe((isLoggedIn) => {
-      if(isLoggedIn) {
+
+  constructor(private authService: AuthService, private http:HttpClient) {
+    this.authService.$isLoggedIn.subscribe(isLoggedIn => this.isLoggedIn = isLoggedIn);
+  }
+  saveRoom(room:Room, isNew = false):Observable<Room> {
+      if(this.isLoggedIn) {
         if(isNew) {
           console.log("Adding new room...");
           return this.addNewRoom(room);
@@ -21,19 +24,23 @@ export class RoomAddEditService {
           return this.updateRoom(room);
         }
       }else {
-        return false;
+        return undefined;
       }
-    })
   }
-  private addNewRoom(room:Room) {
-    const reqHeaders = new HttpHeaders({
+  private getBearerHeader():HttpHeaders {
+    return new HttpHeaders({
       'Content-Type': 'application/json',
       'Authorization': `Bearer ${this.authService.getTokenSync().getValue()}`
     })
+  }
+  private addNewRoom(room:Room) {
+    const reqHeaders = this.getBearerHeader();
     console.log("adding...");
-    return this.http.post<Room>('/api/rooms/', room, { headers: reqHeaders }).subscribe((w) => console.log(w));
+    return this.http.post<Room>('/api/rooms/', room, { headers: reqHeaders });
   }
   private updateRoom(room:Room) {
-
+    const reqHeaders = this.getBearerHeader();
+    console.log("updating...");
+    return this.http.put<Room>('/api/rooms/'.concat(room._id), room, { headers: reqHeaders });
   }
 }

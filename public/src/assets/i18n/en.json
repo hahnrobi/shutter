@@ -59,6 +59,14 @@
 	"Authentication type": "Authentication type",
 	"approve": "Approve",
 	"password": "Password",
-	"none": "None"
+	"none": "None",
+	"Cannot save room.": "Cannot save room.",
+	"Your changes have been saved successfully.": "Your changes have been saved successfully.",
+	"Save successfull.": "Save successfull.",
+	"You have reached the maximum number of permanent rooms that can be owned.": "You have reached the maximum number of permanent rooms that can be owned.",
+	"Room name has to be at least 3 characters long.": "Room name has to be at least 3 characters long.",
+	"Password should be at least 5 characters long.": "Password should be at least 5 characters long.",
+	"Room is not owned by the user.": "Room is not owned by the user.",
+	"Error": "Error"
 
 }

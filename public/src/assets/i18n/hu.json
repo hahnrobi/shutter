@@ -59,5 +59,13 @@
 	"Authentication type": "Védelem típusa",
 	"approve": "Jóváhagyás",
 	"password": "Jelszó",
-	"none": "Egyik sem"
+	"none": "Egyik sem",
+	"Cannot save room.": "Sikertelen a szoba mentése.",
+	"Your changes have been saved successfully.": "A változtatásokat sikeresen mentettük.",
+	"Save successfull.": "Mentés sikeres.",
+	"You have reached the maximum number of permanent rooms that can be owned.": "Elérted a maximális számát a tulajdonodban lévő szobák számát.",
+	"Room name has to be at least 3 characters long.": "A szoba neve legalább 3 karakter hosszú kell legyen.",
+	"Password should be at least 5 characters long.": "A jelszó legalább 5 karakter hosszú kell legyen.",
+	"Room is not owned by the user.": "A szoba nem a te tulajdonodban áll.",
+	"Error": "Hiba"
 }
