@@ -16,7 +16,7 @@ export class WaitingListComponent implements OnInit {
   ngOnInit(): void {
   }
 
-  approveWaitingUser(reply:[boolean, string]) {
-    this.connectionService.approveWaitingUser(reply[1], reply[0]);
+  approveWaitingUser(reply:[boolean, string, boolean]) {
+    this.connectionService.approveWaitingUser(reply[1], reply[0], reply[2]);
   }
 }

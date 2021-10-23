@@ -3,5 +3,6 @@
 </div>
 <div class="buttons">
 	<button (click)="this.approveWaitingUser()" nbButton ghost size="small" nbTooltip="Approve to room" nbTooltipStatus="primary" status="success"><nb-icon icon="checkmark-outline"></nb-icon></button>
+	<button *ngIf="entry[3]" (click)="this.approveWaitingUserPermanent()" nbButton ghost size="small" nbTooltip="Approve to room" nbTooltipStatus="primary" status="success"><nb-icon icon="done-all-outline"></nb-icon></button>
 	<button (click)="this.denyWaitingUser()" nbButton ghost size="small" nbTooltip="Deny join request" nbTooltipStatus="primary" status="danger"><nb-icon icon="close-outline"></nb-icon></button>
 </div>

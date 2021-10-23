@@ -13,6 +13,7 @@ import { io } from 'socket.io-client';
 import { ReplaySubject } from 'rxjs';
 import { User } from './user/user';
 import { first } from 'rxjs/operators';
+import { Room } from './room';
 
 declare var Peer: any;
 @Injectable({
@@ -43,8 +44,8 @@ export class ConnectionService {
 
   public authData:AuthData = new AuthData();
 
-  public usersOnApproval: Subject<[string, User][]>;
-  private _usersOnApprovalArray:[string, User][] = [];
+  public usersOnApproval: Subject<[string, User, boolean][]>;
+  private _usersOnApprovalArray:[string, User, boolean][] = [];
   public approvingUserJoined: ReplaySubject<User> = new ReplaySubject<User>(1);
 
   public userJoinEvent: ReplaySubject<User> = new ReplaySubject<User>(1);
@@ -53,10 +54,10 @@ export class ConnectionService {
   public statusChanged: ReplaySubject<[string, UserStatus]> = new ReplaySubject<[string, UserStatus]>(1);
   public receiveMessage: ReplaySubject<[string, string]> = new ReplaySubject<[string, string]>(1);
   public userDataIncoming: ReplaySubject<[string, SelfDataTransfer]> = new ReplaySubject<[string, SelfDataTransfer]>(1);
-  public joinedToRoom:ReplaySubject<boolean> = new ReplaySubject<boolean>();
+  public joinedToRoom:ReplaySubject<string> = new ReplaySubject<string>();
 
   constructor(private authService:NbAuthService) {
-    this.usersOnApproval = new Subject<[string, User][]>();
+    this.usersOnApproval = new Subject<[string, User, boolean][]>();
     this.usersOnApproval.next(this._usersOnApprovalArray);
   }
   public startConnection(
@@ -184,7 +185,7 @@ export class ConnectionService {
       if(state.result == "successful") {
         this.startMediaAnalysis(myData.spectator);
         console.log("%c[CONN] ✅ Successfully joined to the room.", "color: green")
-        this.joinedToRoom.next(true);
+        this.joinedToRoom.next(this.roomId);
       }else {
         console.log("%c[CONN] ❌ Join failed. Reason: ", "color: red", state.reason);
       }
@@ -243,10 +244,10 @@ export class ConnectionService {
       this.userJoinEvent.next(userData);
     });
 
-    this.socket.on('join-room-request', (socketId, user) => {
-      console.log("New user would like to enter the room. Socket: " + socketId + "\nUser: ", user);
+    this.socket.on('join-room-request', (socketId, user, isLoggedIn) => {
+      console.log("New user would like to enter the room. Socket: " + socketId + "\nUser: ", user, "\nLogged in:", isLoggedIn);
       this.approvingUserJoined.next(user);
-      this.addApprovalWaitingUser(socketId, user);
+      this.addApprovalWaitingUser(socketId, user, isLoggedIn);
     });
 
     this.socket.on('user-disconnected', (user) => {
@@ -412,8 +413,8 @@ export class ConnectionService {
     return of(this.streams);
   }
 
-  private addApprovalWaitingUser(socketId, user) {
-    this._usersOnApprovalArray.push([socketId, user]);
+  private addApprovalWaitingUser(socketId, user, loggedIn) {
+    this._usersOnApprovalArray.push([socketId, user, loggedIn]);
     this.usersOnApproval.next(this._usersOnApprovalArray);
     console.log(this._usersOnApprovalArray);
   }
@@ -425,8 +426,8 @@ export class ConnectionService {
       }
     }
   }
-  public approveWaitingUser(socketId:string, reply:boolean) {
-    this.socket.emit('join-room-request-answer', reply, socketId);
+  public approveWaitingUser(socketId:string, reply:boolean, permanent:boolean = false) {
+    this.socket.emit('join-room-request-answer', reply, socketId, permanent);
     this.removeApprovalWaitingUser(socketId);
   }
 

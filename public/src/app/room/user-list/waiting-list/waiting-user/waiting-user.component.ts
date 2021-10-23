@@ -7,8 +7,8 @@ import { User } from 'src/app/room/user/user';
   styleUrls: ['./waiting-user.component.scss']
 })
 export class WaitingUserComponent implements OnInit {
-  @Input() entry:[string, User];
-  @Output() approveEvent: EventEmitter<[boolean, string]> = new EventEmitter();
+  @Input() entry:[string, User, boolean];
+  @Output() approveEvent: EventEmitter<[boolean, string, boolean]> = new EventEmitter();
 
   constructor() { }
 
@@ -16,10 +16,13 @@ export class WaitingUserComponent implements OnInit {
   }
 
   approveWaitingUser() {
-    this.approveEvent.emit([true, this.entry[0]]);
+    this.approveEvent.emit([true, this.entry[0], false]);
+  }
+  approveWaitingUserPermanent() {
+    this.approveEvent.emit([true, this.entry[0], true]);
   }
   denyWaitingUser() {
-    this.approveEvent.emit([false, this.entry[0]]);
+    this.approveEvent.emit([false, this.entry[0], false]);
   }
 
 }

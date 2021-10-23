@@ -140,3 +140,27 @@ async function isRoomOwnedByUser(roomId, userId) {
   }
   return false;
 }
+
+exports.approveUserToRoom = async (roomId, userId) => {
+  const room = await Room.findById(roomId);
+  const user = await User.findById(userId);
+  if(room && user) {
+    room.approved_users.push(user);
+    room.save();
+    return true;
+  }
+  return false;
+}
+exports.isUserApprovedToRoom = async(roomId, userId) => {
+  const room = await Room.findById(roomId);
+  const user = await User.findById(userId);
+  let approved = false;
+  if(room && user) {
+    room.approved_users.forEach(element => {
+      if(element == userId) {
+        approved = true;
+      }
+    });
+  }
+  return approved;
+}

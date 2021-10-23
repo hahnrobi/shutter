@@ -1,5 +1,5 @@
 import { FormsModule } from '@angular/forms';
-import { NbAlertModule, NbCheckboxModule, NbInputModule, NbButtonModule, NbIconModule, NbTooltipModule, NbToastrModule } from '@nebular/theme';
+import { NbAlertModule, NbCheckboxModule, NbInputModule, NbButtonModule, NbIconModule, NbTooltipModule, NbToastrModule, NbThemeModule, NbLayoutModule, NbCardComponent, NbCardModule } from '@nebular/theme';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import {
@@ -19,11 +19,13 @@ import { LogoutComponent } from './logout/logout.component';
 import { RegisterComponent } from './register/register.component';
 import { UserProfileEditorComponent } from './user-profile-editor/user-profile-editor.component';
 import { ListRoomsComponent } from './list-rooms/list-rooms.component';
+import { OverlayContainer } from '@angular/cdk/overlay';
+import { AuthComponent } from './auth.component';
 export function HttpLoaderFactory(http:HttpClient) {
   return new TranslateHttpLoader(http);
 }
 @NgModule({
-  declarations: [LoginComponent, UserTopMenuComponent, LogoutComponent, RegisterComponent, UserProfileEditorComponent, ListRoomsComponent],
+  declarations: [LoginComponent, UserTopMenuComponent, LogoutComponent, RegisterComponent, UserProfileEditorComponent, ListRoomsComponent, AuthComponent],
   imports: [
     CommonModule,
     TranslateModule,
@@ -35,6 +37,7 @@ export function HttpLoaderFactory(http:HttpClient) {
     NbButtonModule,
     NbEvaIconsModule,
     NbTooltipModule,
+    NbCardModule,
     NbIconModule,
 
     AuthRoutingModule,
@@ -98,6 +101,7 @@ export function HttpLoaderFactory(http:HttpClient) {
       },
     }),
   ],
-  exports: [UserTopMenuComponent]
+  exports: [UserTopMenuComponent],
+  providers: [OverlayContainer, NbThemeModule.forRoot({ name: 'dark' }).providers]
 })
 export class AuthModule {}

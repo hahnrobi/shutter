@@ -1,3 +1,26 @@
+.inner {
+	width: 100%;
+	height: 100%;
+	display: flex;
+	justify-content: space-between;
+	
+	.left {
+		font-size: 1.8rem;
+		font-weight: bold;
+		margin: 0;
+		line-height: initial;
+	}
+	.center {
+		.home-btn {
+			margin-left: 10px;
+			margin-right: 10px;
+		}
+		.lang-btn {
+			margin-left: 10px;
+			margin-right: 5px;
+		}
+	}
+}
 auth-user-top-menu {
 	margin-left: auto;
 }

@@ -17,10 +17,6 @@ const routes: Routes = [
     canActivate: [AuthGuard],
     loadChildren: './room-add-edit/room-add-edit.module#RoomAddEditModule'
   },
-  {
-    path: 'auth',
-    loadChildren: './auth/auth.module#AuthModule'
-  }
 ];
 
 @NgModule({

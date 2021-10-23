@@ -143,6 +143,11 @@ io.on('connection', socket => {
 								console.log("The user is the owner of the room.");
 
 							} else {
+								if(roomController.isUserApprovedToRoom(roomId, token.user)) {
+									canJoin = true;
+									socket.userId = token.user;
+									console.log("The user is already approved to the room.");
+								}
 								//TODO: someone else (with account), check if they're already approved to toom
 							}
 						}
@@ -169,18 +174,31 @@ io.on('connection', socket => {
 								let searchSocket = io.sockets.sockets.get(id);
 								if(searchSocket != undefined && searchSocket.userId == roomData.owner._id) {
 									ownerInRoom = true;
+
 									socket.once('disconnect', () => {
 										searchSocket.emit('waiting-user-disconnected', socket.id);
 									});
+
 									socket.emit("join-room-answer", {result: "failed", reason: "waiting_approval"});
 									console.log("[ " + socket.id + " ] Waiting on approval");
-									searchSocket.emit("join-room-request", socket.id, user);
+
+									let token = false;
+									if(auth.token) {
+										token = validateToken.isTokenValid(auth.token);
+									}
+									console.log(token);
+									searchSocket.emit("join-room-request", socket.id, user, token !== false);
 									console.log("[ " + socket.id + " ] Sending auth request to owner.");
-									searchSocket.on('join-room-request-answer', (reply, socketId) => {
+
+									searchSocket.on('join-room-request-answer', (reply, socketId, permanent) => {
 										console.log("[ " + socket.id + " ] Owner replied to auth request.");
 										if(reply === true) {
 											socket.emit('join-room-answer', {result: "successful"});
 											console.log("[ " + socket.id + " ] Owner approved user to the room.");
+											if(permanent) {
+												roomController.approveUserToRoom(roomId,token.user);
+												console.log("[ " + socket.id + " ] PERMANENT APPROVE.");
+											}
 											joinUserToRoom(socket, user, roomId);
 										}else {
 											console.log("[ " + socket.id + " ] Owner denied the approval request.");

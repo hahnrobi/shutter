@@ -6,11 +6,13 @@ import { CommonModule } from '@angular/common';
 
 import { RoomAddEditRoutingModule } from './room-add-edit-routing.module';
 import { RoomAddEditComponent } from './room-add-edit.component';
+import { RoomDeleteConfirmComponent } from './room-delete-confirm/room-delete-confirm.component';
 
 
 @NgModule({
   declarations: [
-    RoomAddEditComponent
+    RoomAddEditComponent,
+    RoomDeleteConfirmComponent
   ],
   imports: [
     CommonModule,

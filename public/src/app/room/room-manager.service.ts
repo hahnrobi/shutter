@@ -1,3 +1,5 @@
+import { RoomDetailsProviderService } from './../room-details-provider.service';
+import { HeaderTitleService } from './../header-title-service';
 import { ConnectingDialogComponent } from './dialogs/connecting-dialog/connecting-dialog.component';
 import { LastSpeakersService } from './last-speakers.service';
 import { LocalInputProviderService } from './local-input-provider.service';
@@ -22,7 +24,7 @@ export class RoomManagerService {
   private dialogService:NbDialogService;
   private isConnectionServiceInitialized = false;
 
-  constructor(private _connectionService:ConnectionService, private _userManagerService:UserManagerService, private _chatManagerService:ChatManagerService, private _lastSpeakersService:LastSpeakersService, private toastrService: NbToastrService, private _dialogService: NbDialogService) {
+  constructor(private _connectionService:ConnectionService, private _userManagerService:UserManagerService, private _chatManagerService:ChatManagerService, private _lastSpeakersService:LastSpeakersService, private toastrService: NbToastrService, private _dialogService: NbDialogService, private headerTitleService:HeaderTitleService, private roomDetailsProvider:RoomDetailsProviderService) {
     this.selfDataProvider = new SelfDataLocalStorageProvider();
     this.dialogService = _dialogService;
     this._connectionService.selfDataProvier = this.selfDataProvider;
@@ -99,12 +101,16 @@ export class RoomManagerService {
 
     })
 
-    this._connectionService.joinedToRoom.pipe(first()).subscribe((v) => {
-      if(v) {
+    this._connectionService.joinedToRoom.pipe(first()).subscribe((id) => {
+      if(id) {
         _lastSpeakersService.init();
         _lastSpeakersService.speakersList.subscribe(speakers => {
           console.log("Speaking speakers: ", speakers);
         })
+        this.roomDetailsProvider.getRoom(id).subscribe(room => {
+          this.headerTitleService.joinedToRoom(room);
+        })
+        
       }
     })
 

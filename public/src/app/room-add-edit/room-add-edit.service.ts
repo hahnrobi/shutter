@@ -43,4 +43,15 @@ export class RoomAddEditService {
     console.log("updating...");
     return this.http.put<Room>('/api/rooms/'.concat(room._id), room, { headers: reqHeaders });
   }
+  public async deleteRoom(roomId) {
+    if(this.isLoggedIn) {
+      const reqHeaders = this.getBearerHeader();
+      this.http.delete<any>('/api/rooms/'.concat(roomId),{ headers: reqHeaders }).subscribe({
+        next: () => {return true},
+        error: () => {return false}
+      });
+    }else {
+      return undefined;
+    }
+  }
 }

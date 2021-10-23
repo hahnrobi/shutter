@@ -1,7 +1,8 @@
-<div *ngIf="rooms.length == 0">
+<div *ngIf="!rooms || rooms.length == 0" style="display: flex; flex-direction: column; align-items: center;">
   Look like you does not have any room yet. Why not create one?
+  <a routerLink="/room-manage" style="text-decoration: none;"><button nbButton>Create Room</button></a>
 </div>
-<div *ngIf="rooms.length > 0">
+<div *ngIf="rooms && rooms.length > 0">
   <div *ngFor="let room of rooms" class="roomDetails">
     <div class="content">
       <div class="icon">
@@ -32,6 +33,11 @@
         </div>
       </div>
       <div class="buttons">
+        <a [routerLink]="['/room', room._id]"
+        ><button nbButton fullWidth status="primary">
+          {{ "Enter" | translate }}
+        </button></a
+      >
         <a [routerLink]="['/room-manage', room._id]"
           ><button nbButton fullWidth status="primary">
             {{ "Edit" | translate }}

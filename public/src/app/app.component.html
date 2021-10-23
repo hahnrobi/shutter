@@ -1,16 +1,26 @@
 <nb-layout>
 
   <nb-layout-header fixed>
-  <!-- Insert header here -->
-  <nb-select placeholder="Select language" [(selected)]="language" >
-    <nb-option value="en" (click)="changeLanguage('en')">English</nb-option>
-    <nb-option value="hu" (click)="changeLanguage('hu')">Magyar</nb-option>
-  </nb-select>
-  <auth-user-top-menu></auth-user-top-menu>
+    <div class="inner">
+      <div class="left">
+        {{ headerTitle | async }}
+      </div>
+      <div class="center">
+        <a routerLink="/"><nb-icon class="home-btn" icon="home"></nb-icon></a>
+        <nb-icon class="globe-outline" icon="globe-outline"></nb-icon>
+        <nb-select placeholder="Select language" [(selected)]="language" >
+          <nb-option value="en" (click)="changeLanguage('en')">English</nb-option>
+          <nb-option value="hu" (click)="changeLanguage('hu')">Magyar</nb-option>
+        </nb-select>        
+      </div>
+      <div class="right">
+        <auth-user-top-menu></auth-user-top-menu>
+      </div>
+    </div>
   </nb-layout-header>
 
   <nb-layout-column>
-    <router-outlet></router-outlet>
+        <router-outlet></router-outlet>
     <!--<app-room style="width: 100%; height: 100%"></app-room>-->
   </nb-layout-column>
 

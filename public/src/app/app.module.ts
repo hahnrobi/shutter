@@ -72,7 +72,7 @@ import { RoomAddEditComponent } from './room-add-edit/room-add-edit.component';
     NbMenuModule.forRoot(),
 
   ],
-  providers: [NbMenuService, AuthGuard],
+  providers: [NbMenuService, AuthGuard, OverlayContainer, NbThemeModule.forRoot({ name: 'dark' }).providers],
   bootstrap: [AppComponent]
 })
 export class AppModule { }
