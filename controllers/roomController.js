@@ -17,6 +17,25 @@ exports.getRooms = async (req, reply) => {
   }
 }
 
+//Get all rooms owned by user
+exports.getRoomsForUser = async (req, reply, userId) => {
+  try {
+    const rooms = await Room.find({"owner": userId})
+    if(rooms.length > 0) {
+      rooms.forEach(r => {
+        if(r.auth_password != undefined) {
+          r.auth_password = "";
+        }
+      })
+      reply.send(rooms);
+    }else {
+      reply.sendStatus(404);
+    }
+  } catch (err) {
+    throw boom.boomify(err)
+  }
+}
+
 // Get single car by ID
 exports.getSingleRoom = async (req, reply) => {
   try {

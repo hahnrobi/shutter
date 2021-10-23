@@ -1,0 +1,48 @@
+<div *ngIf="rooms.length == 0">
+  Look like you does not have any room yet. Why not create one?
+</div>
+<div *ngIf="rooms.length > 0">
+  <div *ngFor="let room of rooms" class="roomDetails">
+    <div class="content">
+      <div class="icon">
+        <div class="protectedByPassword" *ngIf="room.auth_type == 'password'">
+          <nb-icon icon="lock-outline"></nb-icon>
+        </div>
+        <div class="protectedByApprove" *ngIf="room.auth_type == 'approve'">
+          <nb-icon icon="clock-outline"></nb-icon>
+        </div>
+        <div
+          class="protectedByNone"
+          *ngIf="room.auth_type != 'approve' && room.auth_type != 'password'"
+        >
+          <nb-icon icon="unlock-outline"></nb-icon>
+        </div>
+      </div>
+      <div class="main">
+        <div class="title">
+          {{ room.name }}
+          <div class="times">
+            <div class="lastAccessed">
+              {{ room.created_at }}
+            </div>
+            <div class="createdAt">
+              {{ room.last_active }}
+            </div>
+          </div>
+        </div>
+      </div>
+      <div class="buttons">
+        <a [routerLink]="['/room-manage', room._id]"
+          ><button nbButton fullWidth status="primary">
+            {{ "Edit" | translate }}
+          </button></a
+        >
+        <a [routerLink]="['/room-manage/delete', room._id]"
+          ><button nbButton fullWidth status="danger">
+            {{ "Delete" | translate }}
+          </button></a
+        >
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,5 +1,5 @@
 <ng-template [ngIf]="(this.$isLoggedIn | async) ">
-		<button nbButton class="userButton" >{{ (this.$user | async)?.name }}</button>
+		<a routerLink="/auth/profile"><button  nbButton class="userButton" >{{ (this.$user | async)?.name }}</button></a>
 		<a routerLink="/auth/logout"><button nbButton outline status="primary" shape="round" size="small" status="danger" nbTooltip="{{'Log Out' | translate}}"><nb-icon icon="log-out-outline"></nb-icon></button></a>
 </ng-template>
 <ng-template [ngIf]="!(this.$isLoggedIn | async) ">

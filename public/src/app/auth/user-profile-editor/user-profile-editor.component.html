@@ -1,0 +1,47 @@
+<h1 id="title" class="title">{{ 'Edit profile' | translate }}</h1>
+<p class="sub-title">{{ 'In this page you are able to edit your own details and view the list of your rooms.' | translate}}</p>
+
+<nb-alert *ngIf="errors?.length && !submitted" outline="danger" role="alert">
+  <p class="alert-title"><b>{{'Oh snap!' | translate}}</b></p>
+  <ul class="alert-message-list">
+    <li *ngFor="let error of errors" class="alert-message">{{ error | translate}}</li>
+  </ul>
+</nb-alert>
+
+<form (ngSubmit)="save()" #form="ngForm" aria-labelledby="title">
+
+  <div class="form-control-group">
+    <label class="label" for="input-name">{{ 'Name' | translate }}:</label>
+    <input nbInput
+           fullWidth
+           [(ngModel)]="user.name"
+           #email="ngModel"
+           name="name"
+           id="input-name"
+           pattern=".+@.+\..+"
+           [attr.placeholder]="'Name' | translate"
+           autofocus
+		   required
+	>
+  </div>
+
+  <button nbButton
+          fullWidth
+          status="success"
+          [disabled]="submitted"
+          [class.btn-pulse]="submitted">
+    {{ 'Save' | translate }}
+  </button>
+</form>
+<div class="form-control-group" style="margin-top: 15px">
+	<button nbButton
+	fullWidth
+	status="primary">
+	{{ 'Change password' | translate }}
+	</button>
+</div>
+
+<div class="form-control-group" style="margin-top: 30px;">
+    <label class="label">{{ 'Your rooms' | translate }}:</label>
+	<auth-list-rooms [rooms]="this.rooms"></auth-list-rooms>
+  </div>

@@ -21,3 +21,8 @@ router.delete('/api/rooms/:id', validateToken.validateToken, async function(requ
 	const userId = request.user;
 	return roomController.deleteRoom(request, reply, userId);
 });
+
+router.get("/api/rooms-self/", validateToken.validateToken, async (req, res) => {
+	const userId = req.user;
+	roomController.getRoomsForUser(req, res, userId);
+})

@@ -1,3 +1,4 @@
+import { UserProfileEditorComponent } from './user-profile-editor/user-profile-editor.component';
 import { LogoutComponent } from './logout/logout.component';
 import { LoginComponent } from './login/login.component';
 import { NgModule } from '@angular/core';
@@ -6,6 +7,7 @@ import {
   NbAuthComponent,
 } from '@nebular/auth';
 import { RegisterComponent } from './register/register.component';
+import { AuthGuard } from './auth-guard.service';
 export const routes: Routes = [
   {
     path: 'auth',
@@ -26,10 +28,14 @@ export const routes: Routes = [
       {
         path: 'logout',
         component: LogoutComponent,
+      },
+      {
+        path: 'profile',
+        canActivate: [AuthGuard],
+        component: UserProfileEditorComponent
       }
     ],
   },
-
 ];
 
 @NgModule({

@@ -17,11 +17,13 @@ import { FontAwesomeModule } from '@fortawesome/angular-fontawesome';
 import { NbEvaIconsModule } from '@nebular/eva-icons';
 import { LogoutComponent } from './logout/logout.component';
 import { RegisterComponent } from './register/register.component';
+import { UserProfileEditorComponent } from './user-profile-editor/user-profile-editor.component';
+import { ListRoomsComponent } from './list-rooms/list-rooms.component';
 export function HttpLoaderFactory(http:HttpClient) {
   return new TranslateHttpLoader(http);
 }
 @NgModule({
-  declarations: [LoginComponent, UserTopMenuComponent, LogoutComponent, RegisterComponent],
+  declarations: [LoginComponent, UserTopMenuComponent, LogoutComponent, RegisterComponent, UserProfileEditorComponent, ListRoomsComponent],
   imports: [
     CommonModule,
     TranslateModule,

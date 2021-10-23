@@ -1,0 +1,31 @@
+.roomDetails {
+	background: #151A30;
+	border: 1px solid #293152;
+	border-radius: 3px;
+
+	.content {
+		display: flex;
+		flex-direction: row;
+		justify-content: space-between;
+		align-self: center;
+		flex-grow: 1;
+		.icon {
+			display: flex;
+			align-items: center;
+			justify-content: center;
+		}
+		.icon, nb-icon {
+			min-width: 40px;
+			min-height: 40px;
+		}
+		.main {
+			display: flex;
+			flex-direction: column;
+		}
+		.buttons {
+			display: flex;
+			align-items: flex-end;
+			flex-direction: column;
+		}
+	}
+}
