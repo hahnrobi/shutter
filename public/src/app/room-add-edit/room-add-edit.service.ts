@@ -14,9 +14,9 @@ export class RoomAddEditService {
   constructor(private authService: AuthService, private http:HttpClient) {
     this.authService.$isLoggedIn.subscribe(isLoggedIn => this.isLoggedIn = isLoggedIn);
   }
-  saveRoom(room:Room, isNew = false):Observable<Room> {
-      if(this.isLoggedIn) {
-        if(isNew) {
+  saveRoom(room:Room):Observable<Room> {
+      if(this.isLoggedIn && room) {
+        if(room._id == undefined) {
           console.log("Adding new room...");
           return this.addNewRoom(room);
         }else {

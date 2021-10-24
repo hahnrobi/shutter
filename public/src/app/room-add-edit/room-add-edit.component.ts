@@ -56,7 +56,7 @@ export class RoomAddEditComponent implements OnInit {
   async save() {
     this.submitted = true;
     console.log(this.room);
-      this.addEditService.saveRoom(this.room, this.isNew).subscribe({
+      this.addEditService.saveRoom(this.room).subscribe({
         next: (room) => {
           this.toastrService.show(
             this.translatePipe.transform('Your changes have been saved successfully.'),
