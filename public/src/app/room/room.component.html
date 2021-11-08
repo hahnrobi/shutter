@@ -13,8 +13,8 @@
         </div>
     </div>
     <div class="meetingControlsContainer">
-    <button nbButton aria-label="Unmute microphone" status="danger" *ngIf="this.isMyAudioMuted() == true" (click)="this.unMuteMyAudio()"><fa-icon [icon]="faMicrophoneSlash"></fa-icon></button>
-    <button nbButton aria-label="Mute microphone" *ngIf="this.isMyAudioMuted() == false" (click)="this.muteMyAudio()"><fa-icon [icon]="faMicrophone"></fa-icon></button>
+    <button nbButton aria-label="Unmute microphone" nbTooltip="Unmute microphone" status="danger" *ngIf="this.isMyAudioMuted() == true" (click)="this.unMuteMyAudio()"><fa-icon [icon]="faMicrophoneSlash"></fa-icon></button>
+    <button nbButton aria-label="Mute microphone" nbTooltip="Mute microphone" *ngIf="this.isMyAudioMuted() == false" (click)="this.muteMyAudio()"><fa-icon [icon]="faMicrophone"></fa-icon></button>
 
     <button nbButton aria-label="Turn Camera On"  status="danger" *ngIf="!this.isMyWebcamOn()" (click)="this.turnOnMyWebcam()"><nb-icon icon="video-outline"></nb-icon></button>
     <button nbButton aria-label="Turn Camera Off" *ngIf="this.isMyWebcamOn()" (click)="this.turnOffMyWebcam()"><nb-icon icon="video-off-outline"></nb-icon></button>

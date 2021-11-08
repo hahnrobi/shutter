@@ -55,6 +55,7 @@ export class ConnectionService {
   public receiveMessage: ReplaySubject<[string, string]> = new ReplaySubject<[string, string]>(1);
   public userDataIncoming: ReplaySubject<[string, SelfDataTransfer]> = new ReplaySubject<[string, SelfDataTransfer]>(1);
   public joinedToRoom:ReplaySubject<string> = new ReplaySubject<string>();
+  public leaveRoom: ReplaySubject<boolean> = new ReplaySubject<boolean>();
 
   constructor(private authService:NbAuthService) {
     this.usersOnApproval = new Subject<[string, User, boolean][]>();
@@ -388,10 +389,8 @@ export class ConnectionService {
       selfData = this.selfDataProvier;
     }
     let name = selfData.getName();
-    let image = selfData.getProfileImageUrl();
     let transferObj = new SelfDataTransfer();
     transferObj.name = name;
-    transferObj.profileImageUrl = image;
     if (answer) {
       this.dataConnections[connectionId].send([
         'self-data-answer',
@@ -435,5 +434,7 @@ export class ConnectionService {
     this.socket.disconnect();
     this.selfStreamProvider.dispose();
     this.peer.disconnect();
+    this.initDone = false;
+    this.leaveRoom.next(true);
   }
 }

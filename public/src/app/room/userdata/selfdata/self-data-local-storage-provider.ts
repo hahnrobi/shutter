@@ -40,7 +40,4 @@ export class SelfDataLocalStorageProvider implements ISelfDataProvider {
 		this.nameUpdated.next(name);
 		return true;
 	}
-	public getProfileImageUrl() {
-		return "";
-	}
 }

@@ -21,7 +21,9 @@ export class LocalInputProviderService {
   public micEnabled:boolean = true;
 
   public micAllowed:Subject<boolean>;
+  private _micAllowed:boolean = true;
   public videoAllowed:Subject<boolean>;
+  private _videoAllowed:boolean = true;
 
   public deviceReceived:ReplaySubject<[MediaDeviceInfo, MediaDeviceInfo]>;
 
@@ -80,11 +82,9 @@ export class LocalInputProviderService {
   public getDefaultInputDevices():void {
     let audioDevice = null;
     let videoDevice = null;
-
+    
     const lastUsed = this.getLastUsedDevices();
-
-
-    if(this.videoAllowed) {
+    if(this._videoAllowed) {
       if(lastUsed != null && lastUsed.hasOwnProperty("video")) {
         const arrayCheck = this.videoInputs.filter(x => x.deviceId === lastUsed.video);
         if(arrayCheck.length > 0) {
@@ -97,7 +97,7 @@ export class LocalInputProviderService {
     }
     
 
-    if(this.micAllowed) {
+    if(this._micAllowed) {
       const lastUsed = this.getLastUsedDevices();
       if(lastUsed != null && lastUsed.hasOwnProperty("audio")) {
         const arrayCheck = this.audioInputs.filter(x => x.deviceId === lastUsed.audio);
@@ -144,38 +144,49 @@ export class LocalInputProviderService {
     if(type == "video" || type == "both") {
     await navigator.mediaDevices.getUserMedia({video: true, audio: false})
       .then((stream) => {
-        this.videoAllowed.next(true);
+        this._videoAllowed = true;
+        this.videoAllowed.next(this._videoAllowed);
         this.stopStreamTracks(stream);
       })
-      .catch((err) => this.videoAllowed.next(false));
+      .catch((err) => {this._videoAllowed = false;
+        this.videoAllowed.next(this._videoAllowed);});
     }
 
     if(type == "audio" || type == "both") {
     await navigator.mediaDevices.getUserMedia({video: false, audio: true})
       .then((stream) => {
-        this.micAllowed.next(true);
+        this._micAllowed = true;
+        this.micAllowed.next(this._micAllowed);
         this.stopStreamTracks(stream);
       })
-      .catch((err) => this.micAllowed.next(false));
+      .catch((err) => {this._micAllowed = false;
+        this.micAllowed.next(this._micAllowed);});
 
     }
-      console.log("Mic enabled: ", this.micAllowed);
-      console.log("Video enabled: ", this.videoAllowed);
+      console.log("Mic enabled: ", this._micAllowed);
+      console.log("Video enabled: ", this._videoAllowed);
     this.refreshInputDevices();
   }
   public async getVideo(deviceId:string) {
     let stream = null;
     await navigator.mediaDevices.getUserMedia({video: {deviceId: deviceId}, audio: false})
-      .then((s) => {this.videoAllowed.next(true); stream = s;})
-      .catch((err) => this.videoAllowed.next(false));
+      .then((s) => {this._videoAllowed = true;
+        this.videoAllowed.next(this._videoAllowed);; stream = s;})
+      .catch((err) => {this._videoAllowed = false;
+        this.videoAllowed.next(this._videoAllowed);});
     return new MediaStreamProvider(stream);
   }
   public async getAudio(deviceId:string) {
     let stream = null;;
     await navigator.mediaDevices.getUserMedia({video: false, audio: {deviceId: deviceId}})
-      .then((s) => {this.videoAllowed.next(true); stream = s;})
-      .catch((err) => this.videoAllowed.next(false));
+      .then((s) => {this._micAllowed = true;
+        this.videoAllowed.next(this._micAllowed); stream = s;})
+      .catch((err) => {this._micAllowed = false;
+        this.videoAllowed.next(this._micAllowed);});
     return new MediaStreamProvider(stream);
+  }
+
+  public dispose() {
   }
 
 }

@@ -1,10 +1,12 @@
-import { interval, ReplaySubject, Subject, Subscriber } from 'rxjs';
+import { interval, Observable, ReplaySubject, Subject, Subscriber } from 'rxjs';
 export class MediaStreamProvider {
 	private stream:MediaStream;
 	private micAudioLevel:number;
 	private meteringSubscription;
 
-	private audioInterval;
+	private isMeasuringMicLevel = false;
+
+	private audioInterval: Observable<number>;
 
 	private isSpeakingValue:boolean = false;
 	public isSpeaking:ReplaySubject<boolean>;
@@ -96,6 +98,8 @@ export class MediaStreamProvider {
 		analyser.fftSize = 8192;
 		const sampleBuffer = new Float32Array(analyser.fftSize);
 	  
+		this.isMeasuringMicLevel = true;
+
 		function loop() {
 		  console.log("measuring mic");
 		  // Vary power of input to analyser. Linear in amplitude, so
@@ -132,14 +136,14 @@ export class MediaStreamProvider {
 			let muted = false;
 			if(this.isAudioMuted()) {
 				muted = true;
-			}else {
+			}else if(this.isMeasuringMicLevel){
 				audioLevel = loop();
 			}
 			if(withLevel) {
 			this.opt_audiolevel.next(audioLevel);
 			}
 			
-			if(muted || audioLevel < -60) {
+			if(muted || !this.isMeasuringMicLevel || audioLevel < -60) {
 				if(this.isSpeakingValue != false) {
 					this.isSpeakingValue = false;
 					this.isSpeaking.next(false);
@@ -151,6 +155,10 @@ export class MediaStreamProvider {
 				}
 			}
 		});
+	}
+
+	public stopMeasureMicLevel() {
+		this.isMeasuringMicLevel = false;
 	}
 
 	public dispose() {

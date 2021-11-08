@@ -91,4 +91,9 @@ export class UserManagerService {
       this.myName = name;
     })
   }
+  public clear() {
+    this.users = [];
+    this.me = "";
+    this.myName = "";
+  }
 }

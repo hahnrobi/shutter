@@ -1,6 +1,6 @@
 import { MediaStreamProvider } from './../../mediastreamprovider';
 import { LocalInputProviderService } from './../../local-input-provider.service';
-import { Component, OnInit,  Output, EventEmitter, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit,  Output, EventEmitter, ViewChild, ElementRef, OnDestroy } from '@angular/core';
 import { of } from 'rxjs';
 
 @Component({
@@ -8,7 +8,7 @@ import { of } from 'rxjs';
   templateUrl: './welcome-dialog.component.html',
   styleUrls: ['./welcome-dialog.component.scss']
 })
-export class WelcomeDialogComponent implements OnInit {
+export class WelcomeDialogComponent implements OnInit, OnDestroy {
   public _localInputProviderService:LocalInputProviderService;
 
   public inputNameText:string;
@@ -37,8 +37,10 @@ export class WelcomeDialogComponent implements OnInit {
   @Output() deviceConfig = new EventEmitter<LocalInputProviderService>();
   constructor(_localInputProviderService:LocalInputProviderService) {
     this._localInputProviderService = _localInputProviderService,
+    this._localInputProviderService.requestPermissions();
+    this._localInputProviderService.refreshInputDevices();
     this._localInputProviderService.deviceReceived.subscribe(d => {
-      console.log(d[1]);
+      console.log("Received devices: ", d);
       this.selectedAudioDevice = d[0]?.deviceId;
       this.selectedVideoDevice = d[1]?.deviceId;
 
@@ -49,14 +51,23 @@ export class WelcomeDialogComponent implements OnInit {
     this.audioDeviceList = _localInputProviderService.audioInputs;
     this.videoDeviceList = _localInputProviderService.videoInputs;
 
-    _localInputProviderService.micAllowed.subscribe(t => this.audioAllowed = t);
-    _localInputProviderService.videoAllowed.subscribe(t => this.videoAllowed = t);
+    _localInputProviderService.micAllowed.subscribe(t => {this.audioAllowed = t; console.log("Mic allowed:", t)});
+    _localInputProviderService.videoAllowed.subscribe(t => {this.videoAllowed = t; console.log("Video allowed:", t)});
+    console.log("Local audio allowed", this.audioAllowed);
 
   }
 
 
   ngOnInit(): void {
-    this.selectedAudioDevice = this._localInputProviderService.defaultAudioInput.deviceId;
+    //this.selectedAudioDevice = this._localInputProviderService.defaultAudioInput.deviceId;
+  }
+  ngOnDestroy() {
+    console.log("destroy");
+    this.selectedAudioDeviceMediaStreamProvider?.stopMeasureMicLevel();
+    console.log("Video dispose");
+    this.selectedVideoDeviceMediaStreamProvider?.dispose();
+    console.log("Audio dispose");
+    this.selectedAudioDeviceMediaStreamProvider?.dispose();
   }
   public saveName() {
     this.enteredName.emit(this.inputNameText);
@@ -104,15 +115,18 @@ export class WelcomeDialogComponent implements OnInit {
     });
   }
   changeAudioInputDevice(deviceId) {
+    console.log("Changed audio device: ", deviceId)
     this._localInputProviderService.saveUsedDevices(this.selectedVideoDevice, deviceId);
     if(this.selectedAudioDeviceMediaStreamProvider != null) {
-      
+      this.selectedAudioDeviceMediaStreamProvider.stopMeasureMicLevel();
       this.selectedAudioDeviceMediaStreamProvider.dispose();
       this.selectedAudioDeviceMediaStreamProvider = null;
     }
     let s = this._localInputProviderService.getAudio(deviceId).then((s) => {
       this.selectedAudioDeviceMediaStreamProvider = s;
+      console.log("AUDIO: ", this.selectedAudioDeviceMediaStreamProvider);
       s.measureMicLevel(200, true);
+      console.log("AUDIO: ", this.selectedAudioDeviceMediaStreamProvider);
       s.opt_audiolevel.subscribe(l => {
         let level = 80 - (-l);
         if(level < 0) {

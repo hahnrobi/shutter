@@ -9,7 +9,7 @@ import { RoomManagerService } from './room-manager.service';
 import { faMicrophone, faMicrophoneSlash } from '@fortawesome/free-solid-svg-icons';
 import { ReplaySubject, Subscription } from 'rxjs';
 import { User } from './user/user';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { animate, style, transition, trigger } from '@angular/animations';
 import { TranslateService } from '@ngx-translate/core';
 
@@ -46,7 +46,8 @@ export class RoomComponent implements OnInit {
     { title: 'Gallery', icon: "camera-outline", target: "galleryView" },
     { title: 'Spotlight', icon: "crop-outline", target: "spotlightView" }];
 
-  constructor(private _roomDetailsProvider:RoomDetailsProviderService, private _roomManagerSerivce:RoomManagerService, private _connectionService:ConnectionService, private iterableDiffers: IterableDiffers, private route: ActivatedRoute, private toastrService:NbToastrService, private translate: TranslateService) {
+  constructor(private _roomDetailsProvider:RoomDetailsProviderService, private _roomManagerSerivce:RoomManagerService, private _connectionService:ConnectionService, private iterableDiffers: IterableDiffers, private route: ActivatedRoute, private toastrService:NbToastrService, private translate: TranslateService, private router:Router) {
+    console.log("ROOM COMPONENT INIT")
     this.iterableDiffer = iterableDiffers.find([]).create(null);
     this.roomDetailsProviderService = _roomDetailsProvider;
     route.params.subscribe(p => {this.roomId = p.room;});
@@ -140,6 +141,8 @@ export class RoomComponent implements OnInit {
         this.leaveRoomTries++;
     } else {
       this._connectionService.disconnect();
+      this.leaveRoomTries = 0;
+      this.router.navigate(['/']);
     }
     
   }
