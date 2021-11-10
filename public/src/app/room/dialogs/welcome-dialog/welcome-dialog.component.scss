@@ -1,3 +1,32 @@
+.row {
+	width: 100%;
+	max-width: 1200px;
+	margin: auto;
+	clear: both;
+	display: flex;
+	flex-direction: row;
+	flex-wrap: wrap;
+}
+.meta, .inputs {
+	width: 100%;
+	margin-bottom: 20px;
+}
+.inputs nb-icon {
+	vertical-align: super;
+}
+.join-button-container {
+	display: flex;
+	align-items: center;
+	justify-content: center;
+	flex-wrap: nowrap;
+	margin-top: 20px;
+}
+.join-button {display: block;}
+@media (min-width: 768px) {
+	.meta, .inputs {
+		width: 50%;
+	}
+}
 nb-select {
 	width: 100%
 }

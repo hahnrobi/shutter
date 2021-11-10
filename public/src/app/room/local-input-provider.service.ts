@@ -180,9 +180,9 @@ export class LocalInputProviderService {
     let stream = null;;
     await navigator.mediaDevices.getUserMedia({video: false, audio: {deviceId: deviceId}})
       .then((s) => {this._micAllowed = true;
-        this.videoAllowed.next(this._micAllowed); stream = s;})
+        this.micAllowed.next(this._micAllowed); stream = s;})
       .catch((err) => {this._micAllowed = false;
-        this.videoAllowed.next(this._micAllowed);});
+        this.micAllowed.next(this._micAllowed);});
     return new MediaStreamProvider(stream);
   }
 

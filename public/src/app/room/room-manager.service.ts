@@ -116,6 +116,7 @@ export class RoomManagerService {
 
     this._connectionService.leaveRoom.pipe(first()).subscribe(() => {
       this._userManagerService.clear();
+      this.headerTitleService.leftRoom();
     })
 
 

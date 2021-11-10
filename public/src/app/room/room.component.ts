@@ -7,7 +7,7 @@ import { ConnectionService } from './connection.service';
 import { Component, ElementRef, EventEmitter, HostListener, IterableDiffers, OnInit, Output, QueryList, ViewChild, ViewChildren } from '@angular/core';
 import { RoomManagerService } from './room-manager.service';
 import { faMicrophone, faMicrophoneSlash } from '@fortawesome/free-solid-svg-icons';
-import { ReplaySubject, Subscription } from 'rxjs';
+import { Observable, ReplaySubject, Subscription } from 'rxjs';
 import { User } from './user/user';
 import { ActivatedRoute, Router } from '@angular/router';
 import { animate, style, transition, trigger } from '@angular/animations';
@@ -19,6 +19,10 @@ import { TranslateService } from '@ngx-translate/core';
   styleUrls: ['./room.component.scss']
 })
 export class RoomComponent implements OnInit {
+  @HostListener('window:beforeunload')
+  canDeactivate(): Observable<boolean> | boolean {
+    return this.currentState != "room";
+  }
   @Output() mutedAudioEvent = new EventEmitter<boolean>();
 
   public users = [];
@@ -58,6 +62,9 @@ export class RoomComponent implements OnInit {
       }else {
         if(connectionInitReply.reason == "wrong_password") {
           
+        }
+        if(this.currentState == "room") {
+          this.currentState = "welcome";
         }
       }
     })
@@ -149,6 +156,7 @@ export class RoomComponent implements OnInit {
 
 
   ngOnDestroy(){
+    this._connectionService.disconnect();
     for( const sub of this.subs){
       if(sub){
         try{

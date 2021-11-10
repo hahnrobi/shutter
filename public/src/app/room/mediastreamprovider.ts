@@ -51,6 +51,7 @@ export class MediaStreamProvider {
 		if(this.stream) {
 			let tracks = this.stream.getVideoTracks();
 			tracks.forEach(track => {track.enabled = state;});
+		
 		}
 	}
 	public turnOffCamera():void {
@@ -73,6 +74,8 @@ export class MediaStreamProvider {
 		if(!this.stream) {
 			return;
 		}
+		console.log("Measure in");
+
 		this.isSpeaking = new ReplaySubject<boolean>();
 		const context = new(window.AudioContext)();
 
@@ -162,6 +165,7 @@ export class MediaStreamProvider {
 	}
 
 	public dispose() {
+		this.stopMeasureMicLevel();
 		this.stream.getTracks().forEach(function(track) {
 			track.stop();
 		  });

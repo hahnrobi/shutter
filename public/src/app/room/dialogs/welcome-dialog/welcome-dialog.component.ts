@@ -9,6 +9,7 @@ import { of } from 'rxjs';
   styleUrls: ['./welcome-dialog.component.scss']
 })
 export class WelcomeDialogComponent implements OnInit, OnDestroy {
+  private audioMeteringSubscription;
   public _localInputProviderService:LocalInputProviderService;
 
   public inputNameText:string;
@@ -68,6 +69,7 @@ export class WelcomeDialogComponent implements OnInit, OnDestroy {
     this.selectedVideoDeviceMediaStreamProvider?.dispose();
     console.log("Audio dispose");
     this.selectedAudioDeviceMediaStreamProvider?.dispose();
+    this.audioMeteringSubscription.unsubscribe();
   }
   public saveName() {
     this.enteredName.emit(this.inputNameText);
@@ -115,6 +117,9 @@ export class WelcomeDialogComponent implements OnInit, OnDestroy {
     });
   }
   changeAudioInputDevice(deviceId) {
+    if(this.audioMeteringSubscription) {
+      this.audioMeteringSubscription.unsubscribe();
+    }
     console.log("Changed audio device: ", deviceId)
     this._localInputProviderService.saveUsedDevices(this.selectedVideoDevice, deviceId);
     if(this.selectedAudioDeviceMediaStreamProvider != null) {
@@ -122,12 +127,12 @@ export class WelcomeDialogComponent implements OnInit, OnDestroy {
       this.selectedAudioDeviceMediaStreamProvider.dispose();
       this.selectedAudioDeviceMediaStreamProvider = null;
     }
-    let s = this._localInputProviderService.getAudio(deviceId).then((s) => {
-      this.selectedAudioDeviceMediaStreamProvider = s;
+    let s = this._localInputProviderService.getAudio(deviceId).then((streamProvider) => {
+      this.selectedAudioDeviceMediaStreamProvider = streamProvider;
+      
       console.log("AUDIO: ", this.selectedAudioDeviceMediaStreamProvider);
-      s.measureMicLevel(200, true);
-      console.log("AUDIO: ", this.selectedAudioDeviceMediaStreamProvider);
-      s.opt_audiolevel.subscribe(l => {
+      streamProvider.measureMicLevel(200, true);
+      this.audioMeteringSubscription = streamProvider.opt_audiolevel.subscribe(l => {
         let level = 80 - (-l);
         if(level < 0) {
           level = 0;
@@ -136,6 +141,4 @@ export class WelcomeDialogComponent implements OnInit, OnDestroy {
       });
     });
   }
-
-
 }

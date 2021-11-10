@@ -1,3 +1,4 @@
+import { LeavingRoomGuardService } from './leaving-room-guard.service';
 import { RoomRoutingModule } from './room-routing.module';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
@@ -31,7 +32,20 @@ import { BrowserModule } from '@angular/platform-browser';
 export function HttpLoaderFactory(http:HttpClient) {
   return new TranslateHttpLoader(http);
 }
-
+export function AutoUnsub() {
+  return function(constructor) {
+      const orig = constructor.prototype.ngOnDestroy
+      constructor.prototype.ngOnDestroy = function() {
+          for(const prop in this) {
+              const property = this[prop]
+              if(typeof property.subscribe === "function") {
+                  property.unsubscribe()
+              }
+          }
+          orig.apply()
+      }
+  }
+}
 
 @NgModule({
   declarations: [
@@ -82,6 +96,6 @@ export function HttpLoaderFactory(http:HttpClient) {
     WaitingListComponent,
     WaitingUserComponent,
   ],
-  providers: [ConnectionService, UserManagerService, RoomManagerService, NbMenuService, LocalInputProviderService, LastSpeakersService ],
+  providers: [ConnectionService, UserManagerService, RoomManagerService, NbMenuService, LocalInputProviderService, LastSpeakersService, LeavingRoomGuardService ],
 })
 export class RoomModule { }

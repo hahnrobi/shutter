@@ -22,6 +22,7 @@ declare var Peer: any;
 export class ConnectionService {
   private socket;
   private peer;
+  private log;
   private streams: MediaStream[] = [];
   private dataConnections: any[] = [];
   public currentStatus: UserStatus = new UserStatus();
@@ -56,6 +57,7 @@ export class ConnectionService {
   public userDataIncoming: ReplaySubject<[string, SelfDataTransfer]> = new ReplaySubject<[string, SelfDataTransfer]>(1);
   public joinedToRoom:ReplaySubject<string> = new ReplaySubject<string>();
   public leaveRoom: ReplaySubject<boolean> = new ReplaySubject<boolean>();
+
 
   constructor(private authService:NbAuthService) {
     this.usersOnApproval = new Subject<[string, User, boolean][]>();
@@ -431,8 +433,10 @@ export class ConnectionService {
   }
 
   public disconnect() {
+    console.log("[CONN] DISCONNECT");
     this.socket.disconnect();
     this.selfStreamProvider.dispose();
+    this.connectionStatusChanged.next(new ConnectionInitReply());
     this.peer.disconnect();
     this.initDone = false;
     this.leaveRoom.next(true);
