@@ -6,7 +6,7 @@ const jwt = require('jsonwebtoken');
 const jwtGenerator = require('../includes/jwt-generator');
 
 // Get Data Models
-const User = require("../models/User");
+const User = require("../models/user");
 
 exports.getUsers = async (req, reply) => {
   try {

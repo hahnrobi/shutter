@@ -1,0 +1,25 @@
+version: "3.8"
+services:
+  mongodb:
+    image : mongo
+    container_name: mongodb
+    environment:
+    - PUID=1000
+    - PGID=1000
+    volumes:
+    - shutter_data:/data/db
+    ports:
+    - 27017:27017
+    restart: unless-stopped
+  shutter:
+    image : hahnrobi/shutter
+    container_name: shutter
+    environment:
+      - 'DB_CONN=mongodb://mongodb/shutter'
+    ports:
+    - 4001:4430
+    restart: unless-stopped
+    
+volumes:
+    shutter_data:
+        external: false

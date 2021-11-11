@@ -9,7 +9,6 @@ const winston = require('winston');
 const expressWinston = require('express-winston');
 const { ExpressPeerServer } = require('peer');
 
-require('dotenv').config();
 
 const logger = winston.createLogger({
 	level: 'info',
@@ -249,8 +248,16 @@ const jsonErrorHandler = async (err, req, res, next) => {
 
 const start = async() => {
 	try {
+		console.log("Starting up...")
 		await server.listen(4430);
-		mongoose.connect('mongodb://localhost/shutter')
+		
+		let mongoConnectionString = "mongodb://mongo/shutter";
+		if(process.env.DB_CONN) {
+			mongoConnectionString = process.env.DB_CONN;
+		}
+		console.log("Connecting to server on address: " + mongoConnectionString); 
+		//mongoose.connect('mongodb://localhost/shutter')
+		mongoose.connect(mongoConnectionString)
  		.then(() => console.log('MongoDB connected…'))
  		.catch(err => console.log(err));
 	}

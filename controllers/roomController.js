@@ -2,8 +2,8 @@
 const mongoose = require('mongoose')
 
 // Get Data Models
-const Room = require('../models/Room')
-const User = require("../models/User")
+const Room = require("../models/room")
+const User = require("../models/user")
 
 const bcrypt = require('bcryptjs');
 
