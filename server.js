@@ -251,7 +251,7 @@ const start = async() => {
 		console.log("Starting up...")
 		await server.listen(4430);
 		
-		let mongoConnectionString = "mongodb://mongo/shutter";
+		let mongoConnectionString = "mongodb://localhost/shutter";
 		if(process.env.DB_CONN) {
 			mongoConnectionString = process.env.DB_CONN;
 		}
