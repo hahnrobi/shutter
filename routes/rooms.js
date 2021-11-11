@@ -5,6 +5,11 @@ const validateToken = require("../includes/validate-token");
 
 module.exports = router;
 
+router.get("/api/rooms", async (req, res) => {
+	let rooms = await roomController.getRooms(req, res)
+	res.send(rooms);
+})
+
 router.get("/api/rooms/:id", (req, res) => {
 	roomController.getSingleRoom(req, res);
 })

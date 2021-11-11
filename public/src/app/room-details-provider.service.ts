@@ -20,6 +20,11 @@ export class RoomDetailsProviderService {
       return of(null);
     }));
   }
+  getPublicRooms() {
+    return this.http.get<Room[]>(this.apiUrl + '/rooms').pipe(catchError((err:HttpErrorResponse) => {
+      return of(null);
+    }));
+  }
   getRoomsForCurrentUser() {
     const reqHeaders = new HttpHeaders({
       'Content-Type': 'application/json',

@@ -7,6 +7,7 @@ const bcrypt = require('bcryptjs');
 const validateToken = require("./includes/validate-token");
 const winston = require('winston');
 const expressWinston = require('express-winston');
+const { ExpressPeerServer } = require('peer');
 
 require('dotenv').config();
 
@@ -44,11 +45,12 @@ function getRandomInt(max) {
 
 app.set('view engine', 'ejs');
 app.use(express.static('public/dist/shutter'));
+app.use('/peerjs.min.js', express.static('views/peerjs.min.js'));
 app.use(express.json());
 
-/*app.use('/peerjs', require('peer').ExpressPeerServer(srv, {
+app.use('/peerjs', require('peer').ExpressPeerServer(server, {
 	debug: true
-}))*/
+}))
 
 
 

@@ -12,10 +12,11 @@ export class HeaderTitleService {
   }
 
   joinedToRoom(room:Room) {
-    console.log("RRR", room.name);
     this.title.next(room.name);
+    document.title = room.name + " // Shutter";
   }
   leftRoom() {
     this.title.next("Shutter");
+    document.title = "Shutter";
   }
 }

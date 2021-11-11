@@ -1,6 +1,6 @@
 import { TranslateModule, TranslatePipe } from '@ngx-translate/core';
 import { FormsModule } from '@angular/forms';
-import { NbAlertModule, NbButton, NbButtonModule, NbInputModule, NbRadioComponent, NbRadioModule } from '@nebular/theme';
+import { NbAlertModule, NbButton, NbButtonModule, NbInputModule, NbRadioComponent, NbRadioModule, NbToggleModule } from '@nebular/theme';
 import { NgModule } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
@@ -20,6 +20,7 @@ import { RoomDeleteConfirmComponent } from './room-delete-confirm/room-delete-co
     NbInputModule,
     NbRadioModule,
     NbButtonModule,
+    NbToggleModule,
     FormsModule,
     TranslateModule,
     RoomAddEditRoutingModule

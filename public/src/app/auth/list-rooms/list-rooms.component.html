@@ -1,53 +1,44 @@
 <div *ngIf="!rooms || rooms.length == 0" style="display: flex; flex-direction: column; align-items: center;">
-  Look like you does not have any room yet. Why not create one?
-  <a routerLink="/room-manage" style="text-decoration: none;"><button nbButton>Create Room</button></a>
+  {{ 'Look like you does not have any room yet. Why not create one?' | translate }}
 </div>
 <div *ngIf="rooms && rooms.length > 0">
   <div *ngFor="let room of rooms" class="roomDetails">
     <div class="content">
       <div class="icon">
-        <div class="protectedByPassword" *ngIf="room.auth_type == 'password'">
+        <div class="protectedByPassword" *ngIf="room.auth_type == 'password'" nbTooltip="{{ 'Protected by password' | translate }}">
           <nb-icon icon="lock-outline"></nb-icon>
         </div>
-        <div class="protectedByApprove" *ngIf="room.auth_type == 'approve'">
+        <div class="protectedByApprove" *ngIf="room.auth_type == 'approve'" nbTooltip="{{ 'Protected by approve' | translate }}">
           <nb-icon icon="clock-outline"></nb-icon>
         </div>
         <div
           class="protectedByNone"
           *ngIf="room.auth_type != 'approve' && room.auth_type != 'password'"
+          nbTooltip="{{ 'No protection' | translate }}"
         >
           <nb-icon icon="unlock-outline"></nb-icon>
         </div>
       </div>
       <div class="main">
         <div class="title">
-          {{ room.name }}
+          <h2>{{ room.name }}</h2>
           <div class="times">
-            <div class="lastAccessed">
-              {{ room.created_at }}
-            </div>
             <div class="createdAt">
-              {{ room.last_active }}
+              {{ 'Created at' | translate }}: {{ room.created_at | date:"yyyy.MM.dd HH:mm:ss"}}
             </div>
           </div>
         </div>
       </div>
       <div class="buttons">
-        <a [routerLink]="['/room', room._id]"
-        ><button nbButton fullWidth status="primary">
-          {{ "Enter" | translate }}
-        </button></a
-      >
-        <a [routerLink]="['/room-manage', room._id]"
-          ><button nbButton fullWidth status="primary">
-            {{ "Edit" | translate }}
-          </button></a
-        >
-        <a [routerLink]="['/room-manage/delete', room._id]"
-          ><button nbButton fullWidth status="danger">
-            {{ "Delete" | translate }}
-          </button></a
-        >
+        <button nbButton fullWidth [routerLink]="['/room', room._id]" status="primary">
+          <nb-icon icon="log-in-outline"></nb-icon> {{ "Enter" | translate }}
+        </button>
+          <button nbButton fullWidth [routerLink]="['/room-manage', room._id]" >
+            <nb-icon icon="edit-outline"></nb-icon> {{ "Edit" | translate }}
+          </button>
+          <button nbButton fullWidth [routerLink]="['/room-manage/delete', room._id]" status="danger">
+            <nb-icon icon="trash-2-outline"></nb-icon> {{ "Delete" | translate }}
+          </button>
       </div>
     </div>
   </div>

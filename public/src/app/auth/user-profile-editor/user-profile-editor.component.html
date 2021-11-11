@@ -18,6 +18,7 @@
            #email="ngModel"
            name="name"
            id="input-name"
+           [disabled]="!this.loaded"
            pattern=".+@.+\..+"
            [attr.placeholder]="'Name' | translate"
            autofocus
@@ -28,7 +29,7 @@
   <button nbButton
           fullWidth
           status="success"
-          [disabled]="submitted"
+          [disabled]="submitted || !loaded"
           [class.btn-pulse]="submitted">
     {{ 'Save' | translate }}
   </button>
@@ -36,6 +37,7 @@
 <div class="form-control-group" style="margin-top: 15px">
 	<button nbButton
 	fullWidth
+  [disabled]="!this.loaded"
 	status="primary">
 	{{ 'Change password' | translate }}
 	</button>
@@ -43,5 +45,14 @@
 
 <div class="form-control-group" style="margin-top: 30px;">
     <label class="label">{{ 'Your rooms' | translate }}:</label>
-	<auth-list-rooms [rooms]="this.rooms"></auth-list-rooms>
-  </div>
+	<auth-list-rooms *ngIf="roomsLoaded" [rooms]="this.rooms"></auth-list-rooms>
+  <p *ngIf="!roomsLoaded">{{ 'Loading...' | translate }}</p>
+  <button
+  nbButton
+  *ngIf="rooms.length < 3"
+  [routerLink]="['/room-manage']"
+  fullWidth
+  style="margin-top: 10px;">
+   {{ 'Add new room' | translate }}
+  </button>
+</div>

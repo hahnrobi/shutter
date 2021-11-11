@@ -1,1 +1,60 @@
-<h1>Üdvözlünk a Shutterben!</h1>
+<h1 style="text-align: center;">{{ 'Welcome to Shutter!' | translate }}</h1>
+<div class="content-container">
+<h2>{{ 'What is Shutter?' | translate }}</h2>
+<p>{{ "shutter_home_intro" | translate }}</p>
+<p><b style="text-align: center;">{{ 'Try it out!' | translate }}</b></p>
+</div>
+<div class="content-container">
+<h2>{{ 'What Shutter is for?' | translate }}</h2>
+<div class="feature-container">
+	<div class="feature"><nb-icon icon="radio-outline"></nb-icon><h3>{{ 'Keep in touch' | translate }}</h3><span>{{ 'Anytime, anywhere.' | translate }}</span></div>
+	<div class="feature"><nb-icon icon="phone-call-outline"></nb-icon><h3>{{ 'Direct connection' | translate }}</h3><span>{{ 'You connect directly to each others browser.' | translate }}</span></div>
+	<div class="feature"><nb-icon icon="shield-outline"></nb-icon><h3>{{ 'Secure' | translate }}</h3><span>{{ 'Only the ones in the room are able to see or hear you.' | translate }}</span></div>
+	<div class="feature"><nb-icon icon="plus-circle-outline"></nb-icon><h3>{{ 'Easy to use' | translate }}</h3><span>{{ 'You can use it without registration.' | translate }}</span></div>
+</div>
+</div>
+<div class="content-container">
+<h2>{{ 'Public rooms' | translate }}</h2>
+<p>{{ 'shutter_home_public_rooms_intro' | translate }}</p>
+<div *ngIf="rooms && rooms.length > 0">
+	<div *ngFor="let room of rooms" class="roomDetails">
+	  <div class="content">
+		  <div class="header">
+		<div class="icon">
+		  <div class="protectedByPassword" *ngIf="room.auth_type == 'password'" nbTooltip="{{ 'Protected by password' | translate }}">
+			<nb-icon icon="lock-outline"></nb-icon>
+		  </div>
+		  <div class="protectedByApprove" *ngIf="room.auth_type == 'approve'" nbTooltip="{{ 'Protected by approve' | translate }}">
+			<nb-icon icon="clock-outline"></nb-icon>
+		  </div>
+		  <div
+			class="protectedByNone"
+			*ngIf="room.auth_type != 'approve' && room.auth_type != 'password'"
+			nbTooltip="{{ 'No protection' | translate }}"
+		  >
+			<nb-icon icon="unlock-outline"></nb-icon>
+		  </div>
+		</div>
+		<div class="title">
+			<a [routerLink]="['/room', room._id]"><h2>{{ room.name }}</h2></a>
+			</div>	
+		  </div>
+		<div class="main">
+			<div class="owner">
+				{{ 'Owner' | translate }}: <nb-icon icon="person-outline"></nb-icon> {{ room.owner.name }}
+			</div>
+			<div class="times">
+			  <div class="createdAt">
+				{{ 'Created at' | translate }}: {{ room.created_at | date:"yyyy.MM.dd HH:mm:ss"}}
+			  </div>
+			</div>
+		</div>
+		<div class="buttons">
+		  <button nbButton fullWidth [routerLink]="['/room', room._id]" status="primary">
+			<nb-icon icon="log-in-outline"></nb-icon> {{ "Enter" | translate }}
+		  </button>
+		</div>
+	  </div>
+	</div>
+  </div>
+</div>

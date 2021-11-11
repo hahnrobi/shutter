@@ -1,6 +1,6 @@
 <div *ngIf="!allowedToEdit" style="display: flex; align-items: center; flex-direction: column;">
 	<h1 style="text-align: center">{{ 'This room is not owned by you.' | translate }}</h1>
-	<a routerLink="/auth/profile" style="text-decoration: none;"><button nbButton>View your rooms</button></a>
+	<a routerLink="/auth/profile" style="text-decoration: none;"><button nbButton>{{ 'View your rooms' | translate }}</button></a>
 </div>
 
 <h1 *ngIf="allowedToEdit && isNew">{{ 'Add room' | translate}}</h1>
@@ -19,6 +19,14 @@
 			[attr.placeholder]="'Desired name for the room' | translate"
 			autofocus
 			required>
+</div>
+<div class="form-control-group">
+	<label class="label" style="display: block">{{ 'Public' | translate }}:</label>
+	<p>{{ 'If you set your room as public, people can see it listed on the homepage.' | translate }}</p>
+	<nb-toggle
+			[(checked)]="room.public"
+			autofocus
+			required></nb-toggle>
 </div>
 <div class="form-control-group">
 	<label class="label" for="input-name">{{ 'Authentication type' | translate }}:</label>

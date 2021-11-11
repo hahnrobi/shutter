@@ -69,7 +69,7 @@ export class WelcomeDialogComponent implements OnInit, OnDestroy {
     this.selectedVideoDeviceMediaStreamProvider?.dispose();
     console.log("Audio dispose");
     this.selectedAudioDeviceMediaStreamProvider?.dispose();
-    this.audioMeteringSubscription.unsubscribe();
+    this.audioMeteringSubscription?.unsubscribe();
   }
   public saveName() {
     this.enteredName.emit(this.inputNameText);

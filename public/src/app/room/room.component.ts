@@ -156,7 +156,9 @@ export class RoomComponent implements OnInit {
 
 
   ngOnDestroy(){
-    this._connectionService.disconnect();
+    if(this.currentState == "room") {
+      this._connectionService.disconnect();
+    }
     for( const sub of this.subs){
       if(sub){
         try{

@@ -75,9 +75,7 @@ export class ConnectionService {
     }
 
     const myPeer = new Peer(undefined, {
-      host: 'dev.local',
       secure: true,
-      port: 3001,
     });
     this.peer = myPeer;
     myPeer.on('open', (id) => {

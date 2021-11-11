@@ -1,3 +1,4 @@
+import { RoomDetailsProviderService } from './../room-details-provider.service';
 import { Component, OnInit } from '@angular/core';
 
 @Component({
@@ -7,9 +8,19 @@ import { Component, OnInit } from '@angular/core';
 })
 export class WelcomeComponent implements OnInit {
 
-  constructor() { }
+  rooms = [];
+  roomsLoaded = false;
+  roomsSub = null;
+
+  constructor(private roomDetailsProviderService: RoomDetailsProviderService) { }
 
   ngOnInit(): void {
+    this.roomsSub = this.roomDetailsProviderService
+      .getPublicRooms()
+      .subscribe((rooms) => {this.rooms = rooms; this.roomsLoaded = true});
   }
 
+  ngOnDestroy(): void {
+    this.roomsSub?.unsubscribe();
+  }
 }
