@@ -12,10 +12,11 @@ import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
 import { io } from 'socket.io-client';
 import { ReplaySubject } from 'rxjs';
 import { User } from './user/user';
+import Peer from 'peerjs';
 import { first } from 'rxjs/operators';
 import { Room } from './room';
 
-declare var Peer: any;
+//declare var Peer: any;
 @Injectable({
   providedIn: 'root',
 })
@@ -73,7 +74,6 @@ export class ConnectionService {
     if(password != undefined) {
       this.authData.submittedPassword = password;
     }
-
     const myPeer = new Peer(undefined, {
       secure: true,
     });

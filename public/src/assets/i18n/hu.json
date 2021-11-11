@@ -106,5 +106,6 @@
 	"You can use it without registration.": "Regisztráció nélkül is használhatod.",
 	"shutter_home_intro": "A Shutter egy online kapcsolattartást lehetővé tevő szolgáltatás. Segítségével lehetőséged van másokkal szobákban beszélgetni videóval, hanggal vagy akár szövegesen is.",
 	"Public rooms": "Nyilvános szobák",
-	"shutter_home_public_rooms_intro": "Itt olyan szobákat találsz, amelyeket gazdájuk nyilvánosan elérhetővé tett. A szobák neve előtt lévő ikon jelöli a szobán használt védelmet. Előfordulhat, hogy csak jelszó birtokában, vagy a tulajdonos jóváhagyása után tudsz belépni az adott szobába."
+	"shutter_home_public_rooms_intro": "Itt olyan szobákat találsz, amelyeket gazdájuk nyilvánosan elérhetővé tett. A szobák neve előtt lévő ikon jelöli a szobán használt védelmet. Előfordulhat, hogy csak jelszó birtokában, vagy a tulajdonos jóváhagyása után tudsz belépni az adott szobába.",
+	"Owner": "Tulajdonos"
 }

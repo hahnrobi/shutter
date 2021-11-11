@@ -10,9 +10,8 @@ const bcrypt = require('bcryptjs');
 // Get all rooms
 exports.getRooms = async (req, reply) => {
   try {
-    const rooms = await Room.find({"public": true}).populate("owner");
+    const rooms = await Room.find({"public": true}).sort([['created_at']]).populate("owner");
     copyRooms = JSON.parse(JSON.stringify(rooms));
-    console.log(copyRooms);
     copyRooms.forEach(room => {
       delete room["auth_password"];
       delete room.approved_users;

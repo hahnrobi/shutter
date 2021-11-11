@@ -106,6 +106,6 @@
 	"You can use it without registration.": "You can use it without registration.",
 	"shutter_home_intro": "Shutter is a service providing an online communication platform. With Shutter you are able to talk with others using video, audio or text.",
 	"Public rooms": "Public rooms",
-	"shutter_home_public_rooms_intro": "Here you can find rooms which are publicly available by their owner. Keep in mind that the icon before the title defines the used security method of the room. It can happen that you can only join if you know the password, or the owner has to approve you."
-
+	"shutter_home_public_rooms_intro": "Here you can find rooms which are publicly available by their owner. Keep in mind that the icon before the title defines the used security method of the room. It can happen that you can only join if you know the password, or the owner has to approve you.",
+	"Owner": "Owner"
 }
