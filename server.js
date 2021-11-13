@@ -27,7 +27,7 @@ const logger = winston.createLogger({
 	],
   });
 
-
+  require('dotenv').config()
 //const server = require("http").Server(app);
 const server = require('https').Server({
 	key: fs.readFileSync(__dirname + '/certs/private.key'),
@@ -249,16 +249,19 @@ const jsonErrorHandler = async (err, req, res, next) => {
 const start = async() => {
 	try {
 		console.log("Starting up...")
-		await server.listen(4430);
 		
-		let mongoConnectionString = "mongodb://localhost/shutter";
+		let mongoConnectionString = "mongodb://127.0.0.1:27017/shutter";
 		if(process.env.DB_CONN) {
 			mongoConnectionString = process.env.DB_CONN;
 		}
 		console.log("Connecting to server on address: " + mongoConnectionString); 
-		//mongoose.connect('mongodb://localhost/shutter')
 		mongoose.connect(mongoConnectionString)
- 		.then(() => console.log('MongoDB connected…'))
+		//mongoose.connect('mongodb://127.0.0.1/shutter')
+ 		.then(async () => {
+			 console.log('MongoDB connected…')
+			 await server.listen(4430);
+			 console.log("Server running!");
+			})
  		.catch(err => console.log(err));
 	}
 	catch(err) {

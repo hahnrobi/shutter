@@ -41,6 +41,9 @@ router.post('/api/auth/login', async (req, res) => {
 		  }
 		  if(successfull) {
 			  let token = jwtGenerator.generate({"user":userId});
+			  console.log("Login sucess!")
+			  console.log(token);
+			  console.log(jwt.sign(token, process.env.SHUTTER_ACCESS_TOKEN_SECRET));
 			  res.send({"token": jwt.sign(token, process.env.SHUTTER_ACCESS_TOKEN_SECRET), "data": token});
 		  }else {
 			  res.status(403);
@@ -48,6 +51,7 @@ router.post('/api/auth/login', async (req, res) => {
 		  }
 	  }
   } catch (err) {
+	  console.log(err);
 	  res.send(err);
   }
 })
