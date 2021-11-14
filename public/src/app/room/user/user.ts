@@ -1,4 +1,4 @@
-import { ReplaySubject, Subject } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { MediaStreamProvider } from './../mediastreamprovider';
 import { UserStatus } from './../user-status/user-status';
 export class User {
@@ -9,9 +9,7 @@ export class User {
 	public status:UserStatus;
 	public spectator:boolean;
 	private _locallyMuted:boolean = false;
-	public localMuteStateChanged:Subject<boolean> = new Subject<boolean>();
-	private _locallyPinned:boolean = false;
-	public locallyPinnedStateChanged:Subject<boolean> = new Subject<boolean>();
+	public localMuteStateChanged:BehaviorSubject<boolean> = new BehaviorSubject<boolean>(false);
 	constructor() {
 		this.status = new UserStatus();
 		this.name = "Connecting...";
@@ -30,11 +28,4 @@ export class User {
 		this.localMuteStateChanged.next(value);
 	}
 
-	get locallyPinned():boolean {
-		return this._locallyPinned;
-	}
-	set locallyPinned(value: boolean) {
-		this._locallyPinned = value;
-		this.locallyPinnedStateChanged.next(value);
-	}
 }

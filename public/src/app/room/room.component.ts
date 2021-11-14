@@ -1,3 +1,4 @@
+import { UserManagerService } from './user-manager.service';
 import { NbDialogService, NbGlobalLogicalPosition, NbToastrService } from '@nebular/theme';
 import { ConnectionInitReply } from './connection-init-reply';
 import { RoomDetailsProviderService } from './../room-details-provider.service';
@@ -26,7 +27,6 @@ export class RoomComponent implements OnInit {
   @Output() mutedAudioEvent = new EventEmitter<boolean>();
 
   public users = [];
-  public pinnedUsers = [];
   public view:"gallery"|"spotlight" = "gallery";
   public connectionReply:ReplaySubject<ConnectionInitReply>;
 
@@ -39,7 +39,6 @@ export class RoomComponent implements OnInit {
 
   roomDetailsProviderService:RoomDetailsProviderService;
 
-  private iterableDiffer : any;
   private subs: Subscription[] = []
 
   currentState:"welcome"|"connecting"|"room" = "welcome";
@@ -51,9 +50,17 @@ export class RoomComponent implements OnInit {
     { title: 'Gallery', icon: "camera-outline", target: "galleryView" },
     { title: 'Spotlight', icon: "crop-outline", target: "spotlightView" }];
 
-  constructor(private _roomDetailsProvider:RoomDetailsProviderService, private _roomManagerSerivce:RoomManagerService, private _connectionService:ConnectionService, private iterableDiffers: IterableDiffers, private route: ActivatedRoute, private toastrService:NbToastrService, private translate: TranslatePipe, private router:Router) {
+  constructor(
+    private _roomDetailsProvider:RoomDetailsProviderService,
+    private _roomManagerSerivce:RoomManagerService,
+    private _connectionService:ConnectionService,
+    private _userManagerService:UserManagerService,
+    private iterableDiffers: IterableDiffers,
+    private route: ActivatedRoute,
+    private toastrService:NbToastrService,
+    private translate: TranslatePipe,
+    private router:Router ) {
     console.log("ROOM COMPONENT INIT")
-    this.iterableDiffer = iterableDiffers.find([]).create(null);
     this.roomDetailsProviderService = _roomDetailsProvider;
     route.params.subscribe(p => {this.roomId = p.room;});
     this.connectionReply = this._connectionService.connectionStatusChanged;

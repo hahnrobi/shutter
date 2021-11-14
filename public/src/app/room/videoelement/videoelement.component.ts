@@ -69,22 +69,18 @@ export class VideoelementComponent implements OnInit {
           this.user.locallyMuted = !this.user.locallyMuted;
           console.log(this.user.locallyMuted);
           break;
-        case "pinVideo":
-          this.user.locallyPinned = !this.user.locallyPinned;
-          break;
         }
     });
   }
   private updateMenuItems() {
     this.contextMenuItems = [
-      { title: this.translate.transform('Pin video'), icon: "camera-outline", target: "pinVideo" },
       { title: this.translate.transform('Contain video in frame'), icon: "crop-outline", target: "toggleSizing" },
       { title: this.translate.transform('Cover video in frame'), icon: "expand-outline", target: "toggleSizing", hidden: true },
       { title: this.translate.transform("Mute for me"), icon: "slash-outline", target: "toggleMute" },
       { title: this.translate.transform("Unmute audio"), hidden: true, icon: "volume-up-outline", target: "toggleMute" }];
       this.contextMenuItems.forEach(element => {
         if(this.user.isMe) {
-          if(element.target == 'toggleMute' || element.target == 'pinVideo') { element.hidden = true; }
+          if(element.target == 'toggleMute') { element.hidden = true; }
         }
       });
   }
