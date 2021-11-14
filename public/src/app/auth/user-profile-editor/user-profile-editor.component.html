@@ -38,7 +38,8 @@
 	<button nbButton
 	fullWidth
   [disabled]="!this.loaded"
-	status="primary">
+	status="primary"
+  [routerLink]="['/auth/profile/password']">
 	{{ 'Change password' | translate }}
 	</button>
 </div>

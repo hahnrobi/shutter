@@ -27,7 +27,8 @@ export class LastSpeakersService {
     this._connectionService.statusChanged.subscribe((tuple: [string, UserStatus]) => {
       let clientId:string = tuple[0];
       let status:UserStatus = tuple[1];
-      this.processSpeakingStatusChange(clientId, status.isSpeaking);
+      
+      this.processSpeakingStatusChange(clientId, !status.isMuted && status.isSpeaking);
     })
 
     this._connectionService.userLeaveEvent.subscribe((clientId: string) => {
@@ -46,9 +47,9 @@ export class LastSpeakersService {
     } else {
         delete this._speakerList[clientId];
 
-        //If no one else speaks, then show self video
-        if(this._speakerList.length < 1) {
-          this.processSpeakingStatusChange(this._connectionService.clientId, true);
+        //If no one else, then show self video
+        if(Object.keys(this._connectionService.peers).length < 1 && Object.keys(this._speakerList).length < 1) {
+        this.processSpeakingStatusChange(this._connectionService.clientId, true);
           return;
         }
 

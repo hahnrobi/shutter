@@ -1,3 +1,4 @@
+import { ChangePasswordComponent } from './change-password/change-password.component';
 import { AuthComponent } from './auth.component';
 import { UserProfileEditorComponent } from './user-profile-editor/user-profile-editor.component';
 import { LogoutComponent } from './logout/logout.component';
@@ -31,7 +32,12 @@ export const routes: Routes = [
         path: 'profile',
         canActivate: [AuthGuard],
         component: UserProfileEditorComponent
-      }
+      },
+      {
+        path: 'profile/password',
+        canActivate: [AuthGuard],
+        component: ChangePasswordComponent,
+      },
     ],
   },
 ];

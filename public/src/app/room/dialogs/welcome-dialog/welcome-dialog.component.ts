@@ -71,6 +71,8 @@ export class WelcomeDialogComponent implements OnInit, OnDestroy {
     this.selectedAudioDeviceMediaStreamProvider?.dispose();
     this.audioMeteringSubscription?.unsubscribe();
   }
+
+
   public saveName() {
     this.enteredName.emit(this.inputNameText);
     this.deviceConfig.emit(this._localInputProviderService);
@@ -102,11 +104,12 @@ export class WelcomeDialogComponent implements OnInit, OnDestroy {
   }
   changeVideoInputDevice(deviceId:string) {
     this._localInputProviderService.saveUsedDevices(deviceId, this.selectedAudioDevice);
-    
+    this.selectedVideoDevice = deviceId;
+
     this._localInputProviderService.getVideo(deviceId).then(streamProvider => {
-      if(this.selectedAudioDeviceMediaStreamProvider != null) {
-        this.selectedAudioDeviceMediaStreamProvider.dispose();
-        this.selectedAudioDeviceMediaStreamProvider = null;
+      if(this.selectedVideoDeviceMediaStreamProvider != null) {
+        this.selectedVideoDeviceMediaStreamProvider.dispose();
+        this.selectedVideoDeviceMediaStreamProvider = null;
       }
 
       this.selectedVideoDeviceMediaStreamProvider = streamProvider;
@@ -117,20 +120,23 @@ export class WelcomeDialogComponent implements OnInit, OnDestroy {
     });
   }
   changeAudioInputDevice(deviceId) {
+    this._localInputProviderService.saveUsedDevices(this.selectedVideoDevice, deviceId);
+    this.selectedAudioDevice = deviceId;
+
     if(this.audioMeteringSubscription) {
       this.audioMeteringSubscription.unsubscribe();
     }
     console.log("Changed audio device: ", deviceId)
-    this._localInputProviderService.saveUsedDevices(this.selectedVideoDevice, deviceId);
+    
     if(this.selectedAudioDeviceMediaStreamProvider != null) {
       this.selectedAudioDeviceMediaStreamProvider.stopMeasureMicLevel();
       this.selectedAudioDeviceMediaStreamProvider.dispose();
       this.selectedAudioDeviceMediaStreamProvider = null;
     }
-    let s = this._localInputProviderService.getAudio(deviceId).then((streamProvider) => {
+    this._localInputProviderService.getAudio(deviceId).then((streamProvider) => {
+      console.log(streamProvider);
       this.selectedAudioDeviceMediaStreamProvider = streamProvider;
       
-      console.log("AUDIO: ", this.selectedAudioDeviceMediaStreamProvider);
       streamProvider.measureMicLevel(200, true);
       this.audioMeteringSubscription = streamProvider.opt_audiolevel.subscribe(l => {
         let level = 80 - (-l);

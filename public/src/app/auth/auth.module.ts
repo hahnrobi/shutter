@@ -21,11 +21,12 @@ import { UserProfileEditorComponent } from './user-profile-editor/user-profile-e
 import { ListRoomsComponent } from './list-rooms/list-rooms.component';
 import { OverlayContainer } from '@angular/cdk/overlay';
 import { AuthComponent } from './auth.component';
+import { ChangePasswordComponent } from './change-password/change-password.component';
 export function HttpLoaderFactory(http:HttpClient) {
   return new TranslateHttpLoader(http);
 }
 @NgModule({
-  declarations: [LoginComponent, UserTopMenuComponent, LogoutComponent, RegisterComponent, UserProfileEditorComponent, ListRoomsComponent, AuthComponent],
+  declarations: [LoginComponent, UserTopMenuComponent, LogoutComponent, RegisterComponent, UserProfileEditorComponent, ListRoomsComponent, AuthComponent, ChangePasswordComponent],
   imports: [
     CommonModule,
     TranslateModule,

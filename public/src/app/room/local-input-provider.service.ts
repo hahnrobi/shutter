@@ -31,26 +31,21 @@ export class LocalInputProviderService {
     this.micAllowed = new Subject<boolean>();
     this.videoAllowed = new Subject<boolean>();
     this.deviceReceived = new ReplaySubject<[MediaDeviceInfo, MediaDeviceInfo]>();
-    this.requestPermissions();
+    this.requestPermissions().then(() => {
     navigator.mediaDevices.enumerateDevices()
     .then((devices) => {
       this.setInputDevices(devices)
       this.getDefaultInputDevices();
-
-      console.log(this.videoInputs);
 
       this.deviceReceived.next([this.defaultAudioInput, this.defaultVideoInput]);
       this.currentAudioInput = this.defaultAudioInput;
       this.currentVideoInput = this.defaultVideoInput;
     })
     .catch(function(err) {
-      console.log(err.name + ": " + err.message);
+      console.error(err.name + ": " + err.message);
     });
   
-    this.audioInputs.forEach(a => {
-      console.log(a);
-    })
-
+  });
   }
 
   private getLastUsedDevices() {
@@ -60,7 +55,7 @@ export class LocalInputProviderService {
       try {
         parsedObj = JSON.parse(storageItem);
       } catch (e) {
-        
+        console.error(e);
       }
     }
     return parsedObj;
@@ -71,12 +66,19 @@ export class LocalInputProviderService {
     });
   }
   public saveUsedDevices(videoId:string, audioId: string) {
-    const item = {
-      "video": videoId,
-      "audio": audioId
+    this.currentVideoInput = this.videoInputs.find(input => input.deviceId == videoId);
+    this.currentAudioInput = this.audioInputs.find(input => input.deviceId == audioId);
+    const item = {}
+    if(this.videoAllowed) {
+      item["video"] = videoId;
     }
-    console.log("[LOCALINPUT-PROVIDER] Saving to localstorage ", item);
-    localStorage.setItem("lastUsedDevices", JSON.stringify(item));
+    if(this.micAllowed) {
+      item["audio"] = audioId;
+    }
+    if(item != null) {
+      console.log("[LOCALINPUT-PROVIDER] Saving to localstorage ", item);
+      localStorage.setItem("lastUsedDevices", JSON.stringify(item));
+    }
   }
 
   public getDefaultInputDevices():void {
@@ -109,7 +111,6 @@ export class LocalInputProviderService {
         audioDevice = this.audioInputs[0];
       }
     }
-
     this.defaultVideoInput = videoDevice;
     this.defaultAudioInput = audioDevice;
   }
@@ -129,6 +130,7 @@ export class LocalInputProviderService {
   public setInputDevices(devices:MediaDeviceInfo[]) {
     //this.audioInputs = [];
     //this.videoInputs = [];
+    
     devices.forEach(dev => {
       if (dev.kind == "audioinput") {
         this.audioInputs.push(dev);
@@ -177,11 +179,14 @@ export class LocalInputProviderService {
     return new MediaStreamProvider(stream);
   }
   public async getAudio(deviceId:string) {
-    let stream = null;;
+    let stream = null;
     await navigator.mediaDevices.getUserMedia({video: false, audio: {deviceId: deviceId}})
       .then((s) => {this._micAllowed = true;
-        this.micAllowed.next(this._micAllowed); stream = s;})
-      .catch((err) => {this._micAllowed = false;
+        this.micAllowed.next(this._micAllowed);
+        stream = s;})
+      .catch((err) => {
+        console.error(err);
+        this._micAllowed = false;
         this.micAllowed.next(this._micAllowed);});
     return new MediaStreamProvider(stream);
   }

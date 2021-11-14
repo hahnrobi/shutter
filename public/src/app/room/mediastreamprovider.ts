@@ -169,7 +169,7 @@ export class MediaStreamProvider {
 		this.stream.getTracks().forEach(function(track) {
 			track.stop();
 		  });
-		console.log("[MEDIASTREAMPROVIDER] Dispose");
+		console.log("[MEDIASTREAMPROVIDER] Dispose ", this.stream.id);
 		if(this.meteringSubscription) {
 			this.meteringSubscription.unsubscribe();
 		}
