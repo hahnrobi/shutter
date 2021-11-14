@@ -1,3 +1,4 @@
+import { TranslatePipe, TranslateService } from '@ngx-translate/core';
 import { faMicrophoneSlash, faThumbsDown, faEllipsisH, faUserSlash, faUser} from '@fortawesome/free-solid-svg-icons';
 import { Component, ElementRef, Input,Inject, OnInit, Output, ViewChild, EventEmitter } from '@angular/core';
 import { NB_WINDOW, NbMenuService } from '@nebular/theme';
@@ -22,15 +23,12 @@ export class VideoelementComponent implements OnInit {
   faEllipsisH = faEllipsisH;
   faUserSlash = faUserSlash;
 
-  contextMenuItems = [
-   { title: 'Pin video', icon: "camera-outline", target: "pinVideo" },
-   { title: 'Contain videos in frame', icon: "crop-outline", target: "toggleSizing" },
-   { title: 'Cover videos in frame', icon: "expand-outline", target: "toggleSizing", hidden: true },
-   { title: "Mute for me", icon: "slash-outline", target: "toggleMute" },
-   { title: "Unmute audio", hidden: true, icon: "volume-up-outline", target: "toggleMute" }];
+  contextMenuItems = [];
 
-  constructor(private nbMenuService: NbMenuService, @Inject(NB_WINDOW) private window) {
-
+  constructor(private nbMenuService: NbMenuService, @Inject(NB_WINDOW) private window, private translate:TranslatePipe, private translateService: TranslateService) {
+    translateService.onLangChange.subscribe(lang=>{
+      this.updateMenuItems();
+  })
   }
 
   ngOnInit(): void {
@@ -40,12 +38,8 @@ export class VideoelementComponent implements OnInit {
       this.user=u;
     });
 
-    this.contextMenuItems.forEach(element => {
-      if(this.user.isMe) {
-        if(element.target == 'toggleMute' || element.target == 'pinVideo') { element.hidden = true; }
-      }
-      
-    });
+    this.updateMenuItems();
+    
 
     this.nbMenuService.onItemClick()
     .pipe(
@@ -81,12 +75,25 @@ export class VideoelementComponent implements OnInit {
         }
     });
   }
+  private updateMenuItems() {
+    this.contextMenuItems = [
+      { title: this.translate.transform('Pin video'), icon: "camera-outline", target: "pinVideo" },
+      { title: this.translate.transform('Contain video in frame'), icon: "crop-outline", target: "toggleSizing" },
+      { title: this.translate.transform('Cover video in frame'), icon: "expand-outline", target: "toggleSizing", hidden: true },
+      { title: this.translate.transform("Mute for me"), icon: "slash-outline", target: "toggleMute" },
+      { title: this.translate.transform("Unmute audio"), hidden: true, icon: "volume-up-outline", target: "toggleMute" }];
+      this.contextMenuItems.forEach(element => {
+        if(this.user.isMe) {
+          if(element.target == 'toggleMute' || element.target == 'pinVideo') { element.hidden = true; }
+        }
+      });
+  }
   ngAfterViewInit() {
     this.videoElement.nativeElement.srcObject = this.user?.mediaStreamProvider?.getStream();
     this.videoElement.nativeElement.addEventListener('loadedmetadata', () => {
       this.videoElement.nativeElement.play()
     })
-    if(this.user.isMe) {
+    if(this.user?.isMe) {
       this.videoElement.nativeElement.muted = true;
     }
     

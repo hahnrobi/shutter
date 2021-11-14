@@ -107,5 +107,24 @@
 	"shutter_home_intro": "Shutter is a service providing an online communication platform. With Shutter you are able to talk with others using video, audio or text.",
 	"Public rooms": "Public rooms",
 	"shutter_home_public_rooms_intro": "Here you can find rooms which are publicly available by their owner. Keep in mind that the icon before the title defines the used security method of the room. It can happen that you can only join if you know the password, or the owner has to approve you.",
-	"Owner": "Owner"
+	"Owner": "Owner",
+	"Welcome": "Welcome",
+	"in the room.": "in the room.",
+	"joined.": "joined.",
+	"left the room.": "left the room.",
+	"would like to join to the room.": "would like to join to the room.",
+	"Join request": "Join request",
+	"Please tap again to confirm.": "Please tap again to confirm.",
+	"Pin video": "Pin video",
+	"Contain video in frame": "Contain video in frame",
+	"Cover video in frame": "Cover video in frame",
+	"Mute for me": "Mute for me",
+	"Unmute audio": "Unmute audio",
+	"User muted themselves": "User muted themselves",
+	"User is locally muted.": "User is locally muted.",
+	"Unmute microphone": "Unmute microphone",
+	"Mute microphone": "Mute microphone",
+	"Turn camera on": "Turn camera on",
+	"Turn camera off": "Turn camera off"
+
 }

@@ -11,7 +11,7 @@ import { Observable, ReplaySubject, Subscription } from 'rxjs';
 import { User } from './user/user';
 import { ActivatedRoute, Router } from '@angular/router';
 import { animate, style, transition, trigger } from '@angular/animations';
-import { TranslateService } from '@ngx-translate/core';
+import { TranslatePipe } from '@ngx-translate/core';
 
 @Component({
   selector: 'app-room',
@@ -26,6 +26,7 @@ export class RoomComponent implements OnInit {
   @Output() mutedAudioEvent = new EventEmitter<boolean>();
 
   public users = [];
+  public pinnedUsers = [];
   public view:"gallery"|"spotlight" = "gallery";
   public connectionReply:ReplaySubject<ConnectionInitReply>;
 
@@ -50,7 +51,7 @@ export class RoomComponent implements OnInit {
     { title: 'Gallery', icon: "camera-outline", target: "galleryView" },
     { title: 'Spotlight', icon: "crop-outline", target: "spotlightView" }];
 
-  constructor(private _roomDetailsProvider:RoomDetailsProviderService, private _roomManagerSerivce:RoomManagerService, private _connectionService:ConnectionService, private iterableDiffers: IterableDiffers, private route: ActivatedRoute, private toastrService:NbToastrService, private translate: TranslateService, private router:Router) {
+  constructor(private _roomDetailsProvider:RoomDetailsProviderService, private _roomManagerSerivce:RoomManagerService, private _connectionService:ConnectionService, private iterableDiffers: IterableDiffers, private route: ActivatedRoute, private toastrService:NbToastrService, private translate: TranslatePipe, private router:Router) {
     console.log("ROOM COMPONENT INIT")
     this.iterableDiffer = iterableDiffers.find([]).create(null);
     this.roomDetailsProviderService = _roomDetailsProvider;
@@ -72,7 +73,9 @@ export class RoomComponent implements OnInit {
 
 
   ngOnInit(): void {
-    const sub = this._roomManagerSerivce.getUsers().subscribe(data => {this.users = data});
+    const sub = this._roomManagerSerivce.getUsers().subscribe(data => {
+      this.users = data
+    });
     this.subs.push(sub);
   }
 
@@ -142,8 +145,8 @@ export class RoomComponent implements OnInit {
   public leaveRoom() {
     if(this.leaveRoomTries == 0) {
         this.toastrService.show(
-          'Really want to exit?',
-          `Please tap again to conform.`,
+          this.translate.transform('Really want to exit?'),
+          this.translate.transform('Please tap again to confirm.'),
           {limit: 1, position: NbGlobalLogicalPosition.BOTTOM_START, status: "info"});
         this.leaveRoomTries++;
     } else {

@@ -5,6 +5,13 @@
 	height: 100%;
 	width: 100%;
 	position: relative;
+	.main {
+		width: 100%;
+		height: 100%;
+		position: relative;
+		display: flex;
+		flex-direction: column;
+	}
 }
 .viewChangeButton {
 }
@@ -28,13 +35,12 @@
 
 }
 .user-list-container, .chat-container{
-	min-height: calc(50% - 20px);
-	
+	min-height: calc(50% - 30px);
 }
 
 .meetingControlsContainer {
 	z-index: 10;
-	position: absolute;
+	//position: absolute;
 	bottom: 0;
 	left: 0;
 	width: 100%;

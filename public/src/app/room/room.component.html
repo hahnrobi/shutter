@@ -7,23 +7,23 @@
 </div>
 <div class="room-container" *ngIf="this.currentState == 'room'">
     
-    <div style="width: 100%; height: 100%; position: relative">
+    <div class="main">
             <room-layout-gallery *ngIf="this.view == 'gallery'" [users]="this.users"></room-layout-gallery>
-        <div *ngIf="this.view == 'spotlight'">
             <room-layout-spotlight *ngIf="this.view == 'spotlight'" [users]="this.users"></room-layout-spotlight>
-        </div>
-    </div>
-    <div class="meetingControlsContainer">
-    <button nbButton aria-label="Unmute microphone" nbTooltip="Unmute microphone" status="danger" *ngIf="this.isMyAudioMuted() == true" (click)="this.unMuteMyAudio()"><fa-icon [icon]="faMicrophoneSlash"></fa-icon></button>
-    <button nbButton aria-label="Mute microphone" nbTooltip="Mute microphone" *ngIf="this.isMyAudioMuted() == false" (click)="this.muteMyAudio()"><fa-icon [icon]="faMicrophone"></fa-icon></button>
 
-    <button nbButton aria-label="Turn Camera On"  status="danger" *ngIf="!this.isMyWebcamOn()" (click)="this.turnOnMyWebcam()"><nb-icon icon="video-outline"></nb-icon></button>
-    <button nbButton aria-label="Turn Camera Off" *ngIf="this.isMyWebcamOn()" (click)="this.turnOffMyWebcam()"><nb-icon icon="video-off-outline"></nb-icon></button>
-
-    <button nbButton class="original" outline status="danger" (click)="this.leaveRoom()">{{ 'Leave Room' | translate }}</button>
-    <!--<button (click)="this.testAddVideoBox()">Add</button>
-    <button (click)="this.testResize()">resize</button>-->
+            <div class="meetingControlsContainer">
+                <button nbButton attr.aria-label="{{ 'Unmute microphone' | translate }}" nbTooltip="{{ 'Unmute microphone' | translate }}" status="danger" *ngIf="this.isMyAudioMuted() == true" (click)="this.unMuteMyAudio()"><fa-icon [icon]="faMicrophoneSlash"></fa-icon></button>
+                <button nbButton attr.aria-label="{{ 'Mute microphone' | translate }}" nbTooltip="{{ 'Mute microphone' | translate }}" *ngIf="this.isMyAudioMuted() == false" (click)="this.muteMyAudio()"><fa-icon [icon]="faMicrophone"></fa-icon></button>
+            
+                <button nbButton attr.aria-label="{{ 'Turn camera on' | translate }}"  nbTooltip="{{ 'Turn camera on' | translate }}"  status="danger" *ngIf="!this.isMyWebcamOn()" (click)="this.turnOnMyWebcam()"><nb-icon icon="video-outline"></nb-icon></button>
+                <button nbButton attr.aria-label="{{ 'Turn camera off' | translate }}"  nbTooltip="{{ 'Turn camera off' | translate }}" *ngIf="this.isMyWebcamOn()" (click)="this.turnOffMyWebcam()"><nb-icon icon="video-off-outline"></nb-icon></button>
+            
+                <button nbButton class="original" outline status="danger" (click)="this.leaveRoom()">{{ 'Leave Room' | translate }}</button>
+                <!--<button (click)="this.testAddVideoBox()">Add</button>
+                <button (click)="this.testResize()">resize</button>-->
+            </div>
     </div>
+
     <div class="sidebar">
         <div class="sidebar-item view-container">
             <room-layout-selector [view]="view" (viewChanged)="this.viewChange($event)"></room-layout-selector>

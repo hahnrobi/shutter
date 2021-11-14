@@ -18,6 +18,7 @@ export class LayoutSpotlightComponent implements OnInit {
 
     this._lastSpeakerService.latestSpeaker.subscribe(id => {
       this.latestSpeaker = id;
+      console.log("Latest speaker"+ id);
     })
   }
 

@@ -22,7 +22,7 @@ import { UserManagerService } from './user-manager.service';
 import { RoomManagerService } from './room-manager.service';
 import { LocalInputProviderService } from './local-input-provider.service';
 import { LastSpeakersService } from './last-speakers.service';
-import { TranslateCompiler, TranslateLoader, TranslateModule, TranslateParser } from '@ngx-translate/core';
+import { TranslateCompiler, TranslateLoader, TranslateModule, TranslateParser, TranslatePipe } from '@ngx-translate/core';
 import { HttpClient, HttpClientModule } from '@angular/common/http';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
@@ -96,6 +96,6 @@ export function AutoUnsub() {
     WaitingListComponent,
     WaitingUserComponent,
   ],
-  providers: [ConnectionService, UserManagerService, RoomManagerService, NbMenuService, LocalInputProviderService, LastSpeakersService, LeavingRoomGuardService ],
+  providers: [ConnectionService, UserManagerService, RoomManagerService, NbMenuService, LocalInputProviderService, LastSpeakersService, LeavingRoomGuardService, TranslatePipe ],
 })
 export class RoomModule { }

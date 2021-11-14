@@ -16,6 +16,7 @@ services:
     container_name: shutter
     environment:
       - 'DB_CONN=mongodb://mongodb/shutter'
+      - 'SHUTTER_ACCESS_TOKEN_SECRET=változtasdmeg'
     ports:
     - 4001:4430
     restart: unless-stopped

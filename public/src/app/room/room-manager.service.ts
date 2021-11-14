@@ -1,3 +1,4 @@
+import { TranslatePipe } from '@ngx-translate/core';
 import { RoomDetailsProviderService } from './../room-details-provider.service';
 import { HeaderTitleService } from './../header-title-service';
 import { ConnectingDialogComponent } from './dialogs/connecting-dialog/connecting-dialog.component';
@@ -16,6 +17,7 @@ import { NbDialogService, NbToastRef } from '@nebular/theme';
 import { NbToastrService, NbGlobalLogicalPosition, NbComponentStatus } from '@nebular/theme';
 import { first } from 'rxjs/operators';
 
+
 @Injectable({
   providedIn: 'root'
 })
@@ -24,7 +26,7 @@ export class RoomManagerService {
   private dialogService:NbDialogService;
   private isConnectionServiceInitialized = false;
 
-  constructor(private _connectionService:ConnectionService, private _userManagerService:UserManagerService, private _chatManagerService:ChatManagerService, private _lastSpeakersService:LastSpeakersService, private toastrService: NbToastrService, private _dialogService: NbDialogService, private headerTitleService:HeaderTitleService, private roomDetailsProvider:RoomDetailsProviderService) {
+  constructor(private _connectionService:ConnectionService, private _userManagerService:UserManagerService, private _chatManagerService:ChatManagerService, private _lastSpeakersService:LastSpeakersService, private toastrService: NbToastrService, private _dialogService: NbDialogService, private headerTitleService:HeaderTitleService, private roomDetailsProvider:RoomDetailsProviderService, private translate:TranslatePipe) {
     this.selfDataProvider = new SelfDataLocalStorageProvider();
     this.dialogService = _dialogService;
     this._connectionService.selfDataProvier = this.selfDataProvider;
@@ -37,25 +39,25 @@ export class RoomManagerService {
       //this._chatManagerService.broadcastMessage(user.name + " joined to room.");
       if(user.clientId!==this._connectionService.clientId) {
         this.toastrService.show(
-          `Welcome ${ user.name } in the room.`,
-          `${ user.name } joined.`,
+          this.translate.transform('Welcome') + " " + user.name + " " + this.translate.transform('in the room.'),
+          user.name + " " + this.translate.transform('joined.'),
           {limit: 3, position: NbGlobalLogicalPosition.BOTTOM_START, status: "success"});
       }
     });
     this._connectionService.userLeaveEvent.subscribe(value => {
       console.log("%c[ROOM-MANAGER] User left: " + value, "color: orange");
-      this._chatManagerService.broadcastMessage(this._userManagerService.getUserByClientId(value).name + " left the room.");
+      this._chatManagerService.broadcastMessage(this._userManagerService.getUserByClientId(value).name + " " + this.translate.transform("left the room."));
       this.toastrService.show(
-        `${this._userManagerService.getUserByClientId(value).name} left the room.`,
-        `${this._userManagerService.getUserByClientId(value).name} left.`,
+        this._userManagerService.getUserByClientId(value).name + " " + this.translate.transform("left the room."),
+        this._userManagerService.getUserByClientId(value).name + " " + this.translate.transform("left the room."),
         {limit: 3, position: NbGlobalLogicalPosition.BOTTOM_START, status: "danger"});
       this._userManagerService.removeUser(value);
     });
 
     this._connectionService.approvingUserJoined.subscribe(user => {
       this.toastrService.show(
-        `${user.name} would like to join to the room.`,
-        `Join request`,
+        user.name + " " + this.translate.transform("would like to join to the room."),
+        this.translate.transform("Join request"),
         {limit: 1, position: NbGlobalLogicalPosition.BOTTOM_START, status: "info"});
     })
 
