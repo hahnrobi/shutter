@@ -5,11 +5,14 @@
   <div *ngFor="let room of rooms" class="roomDetails">
     <div class="content">
       <div class="icon">
+        <div class="security-title">{{ 'Security' | translate }}</div>
         <div class="protectedByPassword" *ngIf="room.auth_type == 'password'" nbTooltip="{{ 'Protected by password' | translate }}">
           <nb-icon icon="lock-outline"></nb-icon>
+          <div class="security-label">{{ 'Password' | translate }}</div>
         </div>
         <div class="protectedByApprove" *ngIf="room.auth_type == 'approve'" nbTooltip="{{ 'Protected by approve' | translate }}">
           <nb-icon icon="clock-outline"></nb-icon>
+          <div class="security-label">{{ 'Approve' | translate }}</div>
         </div>
         <div
           class="protectedByNone"
@@ -17,11 +20,15 @@
           nbTooltip="{{ 'No protection' | translate }}"
         >
           <nb-icon icon="unlock-outline"></nb-icon>
+          <div class="security-label">{{ 'No protection' | translate }}</div>
         </div>
       </div>
       <div class="main">
         <div class="title">
           <h2>{{ room.name }}</h2>
+          <div class="isPublic" *ngIf="room.public">
+            <nb-icon icon="people-outline"></nb-icon> {{ 'Public' | translate }}
+          </div>
           <div class="times">
             <div class="createdAt">
               {{ 'Created at' | translate }}: {{ room.created_at | date:"yyyy.MM.dd HH:mm:ss"}}

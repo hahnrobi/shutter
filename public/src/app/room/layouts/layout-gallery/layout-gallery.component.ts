@@ -1,5 +1,7 @@
+import { UserManagerService } from './../../user-manager.service';
+import { ConnectionService } from './../../connection.service';
 import { User } from './../../user/user';
-import { Component, ElementRef, HostListener, Input, IterableDiffers, OnInit, QueryList, ViewChild, ViewChildren } from '@angular/core';
+import { Component, ElementRef, HostListener, Input, IterableDiffers, OnInit, QueryList, SimpleChanges, ViewChild, ViewChildren } from '@angular/core';
 import { animate, style, transition, trigger } from '@angular/animations';
 
 @Component({
@@ -22,7 +24,7 @@ export class LayoutGalleryComponent implements OnInit {
   @ViewChild('videoGrid') videoGrid:ElementRef;
   private iterableDiffer : any;
 
-  constructor(private iterableDiffers: IterableDiffers) {
+  constructor(private iterableDiffers:IterableDiffers) {
     this.iterableDiffer = iterableDiffers.find([]).create(null);
   }
 
@@ -30,12 +32,7 @@ export class LayoutGalleryComponent implements OnInit {
   }
 
   ngDoCheck() {
-      let changes = this.iterableDiffer.diff(this.users);
-      if (changes) {
-        this.resizeVideoFrames();
-      }
-
-      changes = this.iterableDiffer.diff(this.videoGrid?.nativeElement?.childNodes);
+      let changes = this.iterableDiffer.diff(this.videoGrid?.nativeElement?.childNodes);
       if (changes) {
         this.resizeVideoFrames();
       }
@@ -44,24 +41,21 @@ export class LayoutGalleryComponent implements OnInit {
   onResize(event) {
     this.resizeVideoFrames();
   }
-  public testResize() {
-    this.resizeVideoFrames();
-  }
 
-  private Area(Increment, Count, Width, Height, Margin = 10) {
+  private canFit(increment, n, width, height, margin = 10) {
     let w = 0;
     let i = 0;
-    let h = Increment * 0.75 + (Margin * 2);
-    while (i < (Count)) {
-        if ((w + Increment) > Width) {
+    let h = increment * 0.75 + (margin * 2);
+    while (i < (n)) {
+        if ((w + increment) > width) {
             w = 0;
-            h = h + (Increment * 0.75) + (Margin * 2);
+            h = h + (increment * 0.75) + (margin * 2);
         }
-        w = w + Increment + (Margin * 2);
+        w = w + increment + (margin * 2);
         i++;
     }
-    if (h > Height) return false;
-    else return Increment;
+    if (h > height) return false;
+    else return increment;
   }
   private setWidth(width, margin) {
     this.videoFrames.toArray().forEach(camera => {
@@ -71,28 +65,24 @@ export class LayoutGalleryComponent implements OnInit {
     })
   }
   private resizeVideoFrames() {
-    // variables:
-        let Margin = 2;
-        let Width = this.videoGrid.nativeElement.offsetWidth - (Margin * 2);
-        let Height = this.videoGrid.nativeElement.offsetHeight - (Margin * 2);
+        let margin = 2;
+        let width = this.videoGrid.nativeElement.offsetWidth - (margin * 2);
+        let height = this.videoGrid.nativeElement.offsetHeight - (margin * 2);
         let max = 0;
-        //console.log(Width)
-        //console.log(Height)
-    
-    // loop (i recommend you optimize this)
-        let i = 1;
-        while (i < 5000) {
-            let w = this.Area(i, this.videoFrames.length, Width, Height, Margin);
-            if (w === false) {
+
+        let i = width;
+        let w = this.canFit(i, this.videoFrames.length, width, height, margin);
+        while(w == false || i > 0) {
+          w = this.canFit(i, this.videoFrames.length, width, height, margin);
+            if (w !== false) {
                 max =  i - 1;
                 break;
             }
-            i++;
-        }
+            i--;
+        } 
     
-    // set styles
-        max = max - (Margin * 2);
-        this.setWidth(max, Margin);
+        max = max - (margin * 2);
+        this.setWidth(max, margin);
   }
 
 }
