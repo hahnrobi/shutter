@@ -29,9 +29,24 @@ const logger = winston.createLogger({
 
   require('dotenv').config()
 //const server = require("http").Server(app);
+certPath = __dirname + "/certs/private.key";
+privateKeyPath = __dirname +"/certs/private.key";
+
+if(process.env.SSL_CERT) {
+	certPath = __dirname + process.env.SSL_CERT;
+}
+
+if(process.env.SSL_PRIVATE_KEY) {
+	privateKeyPath = __dirname + process.env.SSL_PRIVATE_KEY;
+}
+
+console.log("Using SSL certificate from: ", certPath);
+console.log("Using SSL private key from: ", privateKeyPath);
+
+
 const server = require('https').Server({
-	key: fs.readFileSync(__dirname + '/certs/private.key'),
-	cert: fs.readFileSync(__dirname + '/certs/cert.crt')
+	key: fs.readFileSync(privateKeyPath),
+	cert: fs.readFileSync(certPath)
 }, app)
 const io = require('socket.io')(server);
 const {v4: uuidV4} = require('uuid');
