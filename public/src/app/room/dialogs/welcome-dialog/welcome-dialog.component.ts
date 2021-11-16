@@ -15,6 +15,7 @@ import { of } from 'rxjs';
 export class WelcomeDialogComponent implements OnInit, OnDestroy {
   private audioMeteringSubscription;
   private dataProvider:ISelfDataProvider;
+  public devicesReceived:boolean = false;
 
 
   public _localInputProviderService:LocalInputProviderService;
@@ -56,6 +57,7 @@ export class WelcomeDialogComponent implements OnInit, OnDestroy {
     this._localInputProviderService.requestPermissions();
     this._localInputProviderService.refreshInputDevices();
     this._localInputProviderService.deviceReceived.subscribe(d => {
+      this.devicesReceived = true;
       console.log("Received devices: ", d);
       this.selectedAudioDevice = d[0]?.deviceId;
       this.selectedVideoDevice = d[1]?.deviceId;

@@ -107,7 +107,7 @@ export class RoomManagerService {
       console.log("[ROOM-MANAGER] Joined to room.");
       if(id) {
         _lastSpeakersService.init();
-        this.roomDetailsProvider.getRoom(id).pipe(first()).subscribe(room => {
+        this.roomDetailsProvider.getRoom(id).subscribe(room => {
           this.headerTitleService.joinedToRoom(room);
         })
         

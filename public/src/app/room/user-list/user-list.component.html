@@ -1,32 +1,54 @@
 <div class="inner">
-	{{'Users in the room' | translate}}
-<div *ngFor="let user of users | keyvalue" class="user-item">
-	{{ (user.value?.name.length>18)? (user.value?.name | slice:0:18)+'..':(user.value?.name) }}
-	<div class="statusContainer" [ngClass]="{'hide_name': (user.value?.name.length>15) && (user.value?.status.isMuted || user.value?.status.isVideoOff || user.value?.status.isSpeaking)}">
-		<div
-		style="display: inline-block; transition: .2s opacity"
-				[@modalState]="user.value?.status.isMuted"
-				(@modalState.start)="$event.element.style.display = 'block'"
-				(@modalState.done)="$event.element.style.display = ($event.toState ? 'block' : 'none')"
-		>
-			<nb-icon icon="mic-off-outline"></nb-icon>
-		</div>
-		<div
-				style="display: inline-block; transition: .2s opacity"
-				[@modalState]="user.value?.status.isVideoOff"
-				(@modalState.start)="$event.element.style.display = 'block'"
-				(@modalState.done)="$event.element.style.display = ($event.toState ? 'block' : 'none')"
-		>
-			<nb-icon icon="video-off-outline"></nb-icon>
-		</div>
-		<div
-				style="display: inline-block; transition: .2s opacity"
-				[@modalState]="user.value?.status.isSpeaking"
-  				(@modalState.start)="$event.element.style.display = 'block'"
-  				(@modalState.done)="$event.element.style.display = ($event.toState ? 'block' : 'none')"
-		>
-			<nb-icon icon="mic-outline" status="success"></nb-icon>
-		</div>
-	</div>
-</div>
+  {{ "Users in the room" | translate }}
+  <div *ngFor="let user of users | keyvalue" class="user-item">
+    {{
+      user.value?.name.length > 18
+        ? (user.value?.name | slice: 0:18) + ".."
+        : user.value?.name
+    }}
+    <div
+      class="statusContainer"
+      [ngClass]="{
+        hide_name:
+          user.value?.name.length > 15 &&
+          (user.value?.status.isMuted ||
+            user.value?.status.isVideoOff ||
+            user.value?.status.isSpeaking)
+      }"
+    >
+      <div *ngIf="user.value?.spectator" style="display: inline-block; transition: 0.2s opacity" nbTooltip="{{ 'Spectator' | translate}}">
+        <nb-icon icon="eye-outline"></nb-icon>
+      </div>
+      <div
+        style="display: inline-block; transition: 0.2s opacity"
+        [@modalState]="user.value?.status.isMuted"
+        (@modalState.start)="$event.element.style.display = 'block'"
+        (@modalState.done)="
+          $event.element.style.display = $event.toState ? 'block' : 'none'
+        "
+      >
+        <nb-icon icon="mic-off-outline"></nb-icon>
+      </div>
+      <div
+        style="display: inline-block; transition: 0.2s opacity"
+        [@modalState]="user.value?.status.isVideoOff"
+        (@modalState.start)="$event.element.style.display = 'block'"
+        (@modalState.done)="
+          $event.element.style.display = $event.toState ? 'block' : 'none'
+        "
+      >
+        <nb-icon icon="video-off-outline"></nb-icon>
+      </div>
+      <div
+        style="display: inline-block; transition: 0.2s opacity"
+        [@modalState]="user.value?.status.isSpeaking"
+        (@modalState.start)="$event.element.style.display = 'block'"
+        (@modalState.done)="
+          $event.element.style.display = $event.toState ? 'block' : 'none'
+        "
+      >
+        <nb-icon icon="mic-outline" status="success"></nb-icon>
+      </div>
+    </div>
+  </div>
 </div>

@@ -42,5 +42,8 @@
 </div>
 </div>
 <div class="row join-button-container">
-	<button class="join-button" nbButton (click)="this.saveName()">{{'Join Room' | translate}}</button>
+	<nb-alert status="danger" *ngIf="devicesReceived && !videoAllowed && !audioAllowed">
+		{{ 'WARN_ONLY_SPECTATOR' | translate }}
+	</nb-alert>
+	<button class="join-button" nbButton (click)="this.saveName()" [disabled]="!devicesReceived">{{'Join Room' | translate}}</button>
 </div>

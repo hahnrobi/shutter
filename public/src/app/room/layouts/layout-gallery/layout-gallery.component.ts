@@ -18,11 +18,12 @@ import { animate, style, transition, trigger } from '@angular/animations';
   ],
 })
 export class LayoutGalleryComponent implements OnInit {
-
   @Input() users:any[];
   @ViewChildren('videoFrame') videoFrames:QueryList<any>;
   @ViewChild('videoGrid') videoGrid:ElementRef;
   private iterableDiffer : any;
+
+  public isEmpty = true;
 
   constructor(private iterableDiffers:IterableDiffers) {
     this.iterableDiffer = iterableDiffers.find([]).create(null);
@@ -34,6 +35,12 @@ export class LayoutGalleryComponent implements OnInit {
   ngDoCheck() {
       let changes = this.iterableDiffer.diff(this.videoGrid?.nativeElement?.childNodes);
       if (changes) {
+        let validUsersNum = Object.values(this.users).filter(user => !user.spectator).length > 0;
+        if (validUsersNum) {
+          this.isEmpty = false;
+        }else {
+          this.isEmpty = true;
+        }
         this.resizeVideoFrames();
       }
   }

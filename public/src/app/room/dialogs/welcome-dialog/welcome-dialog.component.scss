@@ -17,6 +17,7 @@
 .join-button-container {
 	display: flex;
 	align-items: center;
+	flex-direction: column;
 	justify-content: center;
 	flex-wrap: nowrap;
 	margin-top: 20px;

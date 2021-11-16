@@ -43,7 +43,7 @@ export class LastSpeakersService {
       }
     })
 
-    this._connectionService.selfStreamProvider.isSpeaking.subscribe((speakingState:boolean) => {
+    this._connectionService.selfStreamProvider?.isSpeaking?.subscribe((speakingState:boolean) => {
       this.processSpeakingStatusChange(this._connectionService.clientId, speakingState);
     })
 

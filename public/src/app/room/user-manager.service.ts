@@ -65,6 +65,7 @@ export class UserManagerService {
     let u:User = this.getUserByClientId(clientId);
     if(u != null) {
       u.name = data.name;
+      u.spectator = data.spectator;
     }
   }
   public getUsers():Observable<User[]>{

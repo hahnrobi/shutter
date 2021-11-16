@@ -32,6 +32,7 @@ export class RoomComponent implements OnInit {
 
   public localInputProviderService:LocalInputProviderService;
 
+  public isSpectator:boolean = false;
   public roomId:string;
 
 
@@ -68,13 +69,17 @@ export class RoomComponent implements OnInit {
       if(connectionInitReply.result == "successful") {
         this.currentState = "room";
       }else {
-        if(connectionInitReply.reason == "wrong_password") {
-          this._connectionService.leave();
-          this.currentState = "welcome";
-        }
         if(this.currentState == "room") {
           this.currentState = "welcome";
         }
+      }
+      if(connectionInitReply.result == "failed" && connectionInitReply.reason == "wrong_password") {
+          this._connectionService.leave();
+          this.toastrService.show(
+            this.translate.transform("The entered password is wrong. Please try again."),
+            this.translate.transform("Wrong password"),
+            {limit: 3, position: NbGlobalLogicalPosition.BOTTOM_START, status: "danger"});
+          this.currentState = "welcome";
       }
     })
   }
@@ -125,6 +130,9 @@ export class RoomComponent implements OnInit {
   public finalizeConfiguration(inputService:LocalInputProviderService) {
     if(inputService != null) {
       this.localInputProviderService = inputService;
+      if(inputService.currentAudioInput === null && inputService.currentVideoInput === null) {
+        this.isSpectator = true;
+      }
       this.currentState = "connecting";
       this.roomDetailsProviderService.getRoom(this.roomId).subscribe(room => {
         if(room?.auth_type == "password") {

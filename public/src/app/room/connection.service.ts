@@ -1,3 +1,4 @@
+import { MediaStreamFaker } from './media-stream-faker';
 import { NbAuthService, NbAuthToken } from '@nebular/auth';
 import { AuthData } from './auth-data';
 import { ConnectionInitReply } from './connection-init-reply';
@@ -92,7 +93,11 @@ export class ConnectionService {
       this.authData.submittedPassword = password;
     }
     const myPeer = new Peer(undefined, {
+      host: "/",
+      path: "/peerjs",
+      port: 4430,
       secure: true,
+      debug: 3
     });
     this.peer = myPeer;
     myPeer.on('open', (id) => {
@@ -100,8 +105,6 @@ export class ConnectionService {
       this.clientId = id;
       this.currentStatus.clientId = id;
 
-      let userData = this.getMyDataForPreSending();
-      this.userJoinEvent.next(userData);
       this.init(inputService);
     });
   }
@@ -110,11 +113,16 @@ export class ConnectionService {
     sendingData.clientId = this.clientId;
     sendingData.name = this.selfDataProvier.getName();
     sendingData.status = this.currentStatus;
+    if(!this.selfStream) {
+      sendingData.spectator = true;
+      this.currentStatus.isMuted = true;
+      this.currentStatus.isVideoOff = true;
+    }
     return sendingData;
   }
   private async init(localInputProvider: LocalInputProviderService = null) {
     this.socket = await io('/');
-    
+
     console.log('[CONN] Socket: ', this.socket);
     console.log(this.peer);
 
@@ -157,11 +165,12 @@ export class ConnectionService {
       console.log(
         '[CONN] No video and audio permission. Joining only as spectator.'
       );
-      this.setUpConnections(null, true);
+
+      this.setUpConnections(null);
     } else {
       console.log('[CONN] Got video and audio permission. Joining...');
       await navigator.mediaDevices.getUserMedia(userMediaQuery).then((stream) => {
-        this.setUpConnections(stream, false);
+        this.setUpConnections(stream);
       });
     }
 
@@ -192,6 +201,7 @@ export class ConnectionService {
     });
 
     let myData = this.getMyDataForPreSending();
+    console.log("ME:", myData);
     
     this.socket.emit('join-room', this.roomId, myData, {...JSON.parse(JSON.stringify(this.authData)), token});
     console.log('[CONN] Joining room: ' + this.roomId);
@@ -201,8 +211,8 @@ export class ConnectionService {
 
   }
   private startMediaAnalysis() {
-      this.selfStreamProvider.measureMicLevel();
-      this.selfStreamProvider.isSpeaking.subscribe((talkState) => {
+      this.selfStreamProvider?.measureMicLevel();
+      this.selfStreamProvider?.isSpeaking?.subscribe((talkState) => {
         if (talkState) {
           console.log('[CONN MIC] Speaking');
         } else {
@@ -212,7 +222,7 @@ export class ConnectionService {
     })
   }
 
-  private setUpConnections(stream: MediaStream = null, spectator = false) {
+  private setUpConnections(stream: MediaStream = null) {
     this.selfStreamProvider.setMediaStream(stream);
     this.selfStream = this.selfStreamProvider.getStream();
 
@@ -220,6 +230,10 @@ export class ConnectionService {
     this.incomingStreamEvent.next([this.clientId, this.selfStreamProvider]);
 
     this.addVideoStream(this.selfStream, this.clientId);
+
+
+    let userData = this.getMyDataForPreSending();
+
 
     //Other useres connecting to me when I join the room.
     this.peer.on('call', (call) => {
@@ -229,7 +243,13 @@ export class ConnectionService {
 
       let caller = opts.metadata.caller;
       console.log('[CONN] Incoming call... answering...');
-      call.answer(this.selfStream);
+      let stream = this.selfStream
+      if(stream === undefined || stream === null) {
+        const faker = new MediaStreamFaker();
+        stream = faker.getNewFake();
+      }
+      
+      call.answer(stream);
       call.on('stream', (userVideoStream) => {
         console.log('[CONN] Sending my own stream...');
         this.addVideoStream(userVideoStream, caller.id);
@@ -239,8 +259,9 @@ export class ConnectionService {
     });
     
 
-    let myData = this.getMyDataForPreSending();
-    console.log(myData);
+    this.userJoinEvent.next(userData);
+    this.incomingStreamEvent.next([this.clientId, this.selfStreamProvider]);
+    console.log(userData);
 
     this.socket.on('user-connected', (userData: User) => {
       this.connectToNewUser(userData.clientId, this.selfStream);
@@ -325,6 +346,10 @@ export class ConnectionService {
   public connectToNewUser(userId, stream) {
     //Me connecting to other user who joined the room.
     let opts = { metadata: { caller: { id: this.clientId } } };
+    if(stream === undefined || stream === null) {
+      const faker = new MediaStreamFaker();
+      stream = faker.getNewFake();
+    }
     const call = this.peer.call(userId, stream, opts);
     console.log('[CONN] Calling user: ' + userId, stream);
     call.on('stream', (userVideoStream) => {
@@ -397,6 +422,7 @@ export class ConnectionService {
     let name = selfData.getName();
     let transferObj = new SelfDataTransfer();
     transferObj.name = name;
+    transferObj.spectator = this.selfStream === null;
     if (answer) {
       this.dataConnections[connectionId].send([
         'self-data-answer',

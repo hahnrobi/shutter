@@ -1,10 +1,14 @@
 <div class="videoGridContainer">
 	<div #videoGrid class="videoGrid">
-		<div #videoFrame *ngFor="let u of users | keyvalue" @fadeIn class="videoContainer" [class.speaking]="u.value?.status?.isSpeaking">
-
-			<app-videoelement style="object-fit: cover;
-			overflow: hidden;
-			border-radius: 3px" *ngIf="u.value?.mediaStreamProvider?.stream != null && u.value?.mediaStreamProvider?.stream != undefined" [user]=u.value></app-videoelement>
-		</div>
+		<ng-container *ngFor="let u of users | keyvalue">
+			<div #videoFrame *ngIf="!u.value?.spectator" @fadeIn class="videoContainer" [class.speaking]="u.value?.status?.isSpeaking">
+				<app-videoelement style="object-fit: cover;
+				overflow: hidden;
+				border-radius: 3px" *ngIf="u.value?.mediaStreamProvider?.stream != null && u.value?.mediaStreamProvider?.stream != undefined" [user]=u.value></app-videoelement>
+			</div>
+		</ng-container>
+	</div>
+	<div *ngIf="isEmpty" style="height: 100%;display: flex;align-items: center;justify-content: center;">
+		<h1>Shutter</h1>
 	</div>
 </div>

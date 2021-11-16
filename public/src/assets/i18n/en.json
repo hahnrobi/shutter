@@ -127,6 +127,10 @@
 	"Turn camera on": "Turn camera on",
 	"Turn camera off": "Turn camera off",
 	"Security": "Security",
-	"Approve": "Approve"
+	"Approve": "Approve",
+	"Wrong password": "Wrong password",
+	"The entered password is wrong. Please try again.": "The entered password is wrong. Please try again.",
+	"Spectator": "Spectator",
+	"WARN_ONLY_SPECTATOR": "Warning: Without any video or audio permission you are only able to participate as spectator. If you wish to use your video and/or microphone please adjust your browser's settings."
 
 }

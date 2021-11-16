@@ -127,5 +127,9 @@
 	"Turn camera on": "Kamera bekapcsolása",
 	"Turn camera off": "Kamera kikapcsolása",
 	"Security": "Biztonság",
-	"Approve": "Jóváhagyás"
+	"Approve": "Jóváhagyás",
+	"Wrong password": "Hibás jelszó!",
+	"The entered password is wrong. Please try again.": "Az általad megadott jelszó hibás. Kérlek próbáld újra.",
+	"Spectator": "Néző",
+	"WARN_ONLY_SPECTATOR": "Figyelem! Ha nem adsz hozzáférést a kamerádhoz vagy mikrofonodhoz, úgy csak megfigyelőként tudsz részt venni a szobában. Ennek megváltoztatásához a böngésződ beállításaiban engedélyezd ezen eszközök egyikének használatát."
 }

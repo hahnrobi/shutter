@@ -7,7 +7,7 @@ const bcrypt = require('bcryptjs');
 const validateToken = require("./includes/validate-token");
 const winston = require('winston');
 const expressWinston = require('express-winston');
-const { ExpressPeerServer } = require('peer');
+const ExpressPeerServer = require('peer').ExpressPeerServer;
 
 
 const logger = winston.createLogger({
@@ -60,7 +60,7 @@ function getRandomInt(max) {
 app.use(express.static('public/dist/shutter'));
 app.use(express.json());
 
-app.use('/peerjs', require('peer').ExpressPeerServer(server, {
+app.use('/peerjs', ExpressPeerServer(server, {
 	debug: true
 }))
 
