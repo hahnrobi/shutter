@@ -69,7 +69,8 @@ export class RoomComponent implements OnInit {
         this.currentState = "room";
       }else {
         if(connectionInitReply.reason == "wrong_password") {
-          
+          this._connectionService.leave();
+          this.currentState = "welcome";
         }
         if(this.currentState == "room") {
           this.currentState = "welcome";
@@ -157,7 +158,7 @@ export class RoomComponent implements OnInit {
           {limit: 1, position: NbGlobalLogicalPosition.BOTTOM_START, status: "info"});
         this.leaveRoomTries++;
     } else {
-      this._connectionService.disconnect();
+      this._connectionService.leave();
       this.leaveRoomTries = 0;
       this.router.navigate(['/']);
     }
@@ -167,7 +168,7 @@ export class RoomComponent implements OnInit {
 
   ngOnDestroy(){
     if(this.currentState == "room") {
-      this._connectionService.disconnect();
+      this._connectionService.leave();
     }
     for( const sub of this.subs){
       if(sub){

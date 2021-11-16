@@ -8,7 +8,7 @@ import { ChatMessage } from './chat/chat-message';
 import { UserStatus } from './user-status/user-status';
 import { MediaStreamProvider } from './mediastreamprovider';
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable, of, Subject } from 'rxjs';
+import { BehaviorSubject, Observable, of, Subject, Subscription } from 'rxjs';
 import { io } from 'socket.io-client';
 import { ReplaySubject } from 'rxjs';
 import { User } from './user/user';
@@ -59,10 +59,27 @@ export class ConnectionService {
   public joinedToRoom:ReplaySubject<string> = new ReplaySubject<string>();
   public leaveRoom: ReplaySubject<boolean> = new ReplaySubject<boolean>();
 
+  
 
   constructor(private authService:NbAuthService) {
     this.usersOnApproval = new Subject<[string, User, boolean][]>();
     this.usersOnApproval.next(this._usersOnApprovalArray);
+    this.joinedToRoom.subscribe(() => {
+      console.log("Joined to room");
+      this.startMediaAnalysis();
+    })
+    this.connectionStatusChanged.subscribe(state => {
+      console.log("Received connection status: ", state);
+      if(state.result == "successful")
+      {
+        console.log("%c[CONN] ✅ Successfully joined to the room.", "color: green")
+        this.joinedToRoom.next(this.roomId);
+      }
+      if(state.result == "failed") 
+      {
+        console.log("%c[CONN] ❌ Join failed. Reason: ", "color: red", state.reason);
+      }
+    })
   }
   public startConnection(
     roomId: string,
@@ -181,19 +198,9 @@ export class ConnectionService {
     console.log('[CONN] My id is: ' + myData.clientId);
     console.log('[CONN] My own details initially sent: ', myData);
     this.authData.submittedPassword = undefined;
-    this.connectionStatusChanged.subscribe(state => {
-      console.log(state);
-      if(state.result == "successful") {
-        this.startMediaAnalysis(myData.spectator);
-        console.log("%c[CONN] ✅ Successfully joined to the room.", "color: green")
-        this.joinedToRoom.next(this.roomId);
-      }else {
-        console.log("%c[CONN] ❌ Join failed. Reason: ", "color: red", state.reason);
-      }
-    })
+
   }
-  private startMediaAnalysis(spectator) {
-    if (!spectator) {
+  private startMediaAnalysis() {
       this.selfStreamProvider.measureMicLevel();
       this.selfStreamProvider.isSpeaking.subscribe((talkState) => {
         if (talkState) {
@@ -202,8 +209,7 @@ export class ConnectionService {
           console.log('[CONN MIC] Not speaking');
         }
         this.updateSpeakingStateStatus(talkState);
-      });
-    }
+    })
   }
 
   private setUpConnections(stream: MediaStream = null, spectator = false) {
@@ -426,6 +432,7 @@ export class ConnectionService {
     }
   }
   public approveWaitingUser(socketId:string, reply:boolean, permanent:boolean = false) {
+    console.log("Approve waiting user: ", socketId);
     this.socket.emit('join-room-request-answer', reply, socketId, permanent);
     this.removeApprovalWaitingUser(socketId);
   }
@@ -434,8 +441,12 @@ export class ConnectionService {
     console.log("[CONN] DISCONNECT");
     this.socket.disconnect();
     this.selfStreamProvider.dispose();
-    this.connectionStatusChanged.next(new ConnectionInitReply());
     this.peer.disconnect();
+  }
+  public leave() {
+    console.log("[CONN] Leave");
+    this.disconnect();
+    this.connectionStatusChanged.next(new ConnectionInitReply());
     this.initDone = false;
     this.leaveRoom.next(true);
   }

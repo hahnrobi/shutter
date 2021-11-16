@@ -57,15 +57,12 @@ function getRandomInt(max) {
 	return Math.floor(Math.random() * Math.floor(max));
   }
 
-app.set('view engine', 'ejs');
 app.use(express.static('public/dist/shutter'));
 app.use(express.json());
 
 app.use('/peerjs', require('peer').ExpressPeerServer(server, {
 	debug: true
 }))
-
-
 
 app.use(expressWinston.logger({
 	transports: [
@@ -82,10 +79,6 @@ app.use(expressWinston.logger({
 	ignoreRoute: function (req, res) { return false; } // optional: allows to skip some log messages based on request and/or response
   }));
 
-app.get('/', (req, res) => {
-	res.redirect('/'+uuidV4());
-});
-
 
 app.use(require('./routes/auth'))
 app.use(require('./routes/rooms'))
@@ -96,9 +89,9 @@ app.get("/assets/i18n/:file", (req, res) => {
 	res.redirect("/dist/shutter/assets/i18n/"+req.params.file);
 })
 
-app.get('/:room(*)', (req, res) => {
-	res.render('room', {roomId: req.params.room});
-})
+app.all('*', function(req, res){
+	res.sendFile(__dirname + "/public/dist/shutter/index.html");
+});
 
 
 io.on('connection', socket => {
@@ -117,6 +110,7 @@ io.on('connection', socket => {
 		}
 	})
 	socket.on('join-room', async (roomId, user, auth = {}) => {
+		socket.user = user;
 		let roomData;
 		console.log("Auth data: ", auth);
 		try {
@@ -139,7 +133,7 @@ io.on('connection', socket => {
 					console.log("Room is protected by password.");
 					let correct = false;
 					if(auth.hasOwnProperty("submittedPassword")) {
-						console.log("User loggin in with password: ", auth.submittedPassword);
+						console.log("User login in with password: ", auth.submittedPassword);
 						correct = bcrypt.compareSync(auth.submittedPassword, roomData.auth_password);
 					}
 					if(!correct) canJoin = false;
@@ -201,24 +195,11 @@ io.on('connection', socket => {
 									if(auth.token) {
 										token = validateToken.isTokenValid(auth.token);
 									}
-									console.log(token);
 									searchSocket.emit("join-room-request", socket.id, user, token !== false);
 									console.log("[ " + socket.id + " ] Sending auth request to owner.");
 
 									searchSocket.on('join-room-request-answer', (reply, socketId, permanent) => {
-										console.log("[ " + socket.id + " ] Owner replied to auth request.");
-										if(reply === true) {
-											socket.emit('join-room-answer', {result: "successful"});
-											console.log("[ " + socket.id + " ] Owner approved user to the room.");
-											if(permanent) {
-												roomController.approveUserToRoom(roomId,token.user);
-												console.log("[ " + socket.id + " ] PERMANENT APPROVE.");
-											}
-											joinUserToRoom(socket, user, roomId);
-										}else {
-											console.log("[ " + socket.id + " ] Owner denied the approval request.");
-											socket.emit("join-room-answer", {result: "failed", reason: "approval_denied"});
-										}
+										handleOwnerReply(socket, reply, socketId, permanent, roomId);
 									});
 								}
 							})
@@ -238,6 +219,27 @@ io.on('connection', socket => {
 
 	});
 })
+function handleOwnerReply(socket, reply, repliedsocketId, permanent, roomId) {
+	let joiningSocket = io.sockets.sockets.get(repliedsocketId)
+	if(!joiningSocket) {
+		return;
+	}
+	let userObj = joiningSocket.user;
+	console.log(userObj);
+	console.log("[ " + socket.id + " ] Owner replied to auth request.");
+		if(reply === true) {
+			joiningSocket.emit('join-room-answer', {result: "successful"});
+			console.log("[ " + socket.id + " ] Owner approved user to the room.");
+			if(permanent) {
+				roomController.approveUserToRoom(roomId,token.user);
+				console.log("[ " + socket.id + " ] PERMANENT APPROVE.");
+			}
+			joinUserToRoom(socket, userObj, roomId);
+		}else {
+			console.log("[ " + socket.id + " ] Owner denied the approval request.");
+			joiningSocket.emit("join-room-answer", {result: "failed", reason: "approval_denied"});
+		}
+}
 
 function joinUserToRoom(socket, user, roomId) {
 	console.log("Room: "+ roomId + " new user: " + user.status.clientId);

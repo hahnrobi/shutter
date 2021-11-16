@@ -15,7 +15,7 @@ import { ConnectionService } from './connection.service';
 import { User } from './user/user';
 import { NbDialogService, NbToastRef } from '@nebular/theme';
 import { NbToastrService, NbGlobalLogicalPosition, NbComponentStatus } from '@nebular/theme';
-import { first } from 'rxjs/operators';
+import { first, take } from 'rxjs/operators';
 
 
 @Injectable({
@@ -103,20 +103,18 @@ export class RoomManagerService {
 
     })
 
-    this._connectionService.joinedToRoom.pipe(first()).subscribe((id) => {
+    this._connectionService.joinedToRoom.subscribe((id) => {
+      console.log("[ROOM-MANAGER] Joined to room.");
       if(id) {
         _lastSpeakersService.init();
-        _lastSpeakersService.speakersList.subscribe(speakers => {
-          console.log("Speaking speakers: ", speakers);
-        })
-        this.roomDetailsProvider.getRoom(id).subscribe(room => {
+        this.roomDetailsProvider.getRoom(id).pipe(first()).subscribe(room => {
           this.headerTitleService.joinedToRoom(room);
         })
         
       }
     })
 
-    this._connectionService.leaveRoom.pipe(first()).subscribe(() => {
+    this._connectionService.leaveRoom.subscribe(() => {
       this._userManagerService.clear();
       this.headerTitleService.leftRoom();
     })

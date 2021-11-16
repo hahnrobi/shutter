@@ -1,3 +1,7 @@
+import { ExistingUserDataProvider } from './../../userdata/existing-user/existing-user-data-provider';
+import { AuthService } from './../../../auth/auth.service';
+import { SelfDataLocalStorageProvider } from './../../userdata/selfdata/self-data-local-storage-provider';
+import { ISelfDataProvider } from './../../userdata/iself-data-provider';
 import { MediaStreamProvider } from './../../mediastreamprovider';
 import { LocalInputProviderService } from './../../local-input-provider.service';
 import { Component, OnInit,  Output, EventEmitter, ViewChild, ElementRef, OnDestroy } from '@angular/core';
@@ -10,6 +14,9 @@ import { of } from 'rxjs';
 })
 export class WelcomeDialogComponent implements OnInit, OnDestroy {
   private audioMeteringSubscription;
+  private dataProvider:ISelfDataProvider;
+
+
   public _localInputProviderService:LocalInputProviderService;
 
   public inputNameText:string;
@@ -25,7 +32,6 @@ export class WelcomeDialogComponent implements OnInit, OnDestroy {
   public selectedVideoDevice:string;
   public selectedAudioDevice:string;
 
-
   public selectedAudioDeviceMediaStreamProvider:MediaStreamProvider;
   public selectedAudioDeviceLevel:number;
 
@@ -36,7 +42,16 @@ export class WelcomeDialogComponent implements OnInit, OnDestroy {
   @ViewChild('video') videoElement:ElementRef;
   @Output() enteredName = new EventEmitter<string>();
   @Output() deviceConfig = new EventEmitter<LocalInputProviderService>();
-  constructor(_localInputProviderService:LocalInputProviderService) {
+  constructor(_localInputProviderService:LocalInputProviderService, _authService: AuthService) {
+    this.dataProvider = new SelfDataLocalStorageProvider();
+    _authService.$isLoggedIn.subscribe((state) => 
+    {
+      if(state) {
+        this.dataProvider = new ExistingUserDataProvider(_authService);
+      }
+    })
+
+
     this._localInputProviderService = _localInputProviderService,
     this._localInputProviderService.requestPermissions();
     this._localInputProviderService.refreshInputDevices();
@@ -60,6 +75,7 @@ export class WelcomeDialogComponent implements OnInit, OnDestroy {
 
 
   ngOnInit(): void {
+    this.inputNameText = this.dataProvider.getName();
     //this.selectedAudioDevice = this._localInputProviderService.defaultAudioInput.deviceId;
   }
   ngOnDestroy() {
@@ -74,6 +90,7 @@ export class WelcomeDialogComponent implements OnInit, OnDestroy {
 
 
   public saveName() {
+    this.dataProvider.setName(this.inputNameText);
     this.enteredName.emit(this.inputNameText);
     this.deviceConfig.emit(this._localInputProviderService);
   }

@@ -41,7 +41,6 @@ export class UserManagerService {
     if(self) {
       u.name = this.myName;
     }
-
   }
   public removeUser(clientId:string) {
     delete this.users[clientId];
@@ -84,7 +83,7 @@ export class UserManagerService {
   public setSelfDataProvider(provider:ISelfDataProvider) {
     this.selfDataProvider = provider;
     this.selfDataProvider.nameUpdated.subscribe(name => {
-      console.log("Updating my own name.");
+      console.log("[USER-MANAGER] Updating my own name.");
       if(this.users[this.me] != undefined) {
         this.users[this.me].name = name;
       }
@@ -92,6 +91,7 @@ export class UserManagerService {
     })
   }
   public clear() {
+    console.log("[USER-MANAGER] Clear...")
     this.users = [];
     this.me = "";
     this.myName = "";
