@@ -55,3 +55,60 @@
 		}
 	}
 }
+.mobile-users, .mobile-chat{
+	display: none;
+}
+.mobileViewChangeButton {
+	display: none;
+	margin: .5px !important;
+	border-radius: 0px !important;
+	transition: .2s all;
+	outline: none;
+	&:active {
+		outline: none;
+	}
+	&:focus {
+		box-shadow: inset 3px 3px 5px rgb(0 0 0 / 20%) !important;
+	}
+}
+.mobileViewChangeButton.lastbtn {
+	border-top-right-radius: 5px !important;
+	border-bottom-right-radius: 5px !important;
+}
+.mobileViewChangeButton.firstbtn {
+	border-top-left-radius: 5px !important;
+	border-bottom-left-radius: 5px !important;
+}
+.mobile-view-active {
+	background-color: #3366FF !important;
+	border-color: #3366FF !important;
+	color: white !important;
+	box-shadow: inset 3px 3px 5px rgb(0 0 0 / 20%) !important;
+}
+@media (max-width: 768px) {
+	.mobileViewChangeButton {
+		display: block;
+	}
+	room-layout-gallery, room-layout-spotlight  {
+		display: none;
+	}
+	.main {
+	  width: 100%;
+	  display: none;
+  }
+  .sidebar {
+	  display: none;
+  }
+  .mobile-active {
+	  display: block !important;
+  }
+  .mobile-users, .mobile-chat {
+	  height: 100%;
+	  width: 100%;
+	  max-width: 100%;
+	  max-height: 100%;
+  }
+  .leaveRoomText {
+	  display: none;
+  }
+}

@@ -144,5 +144,8 @@
 	"Both new passwords should be the same.": "Mindkét jelszónak egyeznie kell.",
 	"Your password changed successfully.": "Jelszavad sikeresen megváltoztattad.",
 	"Invalid password": "Érvénytelen jelszó",
-	"Invalid parameters": "Érvénytelen paraméterek"
+	"Invalid parameters": "Érvénytelen paraméterek",
+	"Chat": "Csevegés",
+	"Users list": "Felhasználók",
+	"Room": "Szoba"
 }

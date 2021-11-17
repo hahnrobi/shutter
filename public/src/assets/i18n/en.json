@@ -144,7 +144,10 @@
 	"Both new passwords should be the same.": "Both new passwords should be the same.",
 	"Your password changed successfully.": "Your password changed successfully.",
 	"Invalid password": "Invalid password",
-	"Invalid parameters": "Invalid parameters"
+	"Invalid parameters": "Invalid parameters",
+	"Chat": "Chat",
+	"Users list": "Users list",
+	"Room": "Szoba"
 
 
 }

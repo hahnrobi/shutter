@@ -1,5 +1,5 @@
+<div class="header">{{ "Users in the room" | translate }}</div>
 <div class="inner">
-  {{ "Users in the room" | translate }}
   <div *ngFor="let user of users | keyvalue" class="user-item">
     {{
       user.value?.name.length > 18

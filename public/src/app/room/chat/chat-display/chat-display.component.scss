@@ -5,13 +5,23 @@
 	align-items: stretch;
 	flex-flow: column;
 	height: 100%;
-	padding: 10px;
+	.title {
+		width: 100%;
+		background: rgba(255,255,255,.1);
+		text-align: center;
+		border-top-left-radius: 5px;
+		border-top-right-radius: 5px;
+		padding: 5px;
+	}
 	.messages {
 		height: 100%;
 		flex: 1;
+		margin: 10px;
 	}
 	.message-input {
+		margin: 10px;
 		height: 40px;
 		min-height: 40px;
+		width: calc(100% - 20px);
 	}
 }

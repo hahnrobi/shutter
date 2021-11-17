@@ -16,9 +16,11 @@ import { element } from 'protractor';
 export class VideoelementComponent implements OnInit {
   @Input() user:User;
   @ViewChild('video') videoElement:ElementRef;
+  @Input() videoSizing : "cover"|"contain" = "cover";
+  @Input() smallThumbnail: boolean = false;
+  @Input() onlyVideo :boolean = false;
   everyFiveSeconds: Observable<number> = timer(0, 5000);
   time = null;
-  videoSizing : "cover"|"contain" = "cover";
   faMicrophoneSlash = faMicrophoneSlash;
   faEllipsisH = faEllipsisH;
   faUserSlash = faUserSlash;

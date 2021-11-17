@@ -6,9 +6,21 @@
 	display: flex;
 	align-items: center;
 	justify-content: center;
+	flex-direction: column;
 }
 .speaking {
 	display: block !important;
+}
+.selfVideo {
+	display: block;
+	position: absolute;
+	right: 0;
+	bottom: 0;
+	height: 50%;
+	width: 100px;
+	z-index: 10;
+	margin: 20px;
+	margin-bottom: 40px;
 }
 app-videoelement {
 	max-width: 100%;
@@ -35,4 +47,5 @@ app-videoelement {
 	border-radius: 10px;
 	overflow: hidden;
 	display: none;
+	max-height: calc(100% - 50px);
 }

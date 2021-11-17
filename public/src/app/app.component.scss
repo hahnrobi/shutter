@@ -24,3 +24,8 @@
 auth-user-top-menu {
 	margin-left: auto;
 }
+@media (max-width: 768px) {
+	.inner .left{
+		display: none;
+	}
+  }

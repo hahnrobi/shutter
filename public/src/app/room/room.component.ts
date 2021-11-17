@@ -34,6 +34,7 @@ export class RoomComponent implements OnInit {
 
   public isSpectator:boolean = false;
   public roomId:string;
+  public roomActiveContainer: "room"|"users"|"chat" = "room";
 
 
   public connect_ask_to_password = false;
@@ -180,6 +181,10 @@ export class RoomComponent implements OnInit {
       this.router.navigate(['/']);
     }
     
+  }
+  public changeActiveContainer(item) {
+    console.log("changed view: ", item);
+    this.roomActiveContainer = item;
   }
 
 
