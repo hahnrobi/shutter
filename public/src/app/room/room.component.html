@@ -12,11 +12,11 @@
             <room-layout-spotlight *ngIf="this.view == 'spotlight'" [users]="this.users"></room-layout-spotlight>
 
             <div class="meetingControlsContainer">
-                <button nbButton attr.aria-label="{{ 'Unmute microphone' | translate }}" nbTooltip="{{ 'Unmute microphone' | translate }}" status="danger" *ngIf="!isSpectator && this.isMyAudioMuted() == true" (click)="this.unMuteMyAudio()"><fa-icon [icon]="faMicrophoneSlash"></fa-icon></button>
-                <button nbButton attr.aria-label="{{ 'Mute microphone' | translate }}" nbTooltip="{{ 'Mute microphone' | translate }}" *ngIf="!isSpectator && this.isMyAudioMuted() == false" (click)="this.muteMyAudio()"><fa-icon [icon]="faMicrophone"></fa-icon></button>
+                <button nbButton attr.aria-label="{{ 'Unmute microphone' | translate }}" nbTooltip="{{ 'Unmute microphone' | translate }}" status="danger" *ngIf="!isSpectator && this.micAvailable() && this.isMyAudioMuted() == true" (click)="this.unMuteMyAudio()"><fa-icon [icon]="faMicrophoneSlash"></fa-icon></button>
+                <button nbButton attr.aria-label="{{ 'Mute microphone' | translate }}" nbTooltip="{{ 'Mute microphone' | translate }}" *ngIf="!isSpectator && this.micAvailable() && this.isMyAudioMuted() == false" (click)="this.muteMyAudio()"><fa-icon [icon]="faMicrophone"></fa-icon></button>
             
-                <button nbButton attr.aria-label="{{ 'Turn camera on' | translate }}"  nbTooltip="{{ 'Turn camera on' | translate }}"  status="danger" *ngIf="!isSpectator && !this.isMyWebcamOn()" (click)="this.turnOnMyWebcam()"><nb-icon icon="video-outline"></nb-icon></button>
-                <button nbButton attr.aria-label="{{ 'Turn camera off' | translate }}"  nbTooltip="{{ 'Turn camera off' | translate }}" *ngIf="!isSpectator && this.isMyWebcamOn()" (click)="this.turnOffMyWebcam()"><nb-icon icon="video-off-outline"></nb-icon></button>
+                <button nbButton attr.aria-label="{{ 'Turn camera on' | translate }}"  nbTooltip="{{ 'Turn camera on' | translate }}"  status="danger" *ngIf="!isSpectator && this.webcamAvailable() && !this.isMyWebcamOn()" (click)="this.turnOnMyWebcam()"><nb-icon icon="video-outline"></nb-icon></button>
+                <button nbButton attr.aria-label="{{ 'Turn camera off' | translate }}"  nbTooltip="{{ 'Turn camera off' | translate }}" *ngIf="!isSpectator && this.webcamAvailable() && this.isMyWebcamOn()" (click)="this.turnOffMyWebcam()"><nb-icon icon="video-off-outline"></nb-icon></button>
             
                 <button nbButton class="original" outline status="danger" (click)="this.leaveRoom()">{{ 'Leave Room' | translate }}</button>
                 <!--<button (click)="this.testAddVideoBox()">Add</button>

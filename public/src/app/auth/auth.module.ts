@@ -9,7 +9,7 @@ import {
 } from '@nebular/auth';
 import { AuthRoutingModule } from './auth-routing.module';
 import { LoginComponent } from './login/login.component';
-import { TranslateLoader, TranslateModule } from '@ngx-translate/core';
+import { TranslateLoader, TranslateModule, TranslatePipe } from '@ngx-translate/core';
 import { HttpClient } from '@angular/common/http';
 import { TranslateHttpLoader } from '@ngx-translate/http-loader';
 import { UserTopMenuComponent } from './user-top-menu/user-top-menu.component';
@@ -103,6 +103,6 @@ export function HttpLoaderFactory(http:HttpClient) {
     }),
   ],
   exports: [UserTopMenuComponent],
-  providers: [OverlayContainer, NbThemeModule.forRoot({ name: 'dark' }).providers]
+  providers: [OverlayContainer, NbThemeModule.forRoot({ name: 'dark' }).providers, TranslatePipe]
 })
 export class AuthModule {}

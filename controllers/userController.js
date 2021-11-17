@@ -120,6 +120,14 @@ exports.updateUser = async (req, res, userId = undefined) => {
 		res.statusCode = 400;
       	return res.send("Invalid email format");
     }
+	if(!requestBody.hasOwnProperty("name") ) {
+		res.statusCode = 400;
+		return res.send("Name required");
+	}
+	if(requestBody.name.length < 3) {
+		res.statusCode = 400;
+		return res.send("Name too short.");
+	}
     const user = await User.findById(req.params.id);
     if(user?._id == userId) {
       const id = user._id;

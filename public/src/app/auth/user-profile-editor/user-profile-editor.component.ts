@@ -3,6 +3,8 @@ import { AuthService } from './../auth.service';
 import { Component, OnInit } from '@angular/core';
 import { User } from '../user';
 import { Room } from 'src/app/room/room';
+import { TranslatePipe } from '@ngx-translate/core';
+import { NbGlobalLogicalPosition, NbToastrService } from '@nebular/theme';
 
 @Component({
   selector: 'app-user-profile-editor',
@@ -21,8 +23,10 @@ export class UserProfileEditorComponent implements OnInit {
   private subs: any[] = [];
 
   constructor(
-    authService: AuthService,
-    private roomDetailsProviderService: RoomDetailsProviderService
+    private authService: AuthService,
+    private roomDetailsProviderService: RoomDetailsProviderService,
+    private translate: TranslatePipe,
+    private toastrService:NbToastrService
   ) {
     authService.getLoggedInUser().subscribe({
       error: () => {
@@ -51,7 +55,24 @@ export class UserProfileEditorComponent implements OnInit {
     this.subs.forEach((sub) => sub.unsubscribe);
   }
   save() {
-    console.log('save');
     this.submitted = true;
+    this.authService.updateUser(this.user).subscribe({
+      next: (reply) => 
+      {
+        this.toastrService.show(
+        this.translate.transform("Your details updated successfully."),
+        this.translate.transform("Details updated"),
+        {limit: 3, position: NbGlobalLogicalPosition.BOTTOM_START, status: "success"});
+        this.submitted = false;
+      },
+      error: (err) =>
+      {
+        this.toastrService.show(
+        this.translate.transform(err.error),
+        this.translate.transform("Error"),
+        {limit: 3, position: NbGlobalLogicalPosition.BOTTOM_START, status: "danger"})
+        this.submitted = false;
+      }
+    });
   }
 }

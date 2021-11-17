@@ -13,7 +13,6 @@ export class ListRoomsComponent implements OnInit {
 
   @Input() rooms:Room[];
   ngOnInit(): void {
-    console.log(this.rooms);
   }
 
 }

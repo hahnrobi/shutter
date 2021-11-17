@@ -10,7 +10,7 @@ router.get('/api/protected', validateToken.validateToken, function(req, res) {
 	res.send("Hello " + req.user);
 });
 router.delete('/api/auth/logout', async(req, res) => {
+	res.status = 200;
 	res.send({"message": "goodbye"});
-	res.sendStatus(200);
 })
 router.post('/api/auth/login', authController.login)

@@ -37,6 +37,12 @@ export class MediaStreamProvider {
 	public getStream():MediaStream {
 		return this.stream
 	}
+	public isVideoAvailable(): boolean {
+		return this.stream.getVideoTracks().length > 0;
+	}
+	public isAudioAvailable(): boolean {
+		return this.stream.getAudioTracks().length > 0;
+	}
 	public isAudioMuted():boolean {
 		if(this.stream) {
 			let tracks = this.stream.getAudioTracks();
@@ -71,7 +77,7 @@ export class MediaStreamProvider {
 		}
 	}
 	public measureMicLevel(int = 1000, withLevel = false) {
-		if(!this.stream) {
+		if(!this.stream || !this.isAudioAvailable()) {
 			return;
 		}
 		console.log("Measure in");

@@ -99,6 +99,13 @@ export class RoomComponent implements OnInit {
     }
   }
 
+  public micAvailable() {
+    return this._connectionService.selfStreamProvider.isAudioAvailable();
+  }
+  public webcamAvailable() {
+    return this._connectionService.selfStreamProvider.isVideoAvailable();
+  }
+
   public muteMyAudio() {
     this._connectionService.selfStreamProvider?.muteStream();
     this._connectionService.updateMicMuteStatus(true);
@@ -125,6 +132,7 @@ export class RoomComponent implements OnInit {
   public setMyName(name:string) {
     this._roomManagerSerivce.selfDataProvider.setName(name);
   }
+  
 
 
   public finalizeConfiguration(inputService:LocalInputProviderService) {
@@ -149,6 +157,7 @@ export class RoomComponent implements OnInit {
   }
   public connectToRoom() {
     this._roomManagerSerivce.connectToRoom(this.roomId, this.localInputProviderService);
+    
   }
 
   public testAddVideoBox() {

@@ -62,4 +62,24 @@ export class AuthService {
     })
     return this.http.get<User>('/api/user-me/', { headers: reqHeaders });
   }
+
+  updateUser(user:User) {
+    const reqHeaders = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${this.token.getValue()}`
+    })
+    let response = this.http.put<User>('/api/user/'+user._id, user, { headers: reqHeaders });
+    response.subscribe({
+      next: (resp) => {this.user = resp; this.$user.next(resp);}
+    })
+    return response;
+  }
+  changePassword(currentPassword, newPassword) {
+    const reqHeaders = new HttpHeaders({
+      'Content-Type': 'application/json',
+      'Authorization': `Bearer ${this.token.getValue()}`
+    })
+    return this.http.put<User>('/api/user/newpass/' + this.user._id, {"oldpassword": currentPassword, "password": newPassword}, { headers: reqHeaders });
+  }
+
 }

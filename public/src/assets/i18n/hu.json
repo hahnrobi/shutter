@@ -131,5 +131,18 @@
 	"Wrong password": "Hibás jelszó!",
 	"The entered password is wrong. Please try again.": "Az általad megadott jelszó hibás. Kérlek próbáld újra.",
 	"Spectator": "Néző",
-	"WARN_ONLY_SPECTATOR": "Figyelem! Ha nem adsz hozzáférést a kamerádhoz vagy mikrofonodhoz, úgy csak megfigyelőként tudsz részt venni a szobában. Ennek megváltoztatásához a böngésződ beállításaiban engedélyezd ezen eszközök egyikének használatát."
+	"WARN_ONLY_SPECTATOR": "Figyelem! Ha nem adsz hozzáférést a kamerádhoz vagy mikrofonodhoz, úgy csak megfigyelőként tudsz részt venni a szobában. Ennek megváltoztatásához a böngésződ beállításaiban engedélyezd ezen eszközök egyikének használatát.",
+	"Name too short.": "A név túl rövid.",
+	"Details updated": "Adatok frissítve",
+	"Your details updated successfully.": "Sikeresen frissítettük az adataid.",
+	"Back to profile": "Vissza a profilhoz",
+	"Current password": "Jelenlegi jelszó",
+	"New password": "Új jelszó",
+	"New password again": "Új jelszó mégegyszer",
+	"Please fill the Current password field": "Kérlek töltsd ki a jelenlegi jelszavadat tartalmazó mezőt.",
+	"Please fill the New password field. It should be at least 5 characters long.": "Kérlek töltsd ki az új jelszót tartalamzó mezőt. Az új jelszó legalább 5 karakter hosszú legyen.",
+	"Both new passwords should be the same.": "Mindkét jelszónak egyeznie kell.",
+	"Your password changed successfully.": "Jelszavad sikeresen megváltoztattad.",
+	"Invalid password": "Érvénytelen jelszó",
+	"Invalid parameters": "Érvénytelen paraméterek"
 }

@@ -97,7 +97,7 @@ export class ConnectionService {
       path: "/peerjs",
       port: 4430,
       secure: true,
-      debug: 3
+      debug: 1
     });
     this.peer = myPeer;
     myPeer.on('open', (id) => {
@@ -117,6 +117,13 @@ export class ConnectionService {
       sendingData.spectator = true;
       this.currentStatus.isMuted = true;
       this.currentStatus.isVideoOff = true;
+    } else {
+      if(!this.selfStreamProvider.isAudioAvailable()) {
+        this.currentStatus.isMuted = true;
+      }
+      if(!this.selfStreamProvider.isVideoAvailable()) {
+        this.currentStatus.isVideoOff = true;
+      }
     }
     return sendingData;
   }
@@ -227,7 +234,6 @@ export class ConnectionService {
     this.selfStream = this.selfStreamProvider.getStream();
 
 
-    this.incomingStreamEvent.next([this.clientId, this.selfStreamProvider]);
 
     this.addVideoStream(this.selfStream, this.clientId);
 
