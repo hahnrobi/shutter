@@ -30,6 +30,6 @@ module.exports.validateToken = (req, res, next) => {
 			return tk;
 		}
 	}catch(err) {
-		throw err;
+		return false;
 	}
 }
