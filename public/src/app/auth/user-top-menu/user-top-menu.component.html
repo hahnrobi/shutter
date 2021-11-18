@@ -4,5 +4,5 @@
 </ng-template>
 <ng-template [ngIf]="!(this.$isLoggedIn | async) ">
 	<a routerLink="/auth/login"><button nbButton hero status="primary">{{ 'Log In' | translate }}</button></a>
-	<a routerLink="/auth/register"><button nbButton hero status="info">{{ 'Register' | translate }}</button></a>
+	<a routerLink="/auth/register" class="register-button"><button nbButton hero status="info">{{ 'Register' | translate }}</button></a>
 </ng-template>

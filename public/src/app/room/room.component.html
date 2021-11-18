@@ -14,7 +14,7 @@
 
             <div class="mobile-users" *ngIf="this.roomActiveContainer === 'users'" [ngClass]="{'mobile-active': this.roomActiveContainer === 'users'}">
                 <div class="sidebar-item view-container">
-                    <room-layout-selector [view]="view" (viewChanged)="this.viewChange($event)"></room-layout-selector>
+                    <room-layout-selector [view]="view" (viewChanged)="this.viewChange($event)" style="margin-bottom: 10px"></room-layout-selector>
                     <div class="user-list-container">
                         <app-waiting-list></app-waiting-list>
                         <app-user-list></app-user-list>

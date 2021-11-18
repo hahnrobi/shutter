@@ -9,3 +9,8 @@ a {
 .userButton {
 	text-transform: none !important;
 }
+@media (max-width: 768px) {
+	.register-button {
+		display: none;
+	}
+}
