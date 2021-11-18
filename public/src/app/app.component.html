@@ -7,8 +7,9 @@
       </div>
       <div class="center">
         <a routerLink="/"><nb-icon class="home-btn" icon="home"></nb-icon></a>
-        <nb-icon class="globe-outline" icon="globe-outline"></nb-icon>
-        <nb-select placeholder="Select language" [(selected)]="language" >
+        <nb-icon class="globe-outline" class="show-on-mobile" icon="globe-outline" nbTooltip="{{ 'Change language' | translate }}" (click)="changeLanguage()"></nb-icon>
+        <nb-icon class="globe-outline" class="hide-on-mobile" icon="globe-outline"></nb-icon>
+        <nb-select placeholder="Select language" [(selected)]="language" class="hide-on-mobile" >
           <nb-option value="en" (click)="changeLanguage('en')">English</nb-option>
           <nb-option value="hu" (click)="changeLanguage('hu')">Magyar</nb-option>
         </nb-select>        

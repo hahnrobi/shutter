@@ -12,8 +12,10 @@ export class HeaderTitleService {
   }
 
   joinedToRoom(room:Room) {
-    this.title.next(room.name);
-    document.title = room.name + " // Shutter";
+    if(room != null) {
+      this.title.next(room.name);
+      document.title = room.name + " // Shutter";
+    }
   }
   leftRoom() {
     this.title.next("Shutter");

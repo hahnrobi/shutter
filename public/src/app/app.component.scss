@@ -21,11 +21,20 @@
 		}
 	}
 }
+.show-on-mobile {
+	display: none;
+}
 auth-user-top-menu {
 	margin-left: auto;
 }
 @media (max-width: 768px) {
 	.inner .left{
 		display: none;
+	}
+	.hide-on-mobile {
+		display: none;
+	}
+	.show-on-mobile {
+		display: inline-block;
 	}
   }
