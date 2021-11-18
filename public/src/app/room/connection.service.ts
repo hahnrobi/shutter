@@ -465,7 +465,7 @@ export class ConnectionService {
   }
   public approveWaitingUser(socketId:string, reply:boolean, permanent:boolean = false) {
     console.log("Approve waiting user: ", socketId);
-    this.socket.emit('join-room-request-answer', reply, socketId, permanent);
+    this.socket.emit('join-room-request-answer', this.roomId, reply, socketId, permanent);
     this.removeApprovalWaitingUser(socketId);
   }
 

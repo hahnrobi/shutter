@@ -8,24 +8,8 @@ const validateToken = require("./includes/validate-token");
 const winston = require('winston');
 const expressWinston = require('express-winston');
 const ExpressPeerServer = require('peer').ExpressPeerServer;
+const logger = require('./includes/logger');
 
-
-const logger = winston.createLogger({
-	level: 'info',
-	format:  winston.format.combine(winston.format.json(), winston.format.prettyPrint()),
-	defaultMeta: { service: 'user-service' },
-	transports: [
-	  //
-	  // - Write all logs with level `error` and below to `error.log`
-	  // - Write all logs with level `info` and below to `combined.log`
-	  //
-	  new winston.transports.File({filename: "/dev/stderr", level: "warn"}),
-      new winston.transports.File({filename: "/dev/stdout"}),
-	  new winston.transports.File({ filename: 'error.log', level: 'error' }),
-	  new winston.transports.File({ filename: 'combined.log' }),
-	  
-	],
-  });
 
   require('dotenv').config()
 //const server = require("http").Server(app);
@@ -40,8 +24,8 @@ if(process.env.SSL_PRIVATE_KEY) {
 	privateKeyPath = __dirname + process.env.SSL_PRIVATE_KEY;
 }
 
-console.log("Using SSL certificate from: ", certPath);
-console.log("Using SSL private key from: ", privateKeyPath);
+logger.info("Using SSL certificate from: ", certPath);
+logger.info("Using SSL private key from: ", privateKeyPath);
 
 
 const server = require('https').Server({
@@ -66,16 +50,48 @@ app.use('/peerjs', ExpressPeerServer(server, {
 
 app.use(expressWinston.logger({
 	transports: [
-	  new winston.transports.Console()
+	  new winston.transports.Console({
+		  format: winston.format.combine(
+			winston.format.colorize({
+			}),
+			winston.format.timestamp({format: 'MMM-DD-YYYY HH:mm:ss'}),
+			winston.format.align(),
+			winston.format.printf(info => `${info.level}: ${[info.timestamp]}: ${info.message}`))
+	  }),
+	  new winston.transports.File({ filename: 'error.log', level: 'error' }),
+	  new (require("winston-daily-rotate-file"))({
+		filename: 'combined.log',
+		format: winston.format.combine(
+			winston.format.timestamp({format: 'MMM-DD-YYYY HH:mm:ss'}),
+        	winston.format.align(),
+        	winston.format.printf(info => `${info.level}: ${[info.timestamp]}: ${info.message}`),
+		)
+	}),
 	],
 	format: winston.format.combine(
-	  winston.format.colorize(),
-	  winston.format.json()
+		winston.format.timestamp({format: 'MMM-DD-YYYY HH:mm:ss'}),
+		winston.format.align(),
+		winston.format.printf(info => `${info.level}: ${[info.timestamp]}: ${info.message}`),
 	),
-	meta: true, // optional: control whether you want to log the meta data about the request (default to true)
-	msg: "HTTP {{req.method}} {{req.url}}", // optional: customize the default logging message. E.g. "{{res.statusCode}} {{req.method}} {{res.responseTime}}ms {{req.url}}"
-	expressFormat: true, // Use the default Express/morgan request formatting. Enabling this will override any msg if true. Will only output colors with colorize set to true
-	colorize: false, // Color the text and status code, using the Express/morgan color palette (text: gray, status: default green, 3XX cyan, 4XX yellow, 5XX red).
+	meta: true,
+	msg: "HTTP {{req.method}} {{req.url}}",
+	expressFormat: true,
+	colorize: true,
+	dynamicMeta: (req, res) => {
+        const httpRequest = {}
+        const meta = {}
+        if (req) {
+            meta.httpRequest = httpRequest
+            httpRequest.requestMethod = req.method
+            httpRequest.requestUrl = `${req.protocol}://${req.get('host')}${req.originalUrl}`
+            httpRequest.protocol = `HTTP/${req.httpVersion}`
+            httpRequest.remoteIp = req.ip.indexOf(':') >= 0 ? req.ip.substring(req.ip.lastIndexOf(':') + 1) : req.ip   // just ipv4
+            httpRequest.requestSize = req.socket.bytesRead
+            httpRequest.userAgent = req.get('User-Agent')
+            httpRequest.referrer = req.get('Referrer')
+        }
+        return meta
+    },
 	ignoreRoute: function (req, res) { return false; } // optional: allows to skip some log messages based on request and/or response
   }));
 
@@ -96,30 +112,31 @@ app.all('*', function(req, res){
 
 io.on('connection', socket => {
 	socket.on('user-token', (token) => {
-		console.log(token);
 		try {
 			tk = validateToken.isTokenValid(token);
-			console.log("[TOKEN] Received token for: " + socket.id + ", with token:", tk);
+			logger.info("[TOKEN] Received token for: " + socket.id + ", with token:", tk);
 			if(tk !== false) {
 				socket.userId = tk.user;
 			}
 		}catch(err) {
-			console.log("Error in receiving user token.");
-			console.log(err);
+			logger.error("Error in receiving user token: ", err);
 			socket.userId = undefined;
 		}
 	})
+	socket.on('join-room-request-answer', (roomId, reply, socketId, permanent) => {
+		handleOwnerReply(socket, reply, socketId, permanent, roomId);
+	});
 	socket.on('join-room', async (roomId, user, auth = {}) => {
 		socket.user = user;
 		let roomData;
-		console.log("Auth data: ", auth);
+		logger.info("Auth data for room "+roomId+": " + JSON.stringify(auth));
 		try {
 			roomData = await roomController.getSingleRoomFromDb(roomId, true);
 		}
 		catch (err) {
 			roomData = null;
 		}
-		console.log("Connecting socket: " + socket.id);
+		logger.info("Connecting socket: " + socket.id);
 
 		let canJoin = true;
 		let authType = null;
@@ -130,16 +147,16 @@ io.on('connection', socket => {
 			if(roomData.hasOwnProperty("auth_type")) {
 				if(roomData.auth_type == "password") {
 					authType = "password";
-					console.log("Room is protected by password.");
+					logger.info("Room is protected by password.");
 					let correct = false;
 					if(auth.hasOwnProperty("submittedPassword")) {
-						console.log("User login in with password: ", auth.submittedPassword);
+						logger.info("User login in with password: ", auth.submittedPassword);
 						correct = bcrypt.compareSync(auth.submittedPassword, roomData.auth_password);
 					}
 					if(!correct) canJoin = false;
 				} if(roomData.auth_type == "approve") {
 					authType = "approve";
-					console.log("Approval needed to enter.");
+					logger.info("Approval needed to enter.");
 					canJoin = false;
 
 					if(auth.hasOwnProperty("token")) {
@@ -149,13 +166,13 @@ io.on('connection', socket => {
 								//the owner wants to join
 								canJoin = true;
 								socket.userId = token.user;
-								console.log("The user is the owner of the room.");
+								logger.info("The user is the owner of the room.");
 
 							} else {
 								if(roomController.isUserApprovedToRoom(roomId, token.user)) {
 									canJoin = true;
 									socket.userId = token.user;
-									console.log("The user is already approved to the room.");
+									logger.info("The user is already approved to the room.");
 								}
 								//TODO: someone else (with account), check if they're already approved to toom
 							}
@@ -166,13 +183,13 @@ io.on('connection', socket => {
 		}
 		
 		if(canJoin) {
-			console.log(socket.id + " user can join");
+			logger.info(socket.id + " " + "(" + socket.user?.name + ") user can join");
 			socket.emit('join-room-answer', {result: "successful"});
 			joinUserToRoom(socket, user, roomId);
 		}else {
 			if(authType == "password" && !correctPassword) {
 				socket.emit('join-room-answer', {result: "failed", reason: "wrong_password"});
-				console.log("[ " + socket.id + " ] Wrong password");
+				logger.warn("[ " + socket.id + " ] Wrong password");
 			} else if(authType == "approve") {
 				const room = io.sockets.adapter.rooms.get(roomId);
 					let ownerInRoom = false;
@@ -189,18 +206,14 @@ io.on('connection', socket => {
 									});
 
 									socket.emit("join-room-answer", {result: "failed", reason: "waiting_approval"});
-									console.log("[ " + socket.id + " ] Waiting on approval");
+									logger.info("[ " + socket.id + " ] Waiting on approval");
 
 									let token = false;
 									if(auth.token) {
 										token = validateToken.isTokenValid(auth.token);
 									}
 									searchSocket.emit("join-room-request", socket.id, user, token !== false);
-									console.log("[ " + socket.id + " ] Sending auth request to owner.");
-
-									searchSocket.on('join-room-request-answer', (reply, socketId, permanent) => {
-										handleOwnerReply(socket, reply, socketId, permanent, roomId);
-									});
+									logger.info("[ " + socket.id + " ] Sending auth request to owner: " + searchSocket.id + "(" + searchSocket.user?.name + ")");
 								}
 							})
 						}
@@ -208,46 +221,49 @@ io.on('connection', socket => {
 					}
 					if(!ownerInRoom) {
 						socket.emit("join-room-answer", {result: "failed", reason: "no_auth_user"});
-						console.log("[ " + socket.id + " ] Owner is not in the room for auth.");
+						logger.info("[ " + socket.id + " ] Owner is not in the room for auth.");
 					}
 
 			} else {
 				socket.emit('join-room-answer', {result: "failed", reason: "error"});
-				console.log("[ " + socket.id + " ] Err");
+				logger.error("[ " + socket.id + " ] Err");
 			}
 		}
 
 	});
 })
-function handleOwnerReply(socket, reply, repliedsocketId, permanent, roomId) {
+async function handleOwnerReply(socket, reply, repliedsocketId, permanent, roomId) {
+	roomData = await roomController.getSingleRoomFromDb(roomId, true);
+	if(roomData.owner._id != socket.userId) {
+		return;
+	}
 	let joiningSocket = io.sockets.sockets.get(repliedsocketId)
 	if(!joiningSocket) {
 		return;
 	}
 	let userObj = joiningSocket.user;
-	console.log(userObj);
-	console.log("[ " + socket.id + " ] Owner replied to auth request.");
+	logger.info("[ " + socket.id + " ] Owner replied to auth request for " + joiningSocket.id + " (" + userObj.name + ")");
 		if(reply === true) {
 			joiningSocket.emit('join-room-answer', {result: "successful"});
-			console.log("[ " + socket.id + " ] Owner approved user to the room.");
+			logger.info("[ " + socket.id + " ] Owner approved user to the room: " + repliedsocketId + " (" + userObj?.name + ")");
 			if(permanent) {
 				roomController.approveUserToRoom(roomId,token.user);
-				console.log("[ " + socket.id + " ] PERMANENT APPROVE.");
+				logger.info("[ " + socket.id + " ] PERMANENT APPROVE.");
 			}
-			joinUserToRoom(socket, userObj, roomId);
+			joinUserToRoom(joiningSocket, userObj, roomId);
 		}else {
-			console.log("[ " + socket.id + " ] Owner denied the approval request.");
+			logger.info("[ " + socket.id + " ] Owner denied the approval request for " + repliedsocketId + " ("+userObj?.name+")");
 			joiningSocket.emit("join-room-answer", {result: "failed", reason: "approval_denied"});
 		}
 }
 
 function joinUserToRoom(socket, user, roomId) {
-	console.log("Room: "+ roomId + " new user: " + user.status.clientId);
+	logger.info("Room: "+ roomId + " new user: " + user.status.clientId);
 	socket.join(roomId);
 	socket.to(roomId).broadcast.emit('user-connected', user);
 
 	socket.once('disconnect', () => {
-		console.log("Room: "+ roomId + " disconnected: " + user.status.clientId);
+		logger.info("Room: "+ roomId + " disconnected: " + user.status.clientId);
 		socket.to(roomId).broadcast.emit('user-disconnected', user);
 	});
 }
@@ -258,35 +274,31 @@ const jsonErrorHandler = async (err, req, res, next) => {
 	res.status(500).send({ error: err });
   }
 
-  app.use(jsonErrorHandler)
-
-
+app.use(jsonErrorHandler)
 
 
 const start = async() => {
 	try {
-		console.log("Starting up...")
+		logger.info("Starting up...")
 		
 		let mongoConnectionString = "mongodb://127.0.0.1:27017/shutter";
 		if(process.env.DB_CONN) {
 			mongoConnectionString = process.env.DB_CONN;
 		}
-		console.log("Connecting to server on address: " + mongoConnectionString); 
+		logger.info("Connecting to server on address: " + mongoConnectionString); 
 		mongoose.connect(mongoConnectionString)
 		//mongoose.connect('mongodb://127.0.0.1/shutter')
  		.then(async () => {
-			 console.log('MongoDB connected…')
+			 logger.info('MongoDB connected…')
 			 await server.listen(4430);
-			 console.log("Server running!");
+			 logger.info("Server running!");
 			})
- 		.catch(err => console.log(err));
+ 		.catch(err => logger.error(err));
 	}
 	catch(err) {
-		console.log("Error: ", err);
+		logger.error("Error: ", err);
 		process.exit(1);
 	}
 }
 
-
 start();
-//server_https.listen(4430);

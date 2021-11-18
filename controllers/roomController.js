@@ -6,6 +6,7 @@ const Room = require("../models/room")
 const User = require("../models/user")
 
 const bcrypt = require('bcryptjs');
+const logger = require("../includes/logger");
 
 // Get all rooms
 exports.getRooms = async (req, reply) => {
@@ -50,7 +51,7 @@ exports.getSingleRoom = async (req, reply) => {
     reply.json(room);
   } catch (err) {
 	  reply.statusCode = 404;
-	  console.log(err);
+	  logger.error(err);
 	  reply.send({error: "There is no room with this id"});
   }
 }
