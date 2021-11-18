@@ -129,7 +129,7 @@ export class ConnectionService {
     return sendingData;
   }
   private async init(localInputProvider: LocalInputProviderService = null) {
-    this.socket = await io('/');
+    this.socket = await io('/', {secure: true});
 
     console.log('[CONN] Socket: ', this.socket);
     console.log(this.peer);

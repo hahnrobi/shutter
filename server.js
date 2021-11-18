@@ -33,9 +33,7 @@ const server = require('https').Server({
 	key: fs.readFileSync(privateKeyPath),
 	cert: fs.readFileSync(certPath)
 }, app)
-
 const io = require('socket.io')(server);
-
 
 rtc(io);
 
