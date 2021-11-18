@@ -1,1 +1,2 @@
+<div class="header" *ngIf="(this.connectionService.usersOnApproval | async).length > 0">{{ "Waiting users" | translate }}</div>
 <app-waiting-user *ngFor="let user of this.connectionService.usersOnApproval | async" [entry]="user" (approveEvent)="this.approveWaitingUser($event)"></app-waiting-user>

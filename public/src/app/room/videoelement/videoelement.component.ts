@@ -3,7 +3,7 @@ import { faMicrophoneSlash, faThumbsDown, faEllipsisH, faUserSlash, faUser} from
 import { Component, ElementRef, Input,Inject, OnInit, Output, ViewChild, EventEmitter } from '@angular/core';
 import { NB_WINDOW, NbMenuService } from '@nebular/theme';
 import { User } from '../user/user';
-import { Observable, timer } from 'rxjs';
+import { Observable, timer, Subscription } from 'rxjs';
 import { filter, map } from 'rxjs/operators';
 import { element } from 'protractor';
 
@@ -24,6 +24,7 @@ export class VideoelementComponent implements OnInit {
   faMicrophoneSlash = faMicrophoneSlash;
   faEllipsisH = faEllipsisH;
   faUserSlash = faUserSlash;
+  menuClickSubscription: Subscription;
 
   contextMenuItems = [];
 
@@ -43,7 +44,7 @@ export class VideoelementComponent implements OnInit {
     this.updateMenuItems();
     
 
-    this.nbMenuService.onItemClick()
+    this.menuClickSubscription = this.nbMenuService.onItemClick()
     .pipe(
       filter(({ tag }) => tag == 'videoframe-' + this.user.clientId),
     )
@@ -69,7 +70,6 @@ export class VideoelementComponent implements OnInit {
           });
           item.hidden = true;
           this.user.locallyMuted = !this.user.locallyMuted;
-          console.log(this.user.locallyMuted);
           break;
         }
     });
@@ -97,6 +97,9 @@ export class VideoelementComponent implements OnInit {
     
   }
   ngOnDestroy(){
+    if(this.menuClickSubscription != null) {
+      this.menuClickSubscription.unsubscribe();
+    }
       if(this.time){
         try{
           this.time.unsubscribe();

@@ -47,7 +47,7 @@ export class ConnectionService {
 
   public authData:AuthData = new AuthData();
 
-  public usersOnApproval: Subject<[string, User, boolean][]>;
+  public usersOnApproval: ReplaySubject<[string, User, boolean][]>;
   private _usersOnApprovalArray:[string, User, boolean][] = [];
   public approvingUserJoined: ReplaySubject<User> = new ReplaySubject<User>(1);
 
@@ -59,11 +59,12 @@ export class ConnectionService {
   public userDataIncoming: ReplaySubject<[string, SelfDataTransfer]> = new ReplaySubject<[string, SelfDataTransfer]>(1);
   public joinedToRoom:ReplaySubject<string> = new ReplaySubject<string>();
   public leaveRoom: ReplaySubject<boolean> = new ReplaySubject<boolean>();
-
+  
+  public socketError: ReplaySubject<any> = new ReplaySubject<any>();
   
 
   constructor(private authService:NbAuthService) {
-    this.usersOnApproval = new Subject<[string, User, boolean][]>();
+    this.usersOnApproval = new ReplaySubject<[string, User, boolean][]>();
     this.usersOnApproval.next(this._usersOnApprovalArray);
     this.joinedToRoom.subscribe(() => {
       console.log("Joined to room");
@@ -296,6 +297,12 @@ export class ConnectionService {
       console.log('[CONN] Waiting user disconnected: ', socketId);
       this.removeApprovalWaitingUser(socketId);
     })
+    this.socket.io.on("error", (error) => {
+      this.socketError.next(error);
+    });
+    this.socket.io.on("reconnect_failed", () => {
+      this.socketError.next("Connection dropped.");
+    });
 
     this.peer.on('connection', (conn) => {
       console.log('[CONN DATA IN] Incoming data connection with ' + conn.peer);

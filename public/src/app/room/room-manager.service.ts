@@ -54,6 +54,7 @@ export class RoomManagerService {
       this._userManagerService.removeUser(value);
     });
 
+
     this._connectionService.approvingUserJoined.subscribe(user => {
       this.toastrService.show(
         user.name + " " + this.translate.transform("would like to join to the room."),
@@ -118,6 +119,14 @@ export class RoomManagerService {
       this._userManagerService.clear();
       this.headerTitleService.leftRoom();
     })
+
+    this._connectionService.socketError.subscribe(value => {
+      console.log("%c[ROOM-MANAGER] Socket error received: " + value, "color: red");
+      this.toastrService.show(
+        this.translate.transform(value),
+        this.translate.transform("Error"),
+        {limit: 3, position: NbGlobalLogicalPosition.BOTTOM_START, status: "danger"});
+    });
 
 
 

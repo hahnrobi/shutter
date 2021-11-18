@@ -17,6 +17,7 @@ export class WelcomeDialogComponent implements OnInit, OnDestroy {
   private dataProvider:ISelfDataProvider;
   public devicesReceived:boolean = false;
 
+  
 
   public _localInputProviderService:LocalInputProviderService;
 
