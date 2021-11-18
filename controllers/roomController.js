@@ -110,7 +110,10 @@ exports.updateRoom = async (req, reply, userId = undefined) => {
         reply.statusCode = 400;
         return reply.send("Password should be at least 5 characters long.");
       }
-      room.auth_password = bcrypt.hashSync(room.auth_password, 10)
+      if(room.auth_type == "password") {
+        room.auth_password = bcrypt.hashSync(room.auth_password, 10);
+      }
+      
       const { ...updateData } = room
       updateData.owner = checkRoom.owner;
       const update = await Room.findByIdAndUpdate(id, updateData, { new: true })
