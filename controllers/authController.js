@@ -5,7 +5,9 @@ const bcrypt = require('bcryptjs');
 exports.login = async (req, res) => {
 	try {
 		if(req.body != "") {
-			let params = eval(req.body);
+			
+			let params = (req.body);
+
 			let pwd = "";
 			let successfull = false;
   

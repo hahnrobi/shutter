@@ -29,7 +29,7 @@ const logger = winston.createLogger({
 
   require('dotenv').config()
 //const server = require("http").Server(app);
-certPath = __dirname + "/certs/private.key";
+certPath = __dirname + "/certs/cert.crt";
 privateKeyPath = __dirname +"/certs/private.key";
 
 if(process.env.SSL_CERT) {
