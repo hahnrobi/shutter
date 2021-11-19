@@ -150,5 +150,7 @@
 	"Room": "Szoba",
 	"Change language": "Nyelv megváltoztatása",
 	"Waiting users": "Várakozó felhasználók",
-	"WARNING: Are you sure that want to leave the room?": "FIGYELEM: Biztosan ki akarsz lépni a szobából?"
+	"WARNING: Are you sure that want to leave the room?": "FIGYELEM: Biztosan ki akarsz lépni a szobából?",
+	"microphone": "mikrofon",
+	"webcam": "webkamera"
 }

@@ -7,8 +7,10 @@ import { Injectable } from '@angular/core';
 })
 export class LocalInputProviderService {
 
-  public audioInputs:MediaDeviceInfo[] = [];
-  public videoInputs:MediaDeviceInfo[] = [];
+  public audioInputs:ReplaySubject<MediaDeviceInfo[]> = new ReplaySubject<MediaDeviceInfo[]>()
+  private _audioInputs: MediaDeviceInfo[] = [];
+  public videoInputs:ReplaySubject<MediaDeviceInfo[]> = new ReplaySubject<MediaDeviceInfo[]>();
+  private _videoInputs: MediaDeviceInfo[] = [];
 
   
   public defaultAudioInput:MediaDeviceInfo;
@@ -66,8 +68,8 @@ export class LocalInputProviderService {
     });
   }
   public saveUsedDevices(videoId:string, audioId: string) {
-    this.currentVideoInput = this.videoInputs.find(input => input.deviceId == videoId);
-    this.currentAudioInput = this.audioInputs.find(input => input.deviceId == audioId);
+    this.currentVideoInput = this._videoInputs.find(input => input.deviceId == videoId);
+    this.currentAudioInput = this._audioInputs.find(input => input.deviceId == audioId);
     const item = {}
     if(this.videoAllowed) {
       item["video"] = videoId;
@@ -88,12 +90,12 @@ export class LocalInputProviderService {
     const lastUsed = this.getLastUsedDevices();
     if(this._videoAllowed) {
       if(lastUsed != null && lastUsed.hasOwnProperty("video")) {
-        const arrayCheck = this.videoInputs.filter(x => x.deviceId === lastUsed.video);
+        const arrayCheck = this._videoInputs.filter(x => x.deviceId === lastUsed.video);
         if(arrayCheck.length > 0) {
           videoDevice = arrayCheck[0];
         }
       }
-      if(videoDevice == null && this.videoInputs.length > 0) {
+      if(videoDevice == null && this._videoInputs.length > 0) {
         videoDevice = this.videoInputs[0];
       }
     }
@@ -102,12 +104,12 @@ export class LocalInputProviderService {
     if(this._micAllowed) {
       const lastUsed = this.getLastUsedDevices();
       if(lastUsed != null && lastUsed.hasOwnProperty("audio")) {
-        const arrayCheck = this.audioInputs.filter(x => x.deviceId === lastUsed.audio);
+        const arrayCheck = this._audioInputs.filter(x => x.deviceId === lastUsed.audio);
         if(arrayCheck.length > 0) {
           audioDevice = arrayCheck[0];
         }
       }
-      if(audioDevice == null && this.audioInputs.length > 0) {
+      if(audioDevice == null && this._audioInputs.length > 0) {
         audioDevice = this.audioInputs[0];
       }
     }
@@ -115,7 +117,7 @@ export class LocalInputProviderService {
     this.defaultAudioInput = audioDevice;
   }
 
-  public async refreshInputDevices() {
+  public async refreshInputDevices() {    
     let newDevices = [];
     await navigator.mediaDevices.enumerateDevices()
     .then((devices) => {
@@ -130,15 +132,16 @@ export class LocalInputProviderService {
   public setInputDevices(devices:MediaDeviceInfo[]) {
     //this.audioInputs = [];
     //this.videoInputs = [];
-    
     devices.forEach(dev => {
       if (dev.kind == "audioinput") {
-        this.audioInputs.push(dev);
+        this._audioInputs.push(dev);
       }
       if (dev.kind == "videoinput") {
-        this.videoInputs.push(dev);
+        this._videoInputs.push(dev);
       }
     });
+    this.audioInputs.next(this._audioInputs);
+    this.videoInputs.next(this._videoInputs);
   }
 
   public async requestPermissions(type:"audio"|"video"|"both" = "both")

@@ -11,7 +11,10 @@
 <nb-icon *ngIf="!this.videoAllowed" (click)="this._localInputProviderService.requestPermissions('video')" icon="close-circle-outline" status="danger" nbTooltip="No access to your webcam." nbTooltipStatus="danger" style="cursor: pointer"></nb-icon>-->
 <div class="input-container-video">
 	<nb-select placeholder="Select webcam" [(selected)]="selectedVideoDevice" [disabled]="!this.videoAllowed || !this.videoEnabled">
-		<nb-option *ngFor="let device of this.videoDeviceList" value="{{ device.deviceId }}" (click)="this.changeVideoInputDevice(device.deviceId)" >{{ device.label }}</nb-option>
+		<nb-option *ngFor="let device of (this.videoDeviceList | async); let i = index" value="{{ device.deviceId }}" (click)="this.changeVideoInputDevice(device.deviceId)" >
+			<ng-container *ngIf="device.label">{{ device.label }}</ng-container>
+			<ng-container *ngIf="!device.label">{{ i+1 }}. {{ "webcam" | translate }}</ng-container>
+		</nb-option>
 		</nb-select>
 		<div class="videoContainer">
 		<nb-icon *ngIf="!(this.videoAllowed && this.videoEnabled)" icon="video-outline"></nb-icon>
@@ -25,7 +28,10 @@
 
 <div class="input-container-audio">
 	<nb-select placeholder="Select input device" [(selected)]="selectedAudioDevice" [disabled]="!this.audioAllowed || !this.audioEnabled">
-		<nb-option *ngFor="let device of this.audioDeviceList" value="{{ device.deviceId }}" (click)="this.changeAudioInputDevice(device.deviceId)" >{{ device.label }}</nb-option>
+		<nb-option *ngFor="let device of (this.audioDeviceList | async); let i = index" value="{{ device.deviceId }}" (click)="this.changeAudioInputDevice(device.deviceId)" >
+			<ng-container *ngIf="device.label">{{ device.label }}</ng-container>
+			<ng-container *ngIf="!device.label">{{ i+1 }}. {{ "microphone" | translate }}</ng-container>
+		</nb-option>
 		</nb-select>
 	<div class="meter-wrapper">
 		<div class="audio-level-pass-meter">

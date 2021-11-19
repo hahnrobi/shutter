@@ -5,7 +5,7 @@ import { ISelfDataProvider } from './../../userdata/iself-data-provider';
 import { MediaStreamProvider } from './../../mediastreamprovider';
 import { LocalInputProviderService } from './../../local-input-provider.service';
 import { Component, OnInit,  Output, EventEmitter, ViewChild, ElementRef, OnDestroy } from '@angular/core';
-import { of } from 'rxjs';
+import { of, ReplaySubject } from 'rxjs';
 
 @Component({
   selector: 'app-welcome-dialog',
@@ -22,8 +22,8 @@ export class WelcomeDialogComponent implements OnInit, OnDestroy {
   public _localInputProviderService:LocalInputProviderService;
 
   public inputNameText:string;
-  public audioDeviceList:MediaDeviceInfo[];
-  public videoDeviceList:MediaDeviceInfo[];
+  public audioDeviceList:ReplaySubject<MediaDeviceInfo[]>;
+  public videoDeviceList:ReplaySubject<MediaDeviceInfo[]>;
 
   public audioAllowed = false;
   public videoAllowed = false;
@@ -69,6 +69,7 @@ export class WelcomeDialogComponent implements OnInit, OnDestroy {
     });
     this.audioDeviceList = _localInputProviderService.audioInputs;
     this.videoDeviceList = _localInputProviderService.videoInputs;
+    this.videoDeviceList.subscribe(item => console.log("VIDEO ITEM: ", item));
 
     _localInputProviderService.micAllowed.subscribe(t => {this.audioAllowed = t; console.log("Mic allowed:", t)});
     _localInputProviderService.videoAllowed.subscribe(t => {this.videoAllowed = t; console.log("Video allowed:", t)});
