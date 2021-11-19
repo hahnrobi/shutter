@@ -149,5 +149,6 @@
 	"Users list": "Felhasználók",
 	"Room": "Szoba",
 	"Change language": "Nyelv megváltoztatása",
-	"Waiting users": "Várakozó felhasználók"
+	"Waiting users": "Várakozó felhasználók",
+	"WARNING: Are you sure that want to leave the room?": "FIGYELEM: Biztosan ki akarsz lépni a szobából?"
 }
