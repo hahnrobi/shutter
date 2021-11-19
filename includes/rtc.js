@@ -99,6 +99,7 @@ function sockets(io) {
 										ownerInRoom = true;
 	
 										socket.once('disconnect', () => {
+											logger.info("[ " + socket.id + " ] Waiting user disconnected");
 											searchSocket.emit('waiting-user-disconnected', socket.id);
 										});
 	

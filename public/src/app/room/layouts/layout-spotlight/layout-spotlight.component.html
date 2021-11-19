@@ -1,13 +1,13 @@
 <ng-container *ngFor="let u of users | keyvalue">
 	<div *ngIf="u.value?.isMe && this.latestSpeaker != u.value?.clientId && !u.value?.status.isVideoOff" class="selfVideo">
-		<app-videoelement
+		<app-videoelement @fadeIn
 		style="object-fit: contain;
 		overflow: hidden;
 		border-radius: 3px" [onlyVideo]="true" [smallThumbnail]="true" videoSizing="contain" class="video-item" *ngIf="u.value?.mediaStreamProvider?.stream != null && u.value?.mediaStreamProvider?.stream != undefined" [user]=u.value></app-videoelement>
 	</div>
 </ng-container>
 <ng-container *ngFor="let u of users | keyvalue">
-<div *ngIf="!u.value?.spectator" class="videoContainer" [ngClass]="{'speaking': this.latestSpeaker === u.value?.clientId}">
+<div *ngIf="!u.value?.spectator && !(u.value?.isMe && this.latestSpeaker != u.value?.clientId)" @fadeIn class="videoContainer" [ngClass]="{'speaking': this.latestSpeaker === u.value?.clientId}">
 	<app-videoelement
 	style="object-fit: cover;
 	overflow: hidden;

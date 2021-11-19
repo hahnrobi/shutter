@@ -45,29 +45,30 @@
 
   
 </div>
-
-<div *ngIf="(this.reply$ | async)?.reason == 'no_auth_user'" style="margin-bottom: 10px;">
-  <nb-card>
-    <nb-card-body class="container">
-      <h1>{{ 'The room owner cannot let you in.' | translate }}</h1>
-      <p>{{ 'The owner of the room is not connected to the room to autenticate you.' | translate }}</p>
-    </nb-card-body>
-  </nb-card>
-</div>
-<div *ngIf="(this.reply$ | async)?.reason == 'waiting_approval'" style="margin-bottom: 10px;">
-  <nb-card>
-    <nb-card-body class="container">
-      <h1>{{ 'Waiting to approve.' | translate }}</h1>
-      <p>{{ 'We notified the room owner about your join request. Please wait for its decision.' | translate }}</p>
-    </nb-card-body>
-  </nb-card>
-</div>
-<div *ngIf="(this.reply$ | async)?.reason == 'approval_denied'" style="margin-bottom: 10px;">
-  <nb-card>
-    <nb-card-body class="container">
-      <svg aria-hidden="true" style="width: 64px; height: 64px; display: block;margin: auto;" focusable="false" data-prefix="fas" data-icon="exclamation" class="svg-inline--fa fa-exclamation fa-w-6" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 512"><path fill="currentColor" d="M176 432c0 44.112-35.888 80-80 80s-80-35.888-80-80 35.888-80 80-80 80 35.888 80 80zM25.26 25.199l13.6 272C39.499 309.972 50.041 320 62.83 320h66.34c12.789 0 23.331-10.028 23.97-22.801l13.6-272C167.425 11.49 156.496 0 142.77 0H49.23C35.504 0 24.575 11.49 25.26 25.199z"></path></svg>
-      <h1>{{ 'Join request denied' | translate }}</h1>
-      <p>{{ 'Sorry, the room owner denied your request to join to the room.' | translate }}</p>
-    </nb-card-body>
-  </nb-card>
-</div>
+<ng-container *ngIf="!this.askToPassword">
+  <div *ngIf="(this.reply$ | async)?.reason == 'no_auth_user'" style="margin-bottom: 10px;">
+    <nb-card>
+      <nb-card-body class="container">
+        <h1>{{ 'The room owner cannot let you in.' | translate }}</h1>
+        <p>{{ 'The owner of the room is not connected to the room to autenticate you.' | translate }}</p>
+      </nb-card-body>
+    </nb-card>
+  </div>
+  <div *ngIf="(this.reply$ | async)?.reason == 'waiting_approval'" style="margin-bottom: 10px;">
+    <nb-card>
+      <nb-card-body class="container">
+        <h1>{{ 'Waiting to approve.' | translate }}</h1>
+        <p>{{ 'We notified the room owner about your join request. Please wait for its decision.' | translate }}</p>
+      </nb-card-body>
+    </nb-card>
+  </div>
+  <div *ngIf="(this.reply$ | async)?.reason == 'approval_denied'" style="margin-bottom: 10px;">
+    <nb-card>
+      <nb-card-body class="container">
+        <svg aria-hidden="true" style="width: 64px; height: 64px; display: block;margin: auto;" focusable="false" data-prefix="fas" data-icon="exclamation" class="svg-inline--fa fa-exclamation fa-w-6" role="img" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 192 512"><path fill="currentColor" d="M176 432c0 44.112-35.888 80-80 80s-80-35.888-80-80 35.888-80 80-80 80 35.888 80 80zM25.26 25.199l13.6 272C39.499 309.972 50.041 320 62.83 320h66.34c12.789 0 23.331-10.028 23.97-22.801l13.6-272C167.425 11.49 156.496 0 142.77 0H49.23C35.504 0 24.575 11.49 25.26 25.199z"></path></svg>
+        <h1>{{ 'Join request denied' | translate }}</h1>
+        <p>{{ 'Sorry, the room owner denied your request to join to the room.' | translate }}</p>
+      </nb-card-body>
+    </nb-card>
+  </div>
+</ng-container>

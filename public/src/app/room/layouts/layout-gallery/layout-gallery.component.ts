@@ -1,7 +1,7 @@
 import { UserManagerService } from './../../user-manager.service';
 import { ConnectionService } from './../../connection.service';
 import { User } from './../../user/user';
-import { Component, ElementRef, HostListener, Input, IterableDiffers, OnInit, QueryList, SimpleChanges, ViewChild, ViewChildren } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, HostListener, Input, IterableDiffers, OnInit, QueryList, SimpleChanges, ViewChild, ViewChildren } from '@angular/core';
 import { animate, style, transition, trigger } from '@angular/animations';
 
 @Component({
@@ -17,7 +17,7 @@ import { animate, style, transition, trigger } from '@angular/animations';
     ]),
   ],
 })
-export class LayoutGalleryComponent implements OnInit {
+export class LayoutGalleryComponent implements OnInit, AfterViewInit {
   @Input() users:any[];
   @ViewChildren('videoFrame') videoFrames:QueryList<any>;
   @ViewChild('videoGrid') videoGrid:ElementRef;
@@ -29,6 +29,9 @@ export class LayoutGalleryComponent implements OnInit {
     this.iterableDiffer = iterableDiffers.find([]).create(null);
   }
 
+  ngAfterViewInit() :void {
+    this.resizeVideoFrames();
+  }
   ngOnInit(): void {
   }
 

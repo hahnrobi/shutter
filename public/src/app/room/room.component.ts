@@ -65,7 +65,11 @@ export class RoomComponent implements OnInit {
     console.log("ROOM COMPONENT INIT")
     this.roomDetailsProviderService = _roomDetailsProvider;
     route.params.subscribe(p => {this.roomId = p.room;});
-    this.connectionReply = this._connectionService.connectionStatusChanged;
+    this.connectionReply = new ReplaySubject<ConnectionInitReply>();
+    this.subs.push(this._connectionService.connectionStatusChanged.subscribe((i) => {
+      this.connectionReply.next(i);
+    }))
+    
     this._connectionService.connectionStatusChanged.subscribe(connectionInitReply => {
       if(connectionInitReply.result == "successful") {
         this.currentState = "room";
@@ -189,7 +193,8 @@ export class RoomComponent implements OnInit {
 
 
   ngOnDestroy(){
-    if(this.currentState == "room") {
+    console.log("Room component dispose");
+    if(this.currentState == "room" || this.currentState == "connecting") {
       this._connectionService.leave();
     }
     for( const sub of this.subs){
