@@ -7,7 +7,7 @@ const jwtGenerator = require('../includes/jwt-generator');
 
 // Get Data Models
 const User = require("../models/user");
-const { logger } = require('../includes/logger');
+const logger = require("../includes/logger");
 
 exports.getUsers = async (req, reply) => {
   try {
