@@ -144,6 +144,33 @@ export class LocalInputProviderService {
     this.videoInputs.next(this._videoInputs);
   }
 
+  public checkDevices() {
+    let audioValid = false;
+    let videoValid = false;
+    if(this.currentAudioInput) {
+      this._audioInputs.forEach(dev => {
+        if(dev.deviceId == this.currentAudioInput.deviceId) {
+          audioValid = true;
+        }
+      })
+    }
+    if(this.currentVideoInput) {
+      this._videoInputs.forEach(dev => {
+        if(dev.deviceId == this.currentVideoInput.deviceId) {
+          videoValid = true;
+        }
+      })
+    }
+    if(!videoValid) {
+      this._videoAllowed = false;
+      this.videoAllowed.next(false);
+    }
+    if(!audioValid) {
+      this._micAllowed = false;
+      this.micAllowed.next(false);
+    }
+    return videoValid && audioValid;
+  }
   public async requestPermissions(type:"audio"|"video"|"both" = "both")
   {
     if(type == "video" || type == "both") {

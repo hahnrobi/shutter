@@ -1,5 +1,7 @@
 # Shutter
 Készítte: Hahn Róbert
+
+A program kipróbálható a https://shutter.iva.hu/ címen is.
 ## Szükséges szoftverek
 - Node.JS 16
 - npm

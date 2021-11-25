@@ -48,8 +48,8 @@
 </div>
 </div>
 <div class="row join-button-container">
-	<nb-alert status="danger" *ngIf="devicesReceived && !videoAllowed && !audioAllowed">
+	<nb-alert status="danger" *ngIf="devicesReceived && ((!videoAllowed && !audioAllowed) || (!selectedAudioDevice && !selectedVideoDevice))">
 		{{ 'WARN_ONLY_SPECTATOR' | translate }}
 	</nb-alert>
-	<button class="join-button" nbButton (click)="this.saveName()" [disabled]="!devicesReceived">{{'Join Room' | translate}}</button>
+	<button class="join-button" nbButton (click)="this.saveName()" [disabled]="this.inputNameText.length < 3 || !devicesReceived">{{'Join Room' | translate}}</button>
 </div>

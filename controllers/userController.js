@@ -107,6 +107,7 @@ exports.addUser = async (req, reply) => {
 		//reply.send(await getUser(savedUser._id));
 
 	} catch (err) {
+		logger.error(err);
 	  reply.send(err);
 	}
   }

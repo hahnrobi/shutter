@@ -96,8 +96,10 @@ export class WelcomeDialogComponent implements OnInit, OnDestroy {
   public saveName() {
     this.dataProvider.setName(this.inputNameText);
     this.enteredName.emit(this.inputNameText);
+    this._localInputProviderService.checkDevices();
     this.deviceConfig.emit(this._localInputProviderService);
   }
+
 
   public changeAudioEnabledStatus(status:boolean) {
     this.audioEnabled = status;

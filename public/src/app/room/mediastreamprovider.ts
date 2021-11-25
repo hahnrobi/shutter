@@ -38,10 +38,10 @@ export class MediaStreamProvider {
 		return this.stream
 	}
 	public isVideoAvailable(): boolean {
-		return this.stream.getVideoTracks().length > 0;
+		return this.stream?.getVideoTracks().length > 0;
 	}
 	public isAudioAvailable(): boolean {
-		return this.stream.getAudioTracks().length > 0;
+		return this.stream?.getAudioTracks().length > 0;
 	}
 	public isAudioMuted():boolean {
 		if(this.stream) {
@@ -172,10 +172,10 @@ export class MediaStreamProvider {
 
 	public dispose() {
 		this.stopMeasureMicLevel();
-		this.stream.getTracks().forEach(function(track) {
+		this.stream?.getTracks().forEach(function(track) {
 			track.stop();
 		  });
-		console.log("[MEDIASTREAMPROVIDER] Dispose ", this.stream.id);
+		console.log("[MEDIASTREAMPROVIDER] Dispose ", this.stream?.id);
 		if(this.meteringSubscription) {
 			this.meteringSubscription.unsubscribe();
 		}
