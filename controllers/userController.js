@@ -101,7 +101,7 @@ exports.addUser = async (req, reply) => {
 		const savedUser = await user.save();
 		let token = jwtGenerator.generate({"user":savedUser.id});
 		if(reply.statusCode == 200) {
-			logger.info("Registration successfull: ", input.email);
+			logger.info("Registration successfull: " + input.email);
 			reply.send({"token": jwt.sign(token, process.env.SHUTTER_ACCESS_TOKEN_SECRET), "data": token});
 		}
 		//reply.send(await getUser(savedUser._id));
