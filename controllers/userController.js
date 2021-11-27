@@ -66,7 +66,7 @@ exports.getSingleUserPassword = async (id) => {
 exports.addUser = async (req, reply) => {
 	try {
 		input = {...req.body};
-		logger.info("Registration attempt with the following data: ", input);
+		logger.info("Registration attempt with the following data: " + input);
 		const user = new User()
 		user._id = new mongoose.Types.ObjectId();
 
